@@ -7,6 +7,9 @@ import ValidationService from "./services/Validation";
 import { fetchPortal } from "./redux/features/portal.slice";
 import { useDispatch } from "react-redux";
 import ForgotPassword from "./pages/ForgotPassword";
+import Messages from "./pages/Messages";
+import Inventory from "./pages/Inventory";
+import Case from "./pages/Case";
 
 export default function App()
 {
@@ -30,6 +33,26 @@ export default function App()
     {
       path: "/login",
       element: <Login/>
+    },
+    {
+      path: "/inventory",
+      element: <Inventory/>
+    },
+    {
+      path: '/case/:id',
+      element: <Case/>
+    },
+    {
+      path: "/analytics",
+      element: null
+    },
+    {
+      path: "/messages",
+      element: <Messages/>
+    },
+    {
+      path: "/support",
+      element: null
     },
     {
       path: "/forgot",

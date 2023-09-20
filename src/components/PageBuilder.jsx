@@ -9,14 +9,17 @@ import {
   BookOutlined,
   BarChartOutlined,
   ProjectOutlined,
+  MenuUnfoldOutlined,
+  MenuFoldOutlined,
   InfoCircleOutlined,
   QuestionOutlined
 } from '@ant-design/icons';
-import { Breadcrumb, Layout, Menu, theme, Avatar, Dropdown, Space, message, FloatButton, Slider, Badge, Image, Skeleton } from 'antd';
+import { Breadcrumb, Layout, Menu, theme, Avatar, Button, Dropdown, Space, message, FloatButton, Slider, Badge, Image, Skeleton } from 'antd';
 import { useNavigate } from 'react-router-dom';
 import { axiosWithCredentials } from '../configs/axios';
 import { useSelector, useDispatch } from 'react-redux';
 import { getPortal, getPortalTheme } from '../redux/features/portal.slice';
+import { useEffect } from 'react';
 const { Header, Content, Footer, Sider } = Layout;
 function getItem(label, key, icon, onClick, children) {
   return {
@@ -29,6 +32,7 @@ function getItem(label, key, icon, onClick, children) {
 }
 export default function PageBuilder(props) {
   const [collapsed, setCollapsed] = useState(false);
+  const [unread, setUnread] = useState(0);
   const navigate = useNavigate();
   const portal = useSelector(getPortal);
   const portalTheme = useSelector(getPortalTheme);
@@ -48,18 +52,26 @@ export default function PageBuilder(props) {
     getItem('Profile', '1', <UserOutlined />, () => navigate("/profile")),
     getItem('Logout', '2', <LogoutOutlined />, () => logout()),
   ];
+
+  useEffect(() => {
+    axiosWithCredentials.get('/message/unread')
+    .then(res => {
+        setUnread(res.data);
+    })
+  }, []);
+
   return (
     <Layout
     style={{
       minHeight: '100vh'
     }}>
-      <Sider style={{ background: portalTheme?.background.primary}} breakpoint='md' collapsedWidth="0" theme='light' collapsible collapsed={collapsed} onCollapse={(value) => setCollapsed(value)}>
+      <Sider style={{ background: portalTheme?.background.primary}} breakpoint='md' collapsedWidth="0" trigger={null} theme='light' collapsible collapsed={collapsed} onCollapse={(value) => setCollapsed(value)}>
         <div className="demo-logo-vertical" />
         <Menu style={{ background: portalTheme?.background.primary, color: portalTheme?.text.secondary}} mode="vertical">
           <Menu.Item icon={<BookOutlined/>} key='cases' className={`${portalTheme?.hover} ${props.name === 'cases' ? portalTheme?.selected: null}`} style={{ color: (props.name === "cases")? portalTheme?.text.secondary: portalTheme?.text.primary}}>Cases</Menu.Item>
           <Menu.Item icon={<ContainerOutlined />} onClick={() => navigate('/inventory')} key='inventory' className={`${portalTheme?.hover} ${props.name === 'inventory' ? portalTheme?.selected: null}`} style={{ color: (props.name === "inventory")? portalTheme?.text.secondary: portalTheme?.text.primary}}>Inventory</Menu.Item>
           <Menu.Item icon={<BarChartOutlined/>} onClick={() => navigate('/analytics')} key='analytics' className={`${portalTheme?.hover} ${props.name === 'analytics' ? portalTheme?.selected: null}`} style={{ color: (props.name === "analytics")? portalTheme?.text.secondary: portalTheme?.text.primary}}>Analytics</Menu.Item>
-          <Menu.Item onClick={() => navigate('/messages')} icon={<Badge size='small' style={{ background: '#009900' }} count={1}><CommentOutlined /></Badge>} key='messages' className={`${portalTheme?.hover} ${props.name === 'messages' ? portalTheme?.selected: null}`} style={{ color: (props.name === "messages")? portalTheme?.text.secondary: portalTheme?.text.primary}}>Messages</Menu.Item>
+          <Menu.Item onClick={() => navigate('/messages')} icon={<Badge size='small' style={{ background: '#009900' }} count={unread}><CommentOutlined /></Badge>} key='messages' className={`${portalTheme?.hover} ${props.name === 'messages' ? portalTheme?.selected: null}`} style={{ color: (props.name === "messages")? portalTheme?.text.secondary: portalTheme?.text.primary}}>Messages</Menu.Item>
           <Menu.Item icon={<SettingOutlined/>} onClick={() => window.location.href = "https://www.familylynk.com"} key='admin' className={`${portalTheme?.hover} ${props.name === 'admin' ? portalTheme?.selected: null}`} style={{ color: (props.name === "admin")? portalTheme?.text.secondary: portalTheme?.text.primary}}>Admin</Menu.Item>  
           <Menu.Item icon={<QuestionOutlined/>} onClick={() => navigate('/support')} key='support' className={`${portalTheme?.hover} ${props.name === 'support' ? portalTheme?.selected: null}`} style={{ color: (props.name === "support")? portalTheme?.text.secondary: portalTheme?.text.primary}}>Support</Menu.Item>  
         </Menu>
@@ -71,8 +83,17 @@ export default function PageBuilder(props) {
             background: colorBgContainer,
           }}
         >
-          <div className='flex h-full justify-between mx-12'>
-          
+          <div className='flex h-full justify-between mr-12'>
+          <Button
+            type="text"
+            icon={collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
+            onClick={() => setCollapsed(!collapsed)}
+            style={{
+              fontSize: '16px',
+              width: 64,
+              height: 64,
+            }}
+          />
           {portal?.LogoSource ?
           <img src={portal?.LogoSource} alt="" className='p-2'/>
           :
@@ -94,7 +115,7 @@ export default function PageBuilder(props) {
           </Dropdown>
           </div>
           </Header>
-        <Content className='mt-8 mx-4'>
+        <Content className=' mx-4'>
           <Breadcrumb
             style={{
               margin: '16px 0',

@@ -1,10 +1,10 @@
-import { Badge, Button, Table, Input, Tooltip } from "antd";
+import { Badge, Button, Table, Input, Tooltip, Pagination } from "antd";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import Highlighter from 'react-highlight-words';
 import PageBuilder from "../components/PageBuilder";
 import { fetchCases, getCases, getCasesCount } from "../redux/features/case.slice";
-import { getPortal } from "../redux/features/portal.slice";
+import { fetchUsers, getPortal } from "../redux/features/portal.slice";
 import {
     SearchOutlined
   } from '@ant-design/icons';
@@ -16,9 +16,20 @@ export default function Dashboard()
     const portal = useSelector(getPortal);
     const [casesPerPage, setCasesPerPage] = useState(localStorage.getItem('results') || 25);
     const [currentPage, setCurrentPage] = useState(1);
+    const [tableLoading, setTableLoading] = useState(true);
     const cases = useSelector(getCases);
-    const [serviceFilters, setServiceFilters] = useState([]);
-    const [homeFilters, setHomeFilters] = useState([]);
+    const [filters, setFilters] = useState({
+      Services: [],
+      Homes: [],
+      Directors: []
+    });
+    const [activeFilters, setActiveFilters] = useState({
+      Name: "",
+      Status: null,
+      Services: [],
+      Homes: [],
+      Directors: []
+    })
     const casesCount = useSelector(getCasesCount);
     const navigate = useNavigate();
     const dispatch = useDispatch();
@@ -27,6 +38,7 @@ export default function Dashboard()
         column: ''
     })
 
+    
     const getColumnSearchProps = dataIndex => ({
         filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters }) => (
           <div style={{ padding: 8 }}>
@@ -54,23 +66,20 @@ export default function Dashboard()
           <SearchOutlined style={{ color: filtered ? '#1890ff' : undefined }} />
         ),
         onFilter: (value, record) =>
-          record[dataIndex]
+          (record['Patient'].FirstName + " " + record['Patient'].LastName)
             .toString()
             .toLowerCase()
             .includes(value.toLowerCase()),
-        onFilterDropdownVisibleChange: visible => {
-
-        },
         render: text =>
           search.column === dataIndex ? (
             <Highlighter
               highlightStyle={{ backgroundColor: '#ffc069', padding: 0 }}
               searchWords={[search.text]}
               autoEscape
-              textToHighlight={text.toString()}
+              textToHighlight={text.FirstName + " " + text.LastName}
             />
           ) : (
-            text
+            text.FirstName + " " + text.LastName
           ),
       });
     
@@ -86,7 +95,6 @@ export default function Dashboard()
         clearFilters();
         setSearch({ text: '', column: '' });
       };
-
     const columns = [
         {
             title: "Case",
@@ -101,7 +109,7 @@ export default function Dashboard()
         },
         {
             title: "Name",
-            dataIndex: "Name",
+            dataIndex: "Patient",
             key: "name",
             ...getColumnSearchProps('Name'),
         },
@@ -109,21 +117,26 @@ export default function Dashboard()
             title: "Service",
             dataIndex: "Service",
             key: "service",
-            filters: serviceFilters,
-            onFilter: (value, record) => record.Service === value,
+            render: text => text.Name,
+            filters: filters.Services,
+            onFilter: (value, record) => record.Service.ID === value,
             responsive: ['lg']
         },
         {
             title: "Home",
             dataIndex: "Home",
             key: "home",
-            filters: homeFilters,
-            onFilter: (value, record) => record.Home === value,
+            render: text => text.Name,
+            filters: filters.Homes,
+            onFilter: (value, record) => record.Home.ID === value,
         },
         {
             title: "Director",
-            dataIndex: "Director",
+            dataIndex: "User",
             key: "director",
+            filters: filters.Directors,
+            onFilter: (value, record) => record.User.ID === value,
+            render: text => text.FirstName + " " + text.LastName,
             responsive: ['lg']
         },
         {
@@ -132,7 +145,7 @@ export default function Dashboard()
             key: "created",
             render: (x) => (
                 <span>{new Date(x).toLocaleDateString()}</span>
-            )
+            ),
         },
         {
             title: "Status",
@@ -164,25 +177,21 @@ export default function Dashboard()
     ]
 
     useEffect(() => {
-        if(cases){
-        setServiceFilters([...new Set(cases.map(x => x.Service))].map(x => ({ text: x, value: x})));
-        setHomeFilters([...new Set(cases.map(x => x.Home))].map(x => ({ text: x, value: x})))
-        }
-    }, [cases]);
-
-    useEffect(() => {
+      setTableLoading(true);
         if(portal){
             var payload = {
                 id: portal.ID,
                 limit: casesPerPage,
                 offset: (currentPage - 1) * casesPerPage
             }
-            dispatch(fetchCases(payload));
+            dispatch(fetchCases(payload)).unwrap()
+            .then(res => setFilters(res.Filters))
+            .finally(() => setTableLoading(false));
         }
-    }, [portal, casesPerPage]);
-    console.log(cases);
+    }, [portal, casesPerPage, currentPage]);
+
     return (
-        <PageBuilder name='cases'>
+        <PageBuilder name='cases' breadcrumb={['Cases']}>
             <Table
             onRow={(r) => ({
                 onClick: () => navigate("/case/" + r.DisplayID)
@@ -190,10 +199,43 @@ export default function Dashboard()
             locale={{
                 emptyText: 'No Cases'
             }}
+            onChange={(pagination, filters, sorters, extra) => {
+              setTableLoading(true);
+              console.log(filters)
+              var payload = {
+                id: portal.ID,
+                limit: casesPerPage,
+                offset: (currentPage - 1) * casesPerPage,
+                Services: filters.service,
+                Homes: filters.home,
+                Directors: filters.director,
+                Status: filters.status,
+                ...(filters.name && { Name: filters.name[0] })
+              }
+
+              dispatch(fetchCases(payload)).unwrap()
+              .finally(() => setTableLoading(false));
+            }}
+            loading={tableLoading}
             dataSource={cases}
             columns={columns}
-            pagination
+            pagination={false}
             />
+            <br/>
+            {console.log(casesCount)}
+            <Pagination
+            className="!float-right"
+            total={casesCount}
+            showTotal={(total, range) => `${range[0]}-${range[1]} of ${total} items`}
+            defaultPageSize={casesPerPage}
+            current={currentPage}
+            onChange={(page, pageSize) => {
+              setCasesPerPage(pageSize);
+              localStorage.setItem('results', pageSize);
+              setCurrentPage(page);
+            }}
+            showSizeChanger
+          />
         </PageBuilder>
     )
 }

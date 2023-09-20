@@ -5,3 +5,7 @@
 .ant-table-row:hover{
   cursor: pointer;
 }
+
+:where(.css-dev-only-do-not-override-18iikkb).ant-menu-light .ant-menu-item-selected{
+  background-color: rgba(255, 255, 255, 0.0) !important;
+}

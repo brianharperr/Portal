@@ -5,13 +5,14 @@ import {
   LogoutOutlined,
   UserOutlined,
   DollarOutlined,
-  AppstoreOutlined,
-  PlusOutlined,
+  ContainerOutlined,
+  BookOutlined,
+  BarChartOutlined,
   ProjectOutlined,
   InfoCircleOutlined,
-  LoginOutlined
+  QuestionOutlined
 } from '@ant-design/icons';
-import { Breadcrumb, Layout, Menu, theme, Avatar, Dropdown, Space, message, FloatButton, Slider, Badge, Image } from 'antd';
+import { Breadcrumb, Layout, Menu, theme, Avatar, Dropdown, Space, message, FloatButton, Slider, Badge, Image, Skeleton } from 'antd';
 import { useNavigate } from 'react-router-dom';
 import { axiosWithCredentials } from '../configs/axios';
 import { useSelector, useDispatch } from 'react-redux';
@@ -55,12 +56,12 @@ export default function PageBuilder(props) {
       <Sider style={{ background: portalTheme?.background.primary}} breakpoint='md' collapsedWidth="0" theme='light' collapsible collapsed={collapsed} onCollapse={(value) => setCollapsed(value)}>
         <div className="demo-logo-vertical" />
         <Menu style={{ background: portalTheme?.background.primary, color: portalTheme?.text.secondary}} mode="vertical">
-          <Menu.Item icon={<InfoCircleOutlined/>} key='cases' className={`${portalTheme?.hover} ${props.name === 'cases' ? portalTheme?.selected: null}`} style={{ color: (props.name === "cases")? portalTheme?.text.secondary: portalTheme?.text.primary}}>Cases</Menu.Item>
-          <Menu.Item key='inventory' className={`${portalTheme?.hover} ${props.name === 'inventory' ? portalTheme?.selected: null}`} style={{ color: (props.name === "inventory")? portalTheme?.text.secondary: portalTheme?.text.primary}}>Inventory</Menu.Item>
-          <Menu.Item key='analytics' className={`${portalTheme?.hover} ${props.name === 'analytics' ? portalTheme?.selected: null}`} style={{ color: (props.name === "analytics")? portalTheme?.text.secondary: portalTheme?.text.primary}}>Analytics</Menu.Item>
-          <Menu.Item icon={<Badge size='small' style={{ background: '#009900' }} count={1}><CommentOutlined /></Badge>} key='messages' className={`${portalTheme?.hover} ${props.name === 'messages' ? portalTheme?.selected: null}`} style={{ color: (props.name === "messages")? portalTheme?.text.secondary: portalTheme?.text.primary}}>Messages</Menu.Item>
-          <Menu.Item key='admin' className={`${portalTheme?.hover} ${props.name === 'admin' ? portalTheme?.selected: null}`} style={{ color: (props.name === "admin")? portalTheme?.text.secondary: portalTheme?.text.primary}}>Admin</Menu.Item>  
-          <Menu.Item key='support' className={`${portalTheme?.hover} ${props.name === 'support' ? portalTheme?.selected: null}`} style={{ color: (props.name === "support")? portalTheme?.text.secondary: portalTheme?.text.primary}}>Support</Menu.Item>  
+          <Menu.Item icon={<BookOutlined/>} key='cases' className={`${portalTheme?.hover} ${props.name === 'cases' ? portalTheme?.selected: null}`} style={{ color: (props.name === "cases")? portalTheme?.text.secondary: portalTheme?.text.primary}}>Cases</Menu.Item>
+          <Menu.Item icon={<ContainerOutlined />} onClick={() => navigate('/inventory')} key='inventory' className={`${portalTheme?.hover} ${props.name === 'inventory' ? portalTheme?.selected: null}`} style={{ color: (props.name === "inventory")? portalTheme?.text.secondary: portalTheme?.text.primary}}>Inventory</Menu.Item>
+          <Menu.Item icon={<BarChartOutlined/>} onClick={() => navigate('/analytics')} key='analytics' className={`${portalTheme?.hover} ${props.name === 'analytics' ? portalTheme?.selected: null}`} style={{ color: (props.name === "analytics")? portalTheme?.text.secondary: portalTheme?.text.primary}}>Analytics</Menu.Item>
+          <Menu.Item onClick={() => navigate('/messages')} icon={<Badge size='small' style={{ background: '#009900' }} count={1}><CommentOutlined /></Badge>} key='messages' className={`${portalTheme?.hover} ${props.name === 'messages' ? portalTheme?.selected: null}`} style={{ color: (props.name === "messages")? portalTheme?.text.secondary: portalTheme?.text.primary}}>Messages</Menu.Item>
+          <Menu.Item icon={<SettingOutlined/>} onClick={() => window.location.href = "https://www.familylynk.com"} key='admin' className={`${portalTheme?.hover} ${props.name === 'admin' ? portalTheme?.selected: null}`} style={{ color: (props.name === "admin")? portalTheme?.text.secondary: portalTheme?.text.primary}}>Admin</Menu.Item>  
+          <Menu.Item icon={<QuestionOutlined/>} onClick={() => navigate('/support')} key='support' className={`${portalTheme?.hover} ${props.name === 'support' ? portalTheme?.selected: null}`} style={{ color: (props.name === "support")? portalTheme?.text.secondary: portalTheme?.text.primary}}>Support</Menu.Item>  
         </Menu>
       </Sider>
       <Layout>
@@ -71,7 +72,12 @@ export default function PageBuilder(props) {
           }}
         >
           <div className='flex h-full justify-between mx-12'>
+          
+          {portal?.LogoSource ?
           <img src={portal?.LogoSource} alt="" className='p-2'/>
+          :
+          <Skeleton.Button size='large' active className='!pt-3'/>
+          }
           <Dropdown
             
             menu={{

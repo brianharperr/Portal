@@ -11,7 +11,7 @@ const initialState = {
 }
 
 export const fetchCases = createAsyncThunk('case/fetchCases', async (payload) => {
-    const response = await axiosWithCredentials.get('/case/dashboard', { params: payload });
+    const response = await axiosWithCredentials.post('/case/dashboard', payload);
 
     return response.data;
 })

@@ -108,6 +108,11 @@ export const toggleCaseStatus = createAsyncThunk('/case/toggleCaseStatus', async
 });
 
 
+export const updateCase = createAsyncThunk('/case/updateCase', async (payload) => {
+    const response = await axiosWithCredentials.patch('/case' + payload.Method, payload);
+    return response.data;
+});
+
 export const caseSlice = createSlice({
     name: 'case',
     initialState,
@@ -136,6 +141,9 @@ export const caseSlice = createSlice({
             .addCase(editTask.fulfilled, (state, action) => {
                 state.status = 'succeeded';
                 state.single = action.payload;
+            })
+            .addCase(updateCase.fulfilled, (state, action) => {
+                state.status = 'succeeded';
             })
             .addCase(editPatient.fulfilled, (state, action) => {
                 state.status = 'succeeded';

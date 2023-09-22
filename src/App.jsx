@@ -10,6 +10,8 @@ import ForgotPassword from "./pages/ForgotPassword";
 import Messages from "./pages/Messages";
 import Inventory from "./pages/Inventory";
 import Case from "./pages/Case";
+import Analytics from "./pages/Analytics";
+import PortalNotFound from "./pages/PortalNotFound";
 
 export default function App()
 {
@@ -31,6 +33,10 @@ export default function App()
       element: <ProtectedRoute><Dashboard/></ProtectedRoute>    
     },
     {
+      path: "/not-found",
+      element: <PortalNotFound/>
+    },
+    {
       path: "/login",
       element: <Login/>
     },
@@ -44,7 +50,7 @@ export default function App()
     },
     {
       path: "/analytics",
-      element: null
+      element: <Analytics/>
     },
     {
       path: "/messages",

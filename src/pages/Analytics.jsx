@@ -1,9 +1,9 @@
 import PageBuilder from "../components/PageBuilder";
 
-export default function Inventory()
+export default function Analytics()
 {
     return (
-        <PageBuilder name="inventory">
+        <PageBuilder name="analytics">
 
         </PageBuilder>
     )

@@ -201,7 +201,6 @@ export default function Dashboard()
             }}
             onChange={(pagination, filters, sorters, extra) => {
               setTableLoading(true);
-              console.log(filters)
               var payload = {
                 id: portal.ID,
                 limit: casesPerPage,
@@ -222,7 +221,6 @@ export default function Dashboard()
             pagination={false}
             />
             <br/>
-            {console.log(casesCount)}
             <Pagination
             className="!float-right"
             total={casesCount}

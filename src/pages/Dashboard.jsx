@@ -191,7 +191,10 @@ export default function Dashboard()
     }, [portal, casesPerPage, currentPage]);
 
     return (
-        <PageBuilder name='cases' breadcrumb={['Cases']}>
+        <PageBuilder name='cases'>
+          <div className="py-4 mb-2">
+            <Button onClick={() => navigate('/new-case')}>New Case</Button>
+          </div>
             <Table
             onRow={(r) => ({
                 onClick: () => navigate("/case/" + r.DisplayID)

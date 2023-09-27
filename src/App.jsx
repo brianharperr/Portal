@@ -12,6 +12,7 @@ import Inventory from "./pages/Inventory";
 import Case from "./pages/Case";
 import Analytics from "./pages/Analytics";
 import PortalNotFound from "./pages/PortalNotFound";
+import NewCase from "./pages/NewCase";
 
 export default function App()
 {
@@ -31,6 +32,10 @@ export default function App()
     {
       path: "/",
       element: <ProtectedRoute><Dashboard/></ProtectedRoute>    
+    },
+    {
+      path: "new-case",
+      element: <ProtectedRoute><NewCase/></ProtectedRoute>
     },
     {
       path: "/not-found",

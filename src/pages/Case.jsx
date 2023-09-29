@@ -773,7 +773,13 @@ export default function Case()
                 label: x.Name,
                 children: (
                     <Form>
-
+                        {x.TaskOptions.map(option => {
+                            return (
+                                <Form.Item label={option.Name}>
+                                    
+                                </Form.Item>
+                            )
+                        })}
                     </Form>
                 )
             }))}

@@ -1,4 +1,4 @@
-import { Badge, Button, Table, Input, Tooltip, Pagination } from "antd";
+import { Badge, Button, Table, Input, Divider, Tooltip, Pagination } from "antd";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import Highlighter from 'react-highlight-words';
@@ -192,6 +192,10 @@ export default function Dashboard()
 
     return (
         <PageBuilder name='cases' breadcrumb={['Cases']}>
+            <div className="flex justify-end">
+              <Button onClick={() => navigate('/new-case')}>New Case</Button>
+            </div>
+            <Divider/>
             <Table
             onRow={(r) => ({
                 onClick: () => navigate("/case/" + r.DisplayID)

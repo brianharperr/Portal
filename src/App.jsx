@@ -12,13 +12,14 @@ import Inventory from "./pages/Inventory";
 import Case from "./pages/Case";
 import Analytics from "./pages/Analytics";
 import PortalNotFound from "./pages/PortalNotFound";
+import NewCase from "./pages/NewCase";
 
 export default function App()
 {
   const dispatch = useDispatch();
   useEffect(() => {
     var subdomain = ValidationService.validateSubdomain(window.location.host);
-    
+    console.log(window.location.host)
     if(subdomain){
       dispatch(fetchPortal());
     }else{
@@ -47,6 +48,10 @@ export default function App()
     {
       path: '/case/:id',
       element: <Case/>
+    },
+    {
+      path: '/new-case',
+      element: <NewCase/>
     },
     {
       path: "/analytics",

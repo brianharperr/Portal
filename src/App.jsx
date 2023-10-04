@@ -34,6 +34,10 @@ export default function App()
       element: <ProtectedRoute><Dashboard/></ProtectedRoute>    
     },
     {
+      path: "new-case",
+      element: <ProtectedRoute><NewCase/></ProtectedRoute>
+    },
+    {
       path: "/not-found",
       element: <PortalNotFound/>
     },

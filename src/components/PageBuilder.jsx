@@ -120,6 +120,7 @@ export default function PageBuilder(props) {
             style={{
               margin: '16px 0',
             }}
+            items={props.breadcrumb?.map(x => ({ title: x }))}
           />
           {props.children}
         </Content>

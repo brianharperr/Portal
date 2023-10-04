@@ -103,7 +103,7 @@ export default function NewCase()
             {current === 1 &&
             <Form layout="vertical" className="!mx-auto !max-w-[720px]">
                 <Form.Item label="Full name">
-                    <Input value={form.FirstName} onChange={e => setForm({...form, FirstName: e.target.value})}/>
+                    <Input value={form.ContactName} onChange={e => setForm({...form, ContactName: e.target.value})}/>
                 </Form.Item>
                 <Form.Item label="Relation">
                     <Select options={relations} value={form.ContactRelation} onChange={e => setForm({...form, ContactRelation: e})}/>
@@ -126,13 +126,13 @@ export default function NewCase()
             }
             {current === 2 &&
             <Form layout="vertical" className="!mx-auto !max-w-[720px]">
-                <Form.Item label="Service">
+                <Form.Item required label="Service">
                     <Select options={options.Services} value={form.Service} onChange={e => setForm({...form, Service: e})}/>
                 </Form.Item>
-                <Form.Item label="Home">
+                <Form.Item required label="Home">
                     <Select options={options.Homes} value={form.Home} onChange={e => setForm({...form, Home: e})}/>
                 </Form.Item>
-                <Form.Item label="Director">
+                <Form.Item required label="Director">
                     <Select options={options.Users} value={form.Director} onChange={e => setForm({...form, Director: e})}/>
                 </Form.Item>
                 <Form.Item>

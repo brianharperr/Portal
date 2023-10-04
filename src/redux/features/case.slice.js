@@ -113,12 +113,26 @@ export const updateCase = createAsyncThunk('/case/updateCase', async (payload) =
     return response.data;
 });
 
+export const uncompleteCase = createAsyncThunk('/case/uncompleteCase', async (payload) => {
+    const response = await axiosWithCredentials.patch('/case/task/status', payload);
+    return response.data;
+});
+
+export const updateCaseAndReload = createAsyncThunk('/case/updateAndReloadCase', async (payload) => {
+    const response = await axiosWithCredentials.patch('/case' + payload.Method, payload);
+    return response.data;
+});
+
 export const caseSlice = createSlice({
     name: 'case',
     initialState,
     reducers: {},
     extraReducers: (builder) => {
         builder
+            .addCase(uncompleteCase.fulfilled, (state, action) => {
+                state.status = 'succeeded';
+                state.single = action.payload;
+            })
             .addCase(fetchCases.pending, (state, action) => {
                 state.status = 'loading';
             })
@@ -144,6 +158,10 @@ export const caseSlice = createSlice({
             })
             .addCase(updateCase.fulfilled, (state, action) => {
                 state.status = 'succeeded';
+            })
+            .addCase(updateCaseAndReload.fulfilled, (state, action) => {
+                state.status = 'succeeded';
+                state.single = action.payload;
             })
             .addCase(editPatient.fulfilled, (state, action) => {
                 state.status = 'succeeded';

@@ -4,13 +4,14 @@ import { useDispatch, useSelector } from "react-redux";
 import PageBuilder from "../components/PageBuilder";
 import { axiosWithCredentials } from "../configs/axios";
 import { getPortal } from "../redux/features/portal.slice";
-import { useParams } from "react-router-dom";
+import { useParams, useSearchParams } from "react-router-dom";
 import { Avatar, Modal, Button, notification, Radio, DatePicker, Descriptions, InputNumber, Menu, Select, TimePicker, Typography, Spin, Divider, Popconfirm, List, Collapse, Form } from "antd";
 const { Title, Paragraph } = Typography;
-import { MessageOutlined, QuestionCircleOutlined, LoadingOutlined, OrderedListOutlined, EditOutlined, SolutionOutlined, TagsOutlined, FileOutlined } from '@ant-design/icons';
+import { MessageOutlined, QuestionCircleOutlined, CheckOutlined, LoadingOutlined, OrderedListOutlined, EditOutlined, SolutionOutlined, TagsOutlined, FileOutlined } from '@ant-design/icons';
 import dayjs from 'dayjs';
 import utc  from 'dayjs/plugin/utc';
-import { deleteCase, downloadReport, downloadTags, updateCase } from "../redux/features/case.slice";
+import { deleteCase, downloadReport, downloadTags, fetchCase, getCase, updateCase } from "../redux/features/case.slice";
+import DynamicField from "../components/DynamicField";
 dayjs.extend(utc)
 
 const relations = [
@@ -32,11 +33,11 @@ export default function Case()
     const { id } = useParams();
     const portal = useSelector(getPortal);
     const dispatch = useDispatch();
+    const selectedCase = useSelector(getCase);
     const [api, contextHolder] = notification.useNotification();
-    const [saved, setSaved] = useState(null);
     const [data, setData] = useState(null);
     const [messages, setMessages] = useState([]);
-    const [showMessages, setShowMessages] = useState(false);
+    const [searchParams, setSearchParams] = useSearchParams();
     const [page, setPage] = useState('profile');
     const [options, setOptions] = useState({
         Homes: [],
@@ -251,11 +252,11 @@ export default function Case()
             children: <><Paragraph className="!mb-0" editable={{ maxLength: 45, onChange: (e) => updateContactEmail(e)}}>{data?.Contact.Email}</Paragraph>{contactEmailLoading && <LoadingOutlined/>}</>
         },
     ]
-
+    console.log(selectedCase?.Tasks);
     function handleDeleteCase()
     {
         setDeleteCaseLoading(true);
-        dispatch(deleteCase(saved.ID)).unwrap()
+        dispatch(deleteCase(selectedCase.ID)).unwrap()
         .then(() => window.location.href = "/")
         .finally(() => setDeleteCaseLoading(false));
     }
@@ -263,7 +264,7 @@ export default function Case()
     function handleDownloadTags()
     {
         var payload = {
-            ID: saved.ID,
+            ID: selectedCase.ID,
             Name: data.Patient.FirstName + " " + data.Patient.LastName,
         }
         dispatch(downloadTags(payload));
@@ -272,7 +273,7 @@ export default function Case()
     function handleDownloadReport()
     {
         var payload = {
-            DisplayID: saved.DisplayID,
+            DisplayID: selectedCase.DisplayID,
             PortalID: portal.ID,
             Name: data?.Patient.FirstName + " " + data?.Patient.LastName,
         }
@@ -284,7 +285,7 @@ export default function Case()
         setFirstNameLoading(true);
         var payload = {
             Method: "/patient/first-name",
-            ID: saved.Patient.ID,
+            ID: selectedCase.Patient.ID,
             FirstName: value
         }
         dispatch(updateCase(payload)).unwrap()
@@ -304,7 +305,7 @@ export default function Case()
         setLastNameLoading(true);
         var payload = {
             Method: "/patient/last-name",
-            ID: saved.Patient.ID,
+            ID: selectedCase.Patient.ID,
             LastName: value
         }
         dispatch(updateCase(payload)).unwrap()
@@ -324,7 +325,7 @@ export default function Case()
         setSexLoading(true);
         var payload = {
             Method: "/patient/sex",
-            ID: saved.Patient.ID,
+            ID: selectedCase.Patient.ID,
             Sex: value
         }
         dispatch(updateCase(payload)).unwrap()
@@ -344,7 +345,7 @@ export default function Case()
         setAgeLoading(true);
         var payload = {
             Method: "/patient/age",
-            ID: saved.Patient.ID,
+            ID: selectedCase.Patient.ID,
             Age: value
         }
         dispatch(updateCase(payload)).unwrap()
@@ -364,7 +365,7 @@ export default function Case()
         setResidenceLoading(true);
         var payload = {
             Method: "/patient/residence",
-            ID: saved.Patient.ID,
+            ID: selectedCase.Patient.ID,
             Residence: value
         }
         dispatch(updateCase(payload)).unwrap()
@@ -384,7 +385,7 @@ export default function Case()
         setDateOfDeathLoading(true);
         var payload = {
             Method: "/patient/date-of-death",
-            ID: saved.Patient.ID,
+            ID: selectedCase.Patient.ID,
             DateOfDeath: value
         }
         dispatch(updateCase(payload)).unwrap()
@@ -404,7 +405,7 @@ export default function Case()
         setCauseOfDeathLoading(true);
         var payload = {
             Method: "/patient/cause-of-death",
-            ID: saved.Patient.ID,
+            ID: selectedCase.Patient.ID,
             CauseOfDeath: value
         }
         dispatch(updateCase(payload)).unwrap()
@@ -424,7 +425,7 @@ export default function Case()
         setDateCreatedLoading(true);
         var payload = {
             Method: "/date-created",
-            ID: saved.ID,
+            ID: selectedCase.ID,
             DateCreated: value
         }
         dispatch(updateCase(payload)).unwrap()
@@ -444,7 +445,7 @@ export default function Case()
         setDateCompletedLoading(true);
         var payload = {
             Method: "/date-completed",
-            ID: saved.ID,
+            ID: selectedCase.ID,
             DateCompleted: value
         }
         dispatch(updateCase(payload)).unwrap()
@@ -464,7 +465,7 @@ export default function Case()
         setStatusLoading(true);
         var payload = {
             Method: "/status",
-            ID: saved.ID,
+            ID: selectedCase.ID,
             Status: value.target.value
         }
         dispatch(updateCase(payload)).unwrap()
@@ -484,7 +485,7 @@ export default function Case()
         setContactNameLoading(true);
         var payload = {
             Method: "/contact/name",
-            ID: saved.Contact.ID,
+            ID: selectedCase.Contact.ID,
             Name: value
         }
         dispatch(updateCase(payload)).unwrap()
@@ -504,7 +505,7 @@ export default function Case()
         setContactRelationLoading(true);
         var payload = {
             Method: "/contact/relation",
-            ID: saved.Contact.ID,
+            ID: selectedCase.Contact.ID,
             Relation: value
         }
         dispatch(updateCase(payload)).unwrap()
@@ -524,7 +525,7 @@ export default function Case()
         setContactPhoneNumberLoading(true);
         var payload = {
             Method: "/contact/phone-number",
-            ID: saved.Contact.ID,
+            ID: selectedCase.Contact.ID,
             PhoneNumber: value
         }
         dispatch(updateCase(payload)).unwrap()
@@ -544,7 +545,7 @@ export default function Case()
         setContactEmailLoading(true);
         var payload = {
             Method: "/contact/email",
-            ID: saved.Contact.ID,
+            ID: selectedCase.Contact.ID,
             Email: value
         }
         dispatch(updateCase(payload)).unwrap()
@@ -564,7 +565,7 @@ export default function Case()
         setDirectorLoading(true);
         var payload = {
             Method: "/director",
-            ID: saved.ID,
+            ID: selectedCase.ID,
             UserID: value
         }
         dispatch(updateCase(payload)).unwrap()
@@ -578,17 +579,16 @@ export default function Case()
         })
         .finally(() => setDirectorLoading(false));
     }
-
     function updateService(value)
     {
         setServiceLoading(true);
         var payload = {
             Method: "/service",
-            ID: saved.ID,
+            ID: selectedCase.ID,
             ServiceID: value
         }
         dispatch(updateCase(payload)).unwrap()
-        .then(() => setData({...data, ServiceID: value}))
+        .then((res) => setData(res))
         .catch(() => {
             api.error({
                 placement: 'topRight',
@@ -610,7 +610,7 @@ export default function Case()
         setHomeLoading(true);
         var payload = {
             Method: "/home",
-            ID: saved.ID,
+            ID: selectedCase.ID,
             HomeID: value
         }
         dispatch(updateCase(payload)).unwrap()
@@ -630,7 +630,7 @@ export default function Case()
         setPreArrangedLoading(true);
         var payload = {
             Method: "/prearranged",
-            ID: saved.ID,
+            ID: selectedCase.ID,
             PreArranged: value
         }
         dispatch(updateCase(payload)).unwrap()
@@ -662,11 +662,15 @@ export default function Case()
                 portal: portal.ID,
                 id: id
             }
-            axiosWithCredentials.get('/case', { params: payload })
+            dispatch(fetchCase(payload)).unwrap()
             .then(res => {
-                setSaved(res.data);
-                setData(res.data);
+                setData(res);
             }).finally(() => setLoading(false));
+            // axiosWithCredentials.get('/case', { params: payload })
+            // .then(res => {
+            //     setSaved(res.data);
+            //     setData(res.data);
+            // }).finally(() => setLoading(false));
 
             axiosWithCredentials.post('/procedure/getHomesServicesEmployees')
             .then(res => {
@@ -678,6 +682,13 @@ export default function Case()
             })
         }
     }, [portal])
+
+    useEffect(() => {
+        var urlPage = searchParams.get('page');
+        if(urlPage === 'profile' || urlPage === 'tasks' || urlPage === 'messages'){
+            setPage(urlPage);
+        }
+    }, []);
 
     return (
         <PageBuilder>
@@ -697,7 +708,10 @@ export default function Case()
                 background: 'rgba(0,0,0,0)'
             }}
             selectedKeys={[page]}
-            onClick={(e) => setPage(e.key)}
+            onClick={(e) => {
+                setPage(e.key);
+                setSearchParams({ 'page': e.key})
+            }}
             />
             {page === 'profile' &&
             <>
@@ -765,22 +779,21 @@ export default function Case()
             </Popconfirm>
             </>
             }
+            {console.log(data)}
             {page === 'tasks'&&
             <>
             <Collapse
-            items={saved?.Tasks.map((x, idx) => ({
+            className="mt-2"
+            items={data?.Tasks.map((x, idx) => ({
                 key: idx,
-                label: x.Name,
+                expandIcon: <CheckOutlined/>,
+                label: (
+                    <>
+                    <span className={`transition-all duration-200 ${x.DateCompleted ? 'font-bold text-green-500' : null }`}>{x.Name} {x.DateCompleted && <CheckOutlined/>}</span>
+                    </>
+                ),
                 children: (
-                    <Form>
-                        {x.TaskOptions.map(option => {
-                            return (
-                                <Form.Item label={option.Name}>
-                                    
-                                </Form.Item>
-                            )
-                        })}
-                    </Form>
+                    <DynamicField data={x} employees={options.Users}/>
                 )
             }))}
             />

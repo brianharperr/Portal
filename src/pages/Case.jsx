@@ -5,12 +5,13 @@ import PageBuilder from "../components/PageBuilder";
 import { axiosWithCredentials } from "../configs/axios";
 import { getPortal } from "../redux/features/portal.slice";
 import { useParams, useSearchParams } from "react-router-dom";
-import { Avatar, Modal, Button, notification, Radio, DatePicker, Descriptions, InputNumber, Menu, Select, TimePicker, Typography, Spin, Divider, Popconfirm, List, Collapse, Form } from "antd";
+import { Avatar, Modal, Button, notification, Radio, DatePicker, Descriptions, InputNumber, Menu, Select, TimePicker, Typography, Spin, Divider, Popconfirm, List, Collapse, Form, Space, Input } from "antd";
 const { Title, Paragraph } = Typography;
 import { MessageOutlined, QuestionCircleOutlined, CheckOutlined, LoadingOutlined, OrderedListOutlined, EditOutlined, SolutionOutlined, TagsOutlined, FileOutlined } from '@ant-design/icons';
 import dayjs from 'dayjs';
 import utc  from 'dayjs/plugin/utc';
-import { deleteCase, downloadReport, downloadTags, fetchCase, getCase, updateCase } from "../redux/features/case.slice";
+import { deleteCase, downloadReport, downloadTags } from "../redux/features/case.slice";
+import { fetchCase, getCase, updateContact, updatePatient, updateCase } from "../redux/features/casetwo.slice";
 import DynamicField from "../components/DynamicField";
 dayjs.extend(utc)
 
@@ -35,7 +36,6 @@ export default function Case()
     const dispatch = useDispatch();
     const selectedCase = useSelector(getCase);
     const [api, contextHolder] = notification.useNotification();
-    const [data, setData] = useState(null);
     const [messages, setMessages] = useState([]);
     const [searchParams, setSearchParams] = useSearchParams();
     const [page, setPage] = useState('profile');
@@ -45,6 +45,7 @@ export default function Case()
         Users: []
     });
     const [loading, setLoading] = useState(true);
+
     const [deleteCaseLoading, setDeleteCaseLoading] = useState(false);
     const [dateOfDeathEdit, setDateOfDeathEdit] = useState(false);
     const [dateCreatedEdit, setDateCreatedEdit] = useState(false);
@@ -54,24 +55,28 @@ export default function Case()
         visible: false,
         newService: null
     })
-    const [firstNameLoading, setFirstNameLoading] = useState(false);
-    const [lastNameLoading, setLastNameLoading] = useState(false);
-    const [ageLoading, setAgeLoading] = useState(false);
-    const [sexLoading, setSexLoading] = useState(false);
-    const [residenceLoading, setResidenceLoading] = useState(false);
-    const [causeOfDeathLoading, setCauseOfDeathLoading] = useState(false);
-    const [dateCompletedLoading, setDateCompletedLoading] = useState(false);
-    const [dateCreatedLoading, setDateCreatedLoading] = useState(false);
-    const [dateOfDeathLoading, setDateOfDeathLoading] = useState(false);
-    const [statusLoading, setStatusLoading] = useState(false);
-    const [contactNameLoading, setContactNameLoading] = useState(false);
-    const [contactRelationLoading, setContactRelationLoading] = useState(false);
-    const [contactPhoneNumberLoading, setContactPhoneNumberLoading] = useState(false);
-    const [contactEmailLoading, setContactEmailLoading] = useState(false);
-    const [directorLoading, setDirectorLoading] = useState(false);
-    const [serviceLoading, setServiceLoading] = useState(false);
-    const [homeLoading, setHomeLoading] = useState(false);
-    const [preArrangedLoading, setPreArrangedLoading] = useState(false);
+
+    const [fieldLoading, setFieldLoading] = useState({
+        FirstName: false,
+        MiddleName: false,
+        LastName: false,
+        Age: false,
+        Sex: false,
+        Residence: false,
+        CauseOfDeath: false,
+        DateCompleted: false,
+        DateCreated: false,
+        DateOfDeath: false,
+        Status: false,
+        Name: false,
+        Relation: false,
+        PhoneNumber: false,
+        Email: false,
+        Director: false,
+        Service: false,
+        Home: false,
+        PreArranged: false
+    })
 
     const menuItems = [
         {
@@ -94,23 +99,23 @@ export default function Case()
     const patientItems = [
         {
             label: 'First Name',
-            children: <><Paragraph className="!mb-0" editable={{ maxLength: 45, onChange: (e) => updatePatientFirstName(e)}}>{data?.Patient.FirstName}</Paragraph>{firstNameLoading && <LoadingOutlined/>}</>
+            children: <><Paragraph className="!mb-0" editable={{ maxLength: 45, onChange: (e) => handleUpdatePatient('first-name', 'FirstName', e)}}>{selectedCase?.Patient.FirstName}</Paragraph>{fieldLoading.FirstName && <LoadingOutlined/>}</>
         },
         {
             label: 'Last Name',
-            children: <><Paragraph className="!mb-0" editable={{ maxLength: 45, onChange: (e) => updatePatientLastName(e)}}>{data?.Patient.LastName}</Paragraph>{lastNameLoading && <LoadingOutlined/>}</>
+            children: <><Paragraph className="!mb-0" editable={{ maxLength: 45, onChange: (e) => handleUpdatePatient('last-name', 'LastName', e)}}>{selectedCase?.Patient.LastName}</Paragraph>{fieldLoading.LastName && <LoadingOutlined/>}</>
         },
         {
             label: 'Sex',
-            children: <><Select popupMatchSelectWidth={false} onChange={e => updatePatientSex(e)} className="!-mt-1" bordered={false} value={data?.Patient.Sex} options={[{value: 'M', label: 'Male'}, {value: 'F', label: 'Female'}]}/>{sexLoading && <LoadingOutlined/>}</>
+            children: <><Select popupMatchSelectWidth={false} onChange={e => handleUpdatePatient('sex', 'Sex', e)} className="!-mt-1" bordered={false} value={selectedCase?.Patient.Sex} options={[{value: 'M', label: 'Male'}, {value: 'F', label: 'Female'}]}/>{fieldLoading.Sex && <LoadingOutlined/>}</>
         },
         {
             label: 'Age',
-            children: <><Paragraph className="!mb-0" editable={{ onChange: (e) => updatePatientAge(e)}}>{data?.Patient.Age}</Paragraph>{ageLoading && <LoadingOutlined/>}</>
+            children: <><Paragraph className="!mb-0" editable={{ onChange: (e) => handleUpdatePatient('age', 'Age', e)}}>{selectedCase?.Patient.Age}</Paragraph>{fieldLoading.Age && <LoadingOutlined/>}</>
         },
         {
             label: 'Residence',
-            children: <><Paragraph className="!mb-0" editable={{ maxLength: 45, onChange: (e) => updatePatientResidence(e)}}>{data?.Patient.Residence}</Paragraph>{residenceLoading && <LoadingOutlined/>}</>
+            children: <><Paragraph className="!mb-0" editable={{ maxLength: 45, onChange: (e) => handleUpdatePatient('residence', 'Residence', e)}}>{selectedCase?.Patient.Residence}</Paragraph>{fieldLoading.Residence && <LoadingOutlined/>}</>
         },
         {
             label: '',
@@ -121,56 +126,58 @@ export default function Case()
             children: (
                 <>
                 {dateOfDeathEdit ?
-                <DatePicker autoFocus value={data?.Patient.DateOfDeath ? dayjs(data?.Patient.DateOfDeath): ""} onChange={(e,str) => {
-                    if(str){
-                        setData({...data, Patient: {...data.Patient, DateOfDeath: dayjs(str).utc().format()}});
-                        updatePatientDateOfDeath(dayjs(str).utc().format());
-                    }else{
-                        setData({...data, Patient: {...data.Patient, DateOfDeath: ""}});
-                        updatePatientDateOfDeath("");
-                    }
-                    setDateOfDeathEdit(false);
-                }}
-                />
+                <DatePicker format="MM/DD/YYYY" size="small" onOpenChange={e => !e && setDateOfDeathEdit(false)} value={selectedCase?.Patient.DateOfDeath ? dayjs(selectedCase?.Patient.DateOfDeath): ""} onChange={e => handleUpdatePatient('date-of-death', 'DateOfDeath', e.utc().format(), () => setDateOfDeathEdit(false))}/>
                 :
                 <>
                 {
-                data?.Patient.DateOfDeath && new Date(data?.Patient.DateOfDeath).toDateString('en-us', { weekday:"long", year:"numeric", month:"short", day:"numeric"})}
+                selectedCase?.Patient.DateOfDeath && new Date(selectedCase?.Patient.DateOfDeath).toDateString('en-us', { weekday:"long", year:"numeric", month:"short", day:"numeric"})}
                 <EditOutlined className="!text-[#1677ff] ml-1" onClick={() => setDateOfDeathEdit(true)} />
-                {dateOfDeathLoading && <LoadingOutlined/>}
                 </>
                 }
+                {fieldLoading.DateOfDeath && <LoadingOutlined/>}
                 </>
             )
         },
         {
             label: 'Cause of Death',
-            children: <><Paragraph className="!mb-0" editable={{ maxLength: 64, onChange: (e) => updatePatientCauseOfDeath(e)}}>{data?.Patient.CauseOfDeath}</Paragraph>{causeOfDeathLoading && <LoadingOutlined/>}</>
+            children: <><Paragraph className="!mb-0" editable={{ maxLength: 64, onChange: (e) => handleUpdatePatient('cause-of-death', 'CauseOfDeath', e)}}>{selectedCase?.Patient.CauseOfDeath}</Paragraph>{fieldLoading.CauseOfDeath && <LoadingOutlined/>}</>
+        }
+    ]
+
+    const processingItems = [
+        {
+            label: 'Service',
+            children: <>
+            <Select popupMatchSelectWidth={false} onChange={e => {if(e !== selectedCase.Service.ID){ setServiceChangeConfirm({ visible: true, newService: e } )}}} className="!-mt-1" bordered={false} value={selectedCase?.Service.ID} options={options?.Services}/>
+            {fieldLoading.Service && <LoadingOutlined/>}
+            </>
+        },
+        {
+            label: 'Home',
+            children: <><Select popupMatchSelectWidth={false} onChange={e => handleUpdateCase('home', 'Home', e)} className="!-mt-1" bordered={false} value={selectedCase?.Home.ID} options={options?.Homes}/>{fieldLoading.Home && <LoadingOutlined/>}</>
+        },
+        {
+            label: 'Director',
+            children: <><Select popupMatchSelectWidth={false} onChange={e => handleUpdateCase('director', 'Director', e)} className="!-mt-1" bordered={false} value={selectedCase?.User.ID} options={options?.Users}/>{fieldLoading.Director && <LoadingOutlined/>}</>
+        },
+        {
+            label: 'Pre-Arranged',
+            children: <><Radio.Group onChange={e => handleUpdateCase('prearranged', 'PreArranged', e.target.value)} value={selectedCase?.PreArranged}><Radio value={1}>Yes</Radio><Radio value={0}>No</Radio></Radio.Group>{fieldLoading.PreArranged && <LoadingOutlined/>}</>
         },
         {
             label: 'Case Created',
             children: (
                 <>
                 {dateCreatedEdit ?
-                <DatePicker autoFocus value={data?.DateCreated ? dayjs(data?.DateCreated): ""} onChange={(e,str) => {
-                    if(str){
-                        setData({...data, DateCreated: dayjs(str).utc().format()});
-                        updateCaseCreated(dayjs(str).utc().format());
-                    }else{
-                        setData({...data, DateCreated: ""});
-                        updateCaseCreated("");
-                    }
-                    setDateCreatedEdit(false);
-                }}
-                />
+                <DatePicker format="MM/DD/YYYY" size="small" onOpenChange={e => !e && setDateCreatedEdit(false)} value={selectedCase?.DateCreated ? dayjs(selectedCase?.DateCreated): ""} onChange={e => handleUpdateCase('date-created', 'DateCreated', e.utc().format(), () => setDateCompletedEdit(false))}/>
                 :
                 <>
                 {
-                data?.DateCreated && new Date(data?.DateCreated).toDateString('en-us', { weekday:"long", year:"numeric", month:"short", day:"numeric"})}
+                selectedCase?.DateCreated && new Date(selectedCase?.DateCreated).toDateString('en-us', { weekday:"long", year:"numeric", month:"short", day:"numeric"})}
                 <EditOutlined className="!text-[#1677ff] ml-1" onClick={() => setDateCreatedEdit(true)} />
-                {dateCreatedLoading && <LoadingOutlined/>}
                 </>
                 }
+                {fieldLoading.DateCreated && <LoadingOutlined/>}
                 </>
             )
         },
@@ -179,25 +186,14 @@ export default function Case()
             children: (
                 <>
                 {dateCompletedEdit ?
-                <DatePicker autoFocus value={data?.DateCompleted ? dayjs(data?.DateCompleted): ""} onChange={(e,str) => {
-                    if(str){
-                        setData({...data, DateCompleted: dayjs(str).utc().format()});
-                        updateCaseCompleted(dayjs(str).utc().format());
-                    }else{
-                        setData({...data, DateCompleted: ""});
-                        updateCaseCompleted("");
-                    }
-                    setDateCompletedEdit(false);
-                }}
-                />
+                <DatePicker format="MM/DD/YYYY" size="small" onOpenChange={e => !e && setDateCompletedEdit(false)} value={selectedCase?.DateCompleted ? dayjs(selectedCase?.DateCompleted): ""} onChange={e => handleUpdateCase('date-completed', 'DateCompleted', e.utc().format(), () => setDateCompletedEdit(false))}/>
                 :
                 <>
-                {
-                data?.DateCompleted && new Date(data?.DateCompleted).toDateString('en-us', { weekday:"long", year:"numeric", month:"short", day:"numeric"})}
-                {data?.Status === 'Complete' && <EditOutlined className="!text-[#1677ff] ml-1" onClick={() => setDateCompletedEdit(true)} />}
-                {dateCompletedLoading && <LoadingOutlined/>}
+                {selectedCase?.DateCompleted && new Date(selectedCase?.DateCompleted).toDateString('en-us', { weekday:"long", year:"numeric", month:"short", day:"numeric"})}
+                {selectedCase?.Status === "Complete" && <EditOutlined className="!text-[#1677ff] ml-1" onClick={() => setDateCompletedEdit(true)} />}
                 </>
                 }
+                {fieldLoading.DateCompleted && <LoadingOutlined/>}
                 </>
             )
         },
@@ -205,54 +201,41 @@ export default function Case()
             label: 'Case Status',
             children: (
                 <>
-                <Radio.Group value={data?.Status} onChange={e => {
-                    updateCaseStatus(e)
-                }}>
+                <Radio.Group size="small" value={selectedCase?.Status} onChange={e => handleUpdateCase("status", "Status", e.target.value)}>
                     <Radio.Button value="Active">Active</Radio.Button>
                     <Radio.Button value="Complete">Complete</Radio.Button>
                 </Radio.Group>
-                {statusLoading && <LoadingOutlined/>}
+                {fieldLoading.Status && <LoadingOutlined/>}
                 </>
             )
         },
     ]
-
-    const processingItems = [
-        {
-            label: 'Service',
-            children: <><Select popupMatchSelectWidth={false} onChange={e => {if(e !== data.ServiceID){ setServiceChangeConfirm({ visible: true, newService: e } )}}} className="!-mt-1" bordered={false} value={data?.ServiceID} options={options?.Services}/>{serviceLoading && <LoadingOutlined/>}</>
-        },
-        {
-            label: 'Home',
-            children: <><Select popupMatchSelectWidth={false} onChange={e => updateHome(e)} className="!-mt-1" bordered={false} value={data?.HomeID} options={options?.Homes}/>{homeLoading && <LoadingOutlined/>}</>
-        },
-        {
-            label: 'Director',
-            children: <><Select popupMatchSelectWidth={false} onChange={e => updateDirector(e)} className="!-mt-1" bordered={false} value={data?.UserID} options={options?.Users}/>{directorLoading && <LoadingOutlined/>}</>
-        },
-        {
-            label: 'Pre-Arranged',
-            children: <><Radio.Group onChange={e => updatePreArranged(e.target.value)} value={data?.PreArranged}><Radio value={1}>Yes</Radio><Radio value={0}>No</Radio></Radio.Group>{preArrangedLoading && <LoadingOutlined/>}</>
-        }
-    ]
     const contactItems = [
         {
             label: 'Name',
-            children: <><Paragraph editable={{ maxLength: 45, onChange: (e) => updateContactName(e)}}>{data?.Contact.Name}</Paragraph>{contactNameLoading && <LoadingOutlined/>}</>
+            children: <><Paragraph className="!mb-0" editable={{ maxLength: 45, onChange: (e) => handleUpdateContact('name','Name', e)}}>{selectedCase?.Contact.Name}</Paragraph>{fieldLoading.Name && <LoadingOutlined/>}</>
         },        {
             label: 'Relation',
-            children: <><Select popupMatchSelectWidth={false} onChange={e => updateContactRelation(e)} className="!-mt-1 !min-w-[120px]" bordered={false} value={data?.Contact.Relation} options={relations}/>{contactRelationLoading && <LoadingOutlined/>}</>
+            children: <>
+            <Select 
+            popupMatchSelectWidth={false} 
+            onChange={e => handleUpdateContact('relation','Relation', e)} 
+            className="!-mt-1 !min-w-[120px]" 
+            bordered={false} 
+            value={selectedCase?.Contact.Relation} 
+            options={relations}/>
+            {fieldLoading.Relation && <LoadingOutlined/>}
+            </>
         },
         {
             label: 'Phone Number',
-            children: <><Paragraph className="!mb-0" editable={{ maxLength: 45, onChange: (e) => updateContactPhoneNumber(e)}}>{data?.Contact.PhoneNumber}</Paragraph>{contactPhoneNumberLoading && <LoadingOutlined/>}</>
+            children: <><Paragraph className="!mb-0" editable={{ maxLength: 45, onChange: (e) => handleUpdateContact('phone-number','PhoneNumber', e)}}>{selectedCase?.Contact.PhoneNumber}</Paragraph>{fieldLoading.PhoneNumber && <LoadingOutlined/>}</>
         },
         {
             label: 'Email',
-            children: <><Paragraph className="!mb-0" editable={{ maxLength: 45, onChange: (e) => updateContactEmail(e)}}>{data?.Contact.Email}</Paragraph>{contactEmailLoading && <LoadingOutlined/>}</>
+            children: <><Paragraph className="!mb-0" editable={{ maxLength: 45, onChange: (e) => handleUpdateContact('email','Email', e)}}>{selectedCase?.Contact.Email}</Paragraph>{fieldLoading.Email && <LoadingOutlined/>}</>
         },
     ]
-    console.log(selectedCase?.Tasks);
     function handleDeleteCase()
     {
         setDeleteCaseLoading(true);
@@ -275,21 +258,21 @@ export default function Case()
         var payload = {
             DisplayID: selectedCase.DisplayID,
             PortalID: portal.ID,
-            Name: data?.Patient.FirstName + " " + data?.Patient.LastName,
+            Name: selectedCase?.Patient.FirstName + " " + selectedCase?.Patient.LastName,
         }
         dispatch(downloadReport(payload));
     }
 
-    function updatePatientFirstName(value)
+    function handleUpdatePatient(method, name, value, onSuccess = () => {})
     {
-        setFirstNameLoading(true);
         var payload = {
-            Method: "/patient/first-name",
             ID: selectedCase.Patient.ID,
-            FirstName: value
-        }
-        dispatch(updateCase(payload)).unwrap()
-        .then(() => setData({...data, Patient: {...data.Patient, FirstName: value }}))
+            Method: method
+        };
+        payload[name] = value;
+        setFieldLoading({...fieldLoading, [name]: true });
+        dispatch(updatePatient(payload)).unwrap()
+        .then(() => onSuccess())
         .catch(() => {
             api.error({
                 placement: 'topRight',
@@ -297,199 +280,18 @@ export default function Case()
                 description: 'Internal Server Error. Please try operation later.'
             })
         })
-        .finally(() => setFirstNameLoading(false));
+        .finally(() => setFieldLoading({...fieldLoading, [name]: false }));
     }
 
-    function updatePatientLastName(value)
+    function handleUpdateContact(method, name, value)
     {
-        setLastNameLoading(true);
         var payload = {
-            Method: "/patient/last-name",
-            ID: selectedCase.Patient.ID,
-            LastName: value
-        }
-        dispatch(updateCase(payload)).unwrap()
-        .then(() => setData({...data, Patient: {...data.Patient, LastName: value }}))
-        .catch(() => {
-            api.error({
-                placement: 'topRight',
-                message: 'Error',
-                description: 'Internal Server Error. Please try operation later.'
-            })
-        })
-        .finally(() => setLastNameLoading(false));
-    }
-
-    function updatePatientSex(value)
-    {
-        setSexLoading(true);
-        var payload = {
-            Method: "/patient/sex",
-            ID: selectedCase.Patient.ID,
-            Sex: value
-        }
-        dispatch(updateCase(payload)).unwrap()
-        .then(() => setData({...data, Patient: {...data.Patient, Sex: value }}))
-        .catch(() => {
-            api.error({
-                placement: 'topRight',
-                message: 'Error',
-                description: 'Internal Server Error. Please try operation later.'
-            })
-        })
-        .finally(() => setSexLoading(false));
-    }
-
-    function updatePatientAge(value)
-    {
-        setAgeLoading(true);
-        var payload = {
-            Method: "/patient/age",
-            ID: selectedCase.Patient.ID,
-            Age: value
-        }
-        dispatch(updateCase(payload)).unwrap()
-        .then(() => setData({...data, Patient: {...data.Patient, Age: value }}))
-        .catch(() => {
-            api.error({
-                placement: 'topRight',
-                message: 'Error',
-                description: 'Internal Server Error. Please try operation later.'
-            })
-        })
-        .finally(() => setAgeLoading(false));
-    }
-
-    function updatePatientResidence(value)
-    {
-        setResidenceLoading(true);
-        var payload = {
-            Method: "/patient/residence",
-            ID: selectedCase.Patient.ID,
-            Residence: value
-        }
-        dispatch(updateCase(payload)).unwrap()
-        .then(() => setData({...data, Patient: {...data.Patient, Residence: value }}))
-        .catch(() => {
-            api.error({
-                placement: 'topRight',
-                message: 'Error',
-                description: 'Internal Server Error. Please try operation later.'
-            })
-        })
-        .finally(() => setResidenceLoading(false));
-    }
-
-    function updatePatientDateOfDeath(value)
-    {
-        setDateOfDeathLoading(true);
-        var payload = {
-            Method: "/patient/date-of-death",
-            ID: selectedCase.Patient.ID,
-            DateOfDeath: value
-        }
-        dispatch(updateCase(payload)).unwrap()
-        .then(() => setData({...data, Patient: {...data.Patient, DateOfDeath: value }}))
-        .catch(() => {
-            api.error({
-                placement: 'topRight',
-                message: 'Error',
-                description: 'Internal Server Error. Please try operation later.'
-            })
-        })
-        .finally(() => setDateOfDeathLoading(false));
-    }
-
-    function updatePatientCauseOfDeath(value)
-    {
-        setCauseOfDeathLoading(true);
-        var payload = {
-            Method: "/patient/cause-of-death",
-            ID: selectedCase.Patient.ID,
-            CauseOfDeath: value
-        }
-        dispatch(updateCase(payload)).unwrap()
-        .then(() => setData({...data, Patient: {...data.Patient, CauseOfDeath: value }}))
-        .catch(() => {
-            api.error({
-                placement: 'topRight',
-                message: 'Error',
-                description: 'Internal Server Error. Please try operation later.'
-            })
-        })
-        .finally(() => setCauseOfDeathLoading(false));
-    }
-
-    function updateCaseCreated(value)
-    {
-        setDateCreatedLoading(true);
-        var payload = {
-            Method: "/date-created",
-            ID: selectedCase.ID,
-            DateCreated: value
-        }
-        dispatch(updateCase(payload)).unwrap()
-        .then(() => setData({...data, DateCreated: value}))
-        .catch(() => {
-            api.error({
-                placement: 'topRight',
-                message: 'Error',
-                description: 'Internal Server Error. Please try operation later.'
-            })
-        })
-        .finally(() => setDateCreatedLoading(false));
-    }
-
-    function updateCaseCompleted(value)
-    {
-        setDateCompletedLoading(true);
-        var payload = {
-            Method: "/date-completed",
-            ID: selectedCase.ID,
-            DateCompleted: value
-        }
-        dispatch(updateCase(payload)).unwrap()
-        .then(() => setData({...data, DateCompleted: value}))
-        .catch(() => {
-            api.error({
-                placement: 'topRight',
-                message: 'Error',
-                description: 'Internal Server Error. Please try operation later.'
-            })
-        })
-        .finally(() => setDateCompletedLoading(false));
-    }
-
-    function updateCaseStatus(value, date)
-    {
-        setStatusLoading(true);
-        var payload = {
-            Method: "/status",
-            ID: selectedCase.ID,
-            Status: value.target.value
-        }
-        dispatch(updateCase(payload)).unwrap()
-        .then(() => setData({...data, Status: value.target.value, DateCompleted: value.target.value === "Active" ? "": new Date().toUTCString()}))
-        .catch(() => {
-            api.error({
-                placement: 'topRight',
-                message: 'Error',
-                description: 'Internal Server Error. Please try operation later.'
-            })
-        })
-        .finally(() => setStatusLoading(false));
-    }
-
-    function updateContactName(value)
-    {
-        setContactNameLoading(true);
-        var payload = {
-            Method: "/contact/name",
             ID: selectedCase.Contact.ID,
-            Name: value
-        }
-        dispatch(updateCase(payload)).unwrap()
-        .then(() => setData({...data, Contact: { ...data.Contact, Name: value }}))
+            Method: method
+        };
+        payload[name] = value;
+        setFieldLoading({...fieldLoading, [name]: true });
+        dispatch(updateContact(payload)).unwrap()
         .catch(() => {
             api.error({
                 placement: 'topRight',
@@ -497,79 +299,19 @@ export default function Case()
                 description: 'Internal Server Error. Please try operation later.'
             })
         })
-        .finally(() => setContactNameLoading(false));
+        .finally(() => setFieldLoading({...fieldLoading, [name]: false }));
     }
 
-    function updateContactRelation(value)
+    function handleUpdateCase(method, name, value, onSuccess = () => {})
     {
-        setContactRelationLoading(true);
         var payload = {
-            Method: "/contact/relation",
-            ID: selectedCase.Contact.ID,
-            Relation: value
-        }
-        dispatch(updateCase(payload)).unwrap()
-        .then(() => setData({...data, Contact: {...data.Contact, Relation: value}}))
-        .catch(() => {
-            api.error({
-                placement: 'topRight',
-                message: 'Error',
-                description: 'Internal Server Error. Please try operation later.'
-            })
-        })
-        .finally(() => setContactRelationLoading(false));
-    }
-
-    function updateContactPhoneNumber(value)
-    {
-        setContactPhoneNumberLoading(true);
-        var payload = {
-            Method: "/contact/phone-number",
-            ID: selectedCase.Contact.ID,
-            PhoneNumber: value
-        }
-        dispatch(updateCase(payload)).unwrap()
-        .then(() => setData({...data, Contact: {...data.Contact, PhoneNumber: value}}))
-        .catch(() => {
-            api.error({
-                placement: 'topRight',
-                message: 'Error',
-                description: 'Internal Server Error. Please try operation later.'
-            })
-        })
-        .finally(() => setContactPhoneNumberLoading(false));
-    }
-
-    function updateContactEmail(value)
-    {
-        setContactEmailLoading(true);
-        var payload = {
-            Method: "/contact/email",
-            ID: selectedCase.Contact.ID,
-            Email: value
-        }
-        dispatch(updateCase(payload)).unwrap()
-        .then(() => setData({...data, Contact: {...data.Contact, Email: value}}))
-        .catch(() => {
-            api.error({
-                placement: 'topRight',
-                message: 'Error',
-                description: 'Internal Server Error. Please try operation later.'
-            })
-        })
-        .finally(() => setContactEmailLoading(false));
-    }
-
-    function updateDirector(value)
-    {
-        setDirectorLoading(true);
-        var payload = {
-            Method: "/director",
             ID: selectedCase.ID,
-            UserID: value
-        }
+            Method: method
+        };
+        payload[name] = value;
+        setFieldLoading({...fieldLoading, [name]: true });
         dispatch(updateCase(payload)).unwrap()
-        .then(() => setData({...data, UserID: value}))
+        .then(() => onSuccess())
         .catch(() => {
             api.error({
                 placement: 'topRight',
@@ -577,85 +319,21 @@ export default function Case()
                 description: 'Internal Server Error. Please try operation later.'
             })
         })
-        .finally(() => setDirectorLoading(false));
-    }
-    function updateService(value)
-    {
-        setServiceLoading(true);
-        var payload = {
-            Method: "/service",
-            ID: selectedCase.ID,
-            ServiceID: value
-        }
-        dispatch(updateCase(payload)).unwrap()
-        .then((res) => setData(res))
-        .catch(() => {
-            api.error({
-                placement: 'topRight',
-                message: 'Error',
-                description: 'Internal Server Error. Please try operation later.'
-            })
-        })
-        .finally(() => {
-            setServiceLoading(false);
-            setServiceChangeConfirm({
-                visible: false,
-                newService: null
-            })
-        });
-    }
-
-    function updateHome(value)
-    {
-        setHomeLoading(true);
-        var payload = {
-            Method: "/home",
-            ID: selectedCase.ID,
-            HomeID: value
-        }
-        dispatch(updateCase(payload)).unwrap()
-        .then(() => setData({...data, HomeID: value}))
-        .catch(() => {
-            api.error({
-                placement: 'topRight',
-                message: 'Error',
-                description: 'Internal Server Error. Please try operation later.'
-            })
-        })
-        .finally(() => setHomeLoading(false));
-    }
-
-    function updatePreArranged(value)
-    {
-        setPreArrangedLoading(true);
-        var payload = {
-            Method: "/prearranged",
-            ID: selectedCase.ID,
-            PreArranged: value
-        }
-        dispatch(updateCase(payload)).unwrap()
-        .then(() => setData({...data, PreArranged: value}))
-        .catch(() => {
-            api.error({
-                placement: 'topRight',
-                message: 'Error',
-                description: 'Internal Server Error. Please try operation later.'
-            })
-        })
-        .finally(() => setPreArrangedLoading(false));
+        .finally(() => setFieldLoading({...fieldLoading, [name]: false }));
     }
     //Fetch Messages with Case Reference
     useEffect(() => {
-        if(data){
+        if(selectedCase.DisplayID && portal.ID){
             var payload = {
-                id: data.DisplayID,
+                id: selectedCase.DisplayID,
                 portal: portal.ID
             }
             axiosWithCredentials.get('/message/case', { params: payload })
             .then(res => setMessages(res.data));
         }
-    }, [data?.DisplayID, portal?.ID])
+    }, [selectedCase.DisplayID, portal])
     
+    //Fetch Case and Select field options
     useEffect(() => {
         if(portal){
             var payload = {
@@ -664,13 +342,8 @@ export default function Case()
             }
             dispatch(fetchCase(payload)).unwrap()
             .then(res => {
-                setData(res);
+                // setData(res);
             }).finally(() => setLoading(false));
-            // axiosWithCredentials.get('/case', { params: payload })
-            // .then(res => {
-            //     setSaved(res.data);
-            //     setData(res.data);
-            // }).finally(() => setLoading(false));
 
             axiosWithCredentials.post('/procedure/getHomesServicesEmployees')
             .then(res => {
@@ -683,6 +356,7 @@ export default function Case()
         }
     }, [portal])
 
+    //Set page according to url
     useEffect(() => {
         var urlPage = searchParams.get('page');
         if(urlPage === 'profile' || urlPage === 'tasks' || urlPage === 'messages'){
@@ -696,7 +370,7 @@ export default function Case()
             <Modal
             title="Are you sure you want to change the service?"
             open={serviceChangeConfirm.visible}
-            onOk={() => updateService(serviceChangeConfirm.newService)}
+            onOk={() => handleUpdateCase('service', 'Service', serviceChangeConfirm.newService, () => setServiceChangeConfirm({ visible: false, newService: null}))}
             onCancel={() => setServiceChangeConfirm({ visible: false, newService: null})}
             >
                 Changing the service will remove all saved task progress.
@@ -732,18 +406,6 @@ export default function Case()
             <Descriptions 
             column={{
                 xs: 1,
-                sm: 1,
-                md: 1,
-                lg: 1,
-                xl: 1,
-                xxl: 1,
-            }}
-            title={"Processing"}
-            items={processingItems}
-            />
-            <Descriptions 
-            column={{
-                xs: 1,
                 sm: 2,
                 md: 2,
                 lg: 2,
@@ -752,6 +414,18 @@ export default function Case()
             }}
             title={"Contact"}
             items={contactItems}
+            />
+            <Descriptions 
+            column={{
+                xs: 1,
+                sm: 1,
+                md: 1,
+                lg: 1,
+                xl: 1,
+                xxl: 1,
+            }}
+            title={"Processing"}
+            items={processingItems}
             />
             </div>
             </Spin>
@@ -779,12 +453,11 @@ export default function Case()
             </Popconfirm>
             </>
             }
-            {console.log(data)}
             {page === 'tasks'&&
             <>
             <Collapse
             className="mt-2"
-            items={data?.Tasks.map((x, idx) => ({
+            items={selectedCase?.Tasks.map((x, idx) => ({
                 key: idx,
                 expandIcon: <CheckOutlined/>,
                 label: (

@@ -19,7 +19,6 @@ export default function App()
   const dispatch = useDispatch();
   useEffect(() => {
     var subdomain = ValidationService.validateSubdomain(window.location.host);
-    console.log(window.location.host)
     if(subdomain){
       dispatch(fetchPortal());
     }else{

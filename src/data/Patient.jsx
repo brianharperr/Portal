@@ -2,6 +2,7 @@ export default class Patient{
     ID;
     LocationID;
     FirstName;
+    MiddleName;
     LastName;
     Age;
     Sex;
@@ -14,6 +15,7 @@ export default class Patient{
         this.ID = data?.ID;
         this.LocationID = data?.LocationID;
         this.FirstName = data?.FirstName;
+        this.MiddleName = data?.MiddleName;
         this.LastName = data?.LastName;
         this.Age = data?.Age;
         this.Sex = data?.Sex;

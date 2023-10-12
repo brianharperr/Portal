@@ -29,6 +29,19 @@ export const updateCase = createAsyncThunk('/case/updateCase', async (payload) =
     const response = await axiosWithCredentials.patch('/case/' + payload.Method, payload);
     return response.data;
 });
+export const updateOption = createAsyncThunk('/case/updateOption', async (payload) => {
+    const response = await axiosWithCredentials.patch('/task/option', payload);
+    return response.data;
+});
+
+export const completeTask = createAsyncThunk('/case/completeTask', async (payload) => {
+    const response = await axiosWithCredentials.patch('/task/complete', payload);
+    return response.data;
+});
+export const editTask = createAsyncThunk('/case/editTask', async (payload) => {
+    const response = await axiosWithCredentials.patch('/task/edit', payload);
+    return response.data;
+});
 
 export const caseSlice = createSlice({
     name: 'case',
@@ -55,6 +68,30 @@ export const caseSlice = createSlice({
                 state.data.PreArranged = action.payload.PreArranged;
                 state.data.DateCreated = action.payload.DateCreated;
                 state.data.DateCompleted = action.payload.DateCompleted;
+            })
+            .addCase(completeTask.fulfilled, (state, action) => {
+                var newCase = {
+                    ...state.data,
+                    Tasks: state.data.Tasks.map(x => x.ID === action.payload.ID ? action.payload : x)
+                };
+                state.data = newCase;
+            })
+            .addCase(updateOption.fulfilled, (state, action) => {
+                var newCase = {
+                    ...state.data,
+                    Tasks: state.data.Tasks.map(x => ({
+                        ...x, 
+                        TaskOptions: x.TaskOptions.map(y => y.ID === action.payload.ID ? action.payload : y)
+                    }))
+                };
+                state.data = newCase;
+            })
+            .addCase(editTask.fulfilled, (state, action) => {
+                var newCase = {
+                    ...state.data,
+                    Tasks: state.data.Tasks.map(x => x.ID === action.payload.ID ? action.payload : x)
+                };
+                state.data = newCase;
             })
     }
 })

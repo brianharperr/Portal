@@ -100,6 +100,9 @@ export default function Case()
         {
             label: 'First Name',
             children: <><Paragraph className="!mb-0" editable={{ maxLength: 45, onChange: (e) => handleUpdatePatient('first-name', 'FirstName', e)}}>{selectedCase?.Patient.FirstName}</Paragraph>{fieldLoading.FirstName && <LoadingOutlined/>}</>
+        },        {
+            label: 'Middle Name',
+            children: <><Paragraph className="!mb-0" editable={{ maxLength: 45, onChange: (e) => handleUpdatePatient('middle-name', 'MiddleName', e)}}>{selectedCase?.Patient.FirstName}</Paragraph>{fieldLoading.FirstName && <LoadingOutlined/>}</>
         },
         {
             label: 'Last Name',
@@ -118,8 +121,8 @@ export default function Case()
             children: <><Paragraph className="!mb-0" editable={{ maxLength: 45, onChange: (e) => handleUpdatePatient('residence', 'Residence', e)}}>{selectedCase?.Patient.Residence}</Paragraph>{fieldLoading.Residence && <LoadingOutlined/>}</>
         },
         {
-            label: '',
-            children: null
+            label: 'Cause of Death',
+            children: <><Paragraph className="!mb-0" editable={{ maxLength: 64, onChange: (e) => handleUpdatePatient('cause-of-death', 'CauseOfDeath', e)}}>{selectedCase?.Patient.CauseOfDeath}</Paragraph>{fieldLoading.CauseOfDeath && <LoadingOutlined/>}</>
         },
         {
             label: 'Date of Death',
@@ -137,10 +140,6 @@ export default function Case()
                 {fieldLoading.DateOfDeath && <LoadingOutlined/>}
                 </>
             )
-        },
-        {
-            label: 'Cause of Death',
-            children: <><Paragraph className="!mb-0" editable={{ maxLength: 64, onChange: (e) => handleUpdatePatient('cause-of-death', 'CauseOfDeath', e)}}>{selectedCase?.Patient.CauseOfDeath}</Paragraph>{fieldLoading.CauseOfDeath && <LoadingOutlined/>}</>
         }
     ]
 
@@ -321,12 +320,12 @@ export default function Case()
         })
         .finally(() => setFieldLoading({...fieldLoading, [name]: false }));
     }
+
     //Fetch Messages with Case Reference
     useEffect(() => {
-        if(selectedCase.DisplayID && portal.ID){
+        if(selectedCase.ID){
             var payload = {
-                id: selectedCase.DisplayID,
-                portal: portal.ID
+                id: selectedCase.ID
             }
             axiosWithCredentials.get('/message/case', { params: payload })
             .then(res => setMessages(res.data));
@@ -342,9 +341,7 @@ export default function Case()
             }
             dispatch(fetchCase(payload)).unwrap()
             .then(res => {
-                // setData(res);
             }).finally(() => setLoading(false));
-
             axiosWithCredentials.post('/procedure/getHomesServicesEmployees')
             .then(res => {
                 setOptions({
@@ -455,6 +452,7 @@ export default function Case()
             }
             {page === 'tasks'&&
             <>
+            {selectedCase?.Tasks &&
             <Collapse
             className="mt-2"
             items={selectedCase?.Tasks.map((x, idx) => ({
@@ -470,6 +468,7 @@ export default function Case()
                 )
             }))}
             />
+            }
             </>
             }
             {page === 'messages' &&
@@ -482,6 +481,7 @@ export default function Case()
                 renderItem={(item) => (
                     <List.Item
                     actions={[new Date(item.DateCreated).toLocaleString()]}
+                    
                     >
                         <List.Item.Meta
                         title={item.Subject}

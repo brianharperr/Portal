@@ -95,7 +95,7 @@ export default function PageBuilder(props) {
             }}
           />
           {portal?.LogoSource ?
-          <img src={portal?.LogoSource} alt="" className='p-2'/>
+          <img src={portal?.LogoSource} alt="" className='p-2 hover:cursor-pointer' onClick={() => navigate("/")}/>
           :
           <Skeleton.Button size='large' active className='!pt-3'/>
           }
@@ -108,14 +108,14 @@ export default function PageBuilder(props) {
             <a onClick={(e) => e.preventDefault()}>
               <Space direction='vertical' size={16}>
                 <Space wrap size={16}>
-                  <Avatar style={{ backgroundColor: portalTheme?.background.primary, color: portalTheme?.text.secondary }} size={40}>{localStorage.getItem('name') ? localStorage.getItem('name').split(' ')[0].toUpperCase() : "USER"}</Avatar>
+                  <Avatar style={{ backgroundColor: portalTheme?.background.primary, color: portalTheme?.text.secondary }} size={40}>{localStorage.getItem('Name') ? localStorage.getItem('Name').split(' ')[0].toUpperCase() : "USER"}</Avatar>
                 </Space>
               </Space>
             </a>
           </Dropdown>
           </div>
           </Header>
-        <Content className=' mx-4'>
+        <Content className='mx-4'>
           <Breadcrumb
             style={{
               margin: '16px 0',

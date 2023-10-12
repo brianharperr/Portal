@@ -109,6 +109,7 @@ export default function NewCase()
         }
         if(tmp_current.length > 0){
             setCurrent(Math.min(...tmp_current));
+            return;
         }
 
         setLoading(true);

@@ -13,6 +13,8 @@ import Case from "./pages/Case";
 import Analytics from "./pages/Analytics";
 import PortalNotFound from "./pages/PortalNotFound";
 import NewCase from "./pages/NewCase";
+import Profile from "./pages/Profile";
+import Support from "./pages/Support";
 
 export default function App()
 {
@@ -31,6 +33,10 @@ export default function App()
     {
       path: "/",
       element: <ProtectedRoute><Dashboard/></ProtectedRoute>    
+    },
+    {
+      path: "/profile",
+      element: <ProtectedRoute><Profile/></ProtectedRoute>
     },
     {
       path: "new-case",
@@ -66,7 +72,7 @@ export default function App()
     },
     {
       path: "/support",
-      element: null
+      element: <Support/>
     },
     {
       path: "/forgot",

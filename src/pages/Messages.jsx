@@ -1,4 +1,4 @@
-import { Button, FloatButton, Form, Input, Menu, Select, Tooltip } from "antd";
+import { Button, FloatButton, Form, Input, Menu, Popconfirm, Select, Tooltip } from "antd";
 import { useState } from "react";
 import PageBuilder from "../components/PageBuilder";
 import Inbox from "../components/Inbox";
@@ -105,6 +105,7 @@ export default function Messages()
         if(toError || subjectError){
             return;
         }
+        
         var payload = {
             CaseReference: caseRef,
             To: to,
@@ -150,7 +151,15 @@ export default function Messages()
                     <Form>
                         <div className="flex justify-between mb-4">
                             <Button type="primary" icon={<SendOutlined />} onClick={sendMessage}>Send</Button>
-                            <Tooltip title="Discard"><Button onClick={handleDiscard} icon={<DeleteOutlined/>}></Button></Tooltip>
+                            <Popconfirm
+                            title="Delete the draft"
+                            description="Are you sure you want to discard this message?"
+                            onConfirm={handleDiscard}
+                            okText="Yes"
+                            cancelText="No"
+                            >
+                                <Button icon={<DeleteOutlined/>}></Button>
+                            </Popconfirm>
                         </div>
                         <Form.Item required validateStatus={toError ? "error" : null} label="To">
                             <Select mode="multiple" options={users} onChange={e => setTo(e)}/>

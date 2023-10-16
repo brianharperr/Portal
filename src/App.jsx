@@ -15,6 +15,7 @@ import PortalNotFound from "./pages/PortalNotFound";
 import NewCase from "./pages/NewCase";
 import Profile from "./pages/Profile";
 import Support from "./pages/Support";
+import ConfirmEmailChange from "./pages/ConfirmEmailChange";
 
 export default function App()
 {
@@ -41,6 +42,10 @@ export default function App()
     {
       path: "new-case",
       element: <ProtectedRoute><NewCase/></ProtectedRoute>
+    },
+    {
+      path: '/confirm',
+      element: <ConfirmEmailChange/>
     },
     {
       path: "/not-found",

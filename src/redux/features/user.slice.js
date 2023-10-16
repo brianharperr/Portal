@@ -21,6 +21,12 @@ export const resetPassword = createAsyncThunk('user/resetPassword', async (paylo
     return response.data;
 })
 
+export const updateUser = createAsyncThunk('user/updateUser', async (payload) => {
+    const response = await axiosWithCredentials.patch('/user', payload);
+
+    return response.data;
+})
+
 export const updateNotificationSettings = createAsyncThunk('user/updateNotifications', async (payload) => {
     const response = await axiosWithCredentials.patch('/user/portal/notifications', payload);
 
@@ -59,6 +65,10 @@ export const userSlice = createSlice({
                 state.permissions = action.payload;
             })
             .addCase(updateNotificationSettings.fulfilled, (state, action) => {
+                state.status = 'succeeded';
+                state.data = action.payload;
+            })
+            .addCase(updateUser.fulfilled, (state, action) => {
                 state.status = 'succeeded';
                 state.data = action.payload;
             })

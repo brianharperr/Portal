@@ -16,7 +16,7 @@ import {
 } from '@ant-design/icons';
 import { Breadcrumb, Layout, Menu, theme, Avatar, Button, Dropdown, Space, message, FloatButton, Slider, Badge, Image, Skeleton } from 'antd';
 import { useNavigate } from 'react-router-dom';
-import { axiosWithCredentials } from '../configs/axios';
+import { axiosWithCredentials, axiosWithoutCredentials } from '../configs/axios';
 import { useSelector, useDispatch } from 'react-redux';
 import { getPortal, getPortalTheme } from '../redux/features/portal.slice';
 import { useEffect } from 'react';
@@ -47,6 +47,14 @@ export default function PageBuilder(props) {
     getItem('Admin', 'admin', <DollarOutlined />, () => navigate("/billing")),
     getItem('Support', 'support', <CommentOutlined />, () => navigate("/support")),
   ];
+
+  function logout()
+  {
+    axiosWithCredentials.get('/auth/portal/logout')
+    .then(() => {
+      window.location.href = "/"
+    })
+  }
 
   const profileitems = [
     getItem('Profile', '1', <UserOutlined />, () => navigate("/profile")),

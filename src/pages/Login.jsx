@@ -73,7 +73,7 @@ export default function Login()
 
     return (
         <div className="w-full h-screen bg-gray-100">
-            <div className="mx-auto max-w-[480px] pt-48">
+            <div className="mx-auto max-w-[400px] pt-48">
                 <div className="p-6 shadow-lg bg-white rounded-xl border">
                     <div className="!w-full mx-auto">
                     <List itemLayout="horizontal">
@@ -154,7 +154,7 @@ export default function Login()
                     </Form>
                 </div>
                 <div className="w-full text-center mt-2">
-                    <Paragraph>Copyright © FamilyLynk</Paragraph>
+                    <Paragraph className="text-xs">Copyright © FamilyLynk</Paragraph>
                 </div>
             </div>
         </div>

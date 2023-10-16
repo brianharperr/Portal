@@ -22,14 +22,21 @@ export default function Profile()
     const [firstNameError, setFirstNameError] = useState(false);
     const [lastNameError, setLastNameError] = useState(false);
 
-    const layout = {
+    const formItemLayout = {
         labelCol: {
-          span: 8,
+        span: 5,
         },
         wrapperCol: {
-          span: 16,
+        span: 12,
         },
-    };
+    }
+
+    const buttonLayout = {
+        wrapperCol: {
+            span: 14,
+            offset: 5
+        }
+    }
 
     function saveProfile()
     {
@@ -90,7 +97,8 @@ export default function Profile()
 
     return (
         <PageBuilder name="profile" breadcrumb={["Profile"]}>
-            <Form className="mx-auto w-[720px]">
+            <div className="bg-white rounded-lg pb-4 px-4 shadow-md mx-auto w-[720px]">
+            <Form {...formItemLayout}>
             <Divider orientation="left" orientationMargin="0">
                     <Typography.Title level={4}>Profile</Typography.Title>
                 </Divider>
@@ -104,7 +112,7 @@ export default function Profile()
                     <Input value={data?.LastName} onChange={e => setData({...data, LastName: e.target.value})} />
                 </Form.Item>
 
-                <Form.Item required label="Email">
+                <Form.Item required label="Email" hasFeedback validateStatus="warning" help="A verification email has been sent.">
                     <Input value={data?.Email} onChange={e => setData({...data, Email: e.target.value})} />
                 </Form.Item>
                 <Form.Item label="Phone Number">
@@ -124,11 +132,9 @@ export default function Profile()
                         onChange={e => setNotifications(e)}
                         />
                 </Form.Item>
-                {editedProfile &&
-                <Form.Item>
-                    <Button loading={profileLoading} type="primary" onClick={saveProfile}>Save</Button>
+                <Form.Item {...buttonLayout}>
+                    <Button disabled={!editedProfile} loading={profileLoading} type="primary" onClick={saveProfile}>Save</Button>
                 </Form.Item>
-                }
                 <Divider orientation="left" orientationMargin="0">
                     <Typography.Title level={4}>Change Password</Typography.Title>
                 </Divider>
@@ -141,12 +147,11 @@ export default function Profile()
                 <Form.Item label="Confirm Password">
                     <Input type="password" value={form.confirm} onChange={e => setForm({...form, confirm: e.target.value})}/>
                 </Form.Item>
-                {resetPassword &&
-                <Form.Item>
-                    <Button type="primary">Reset password</Button>
+                <Form.Item {...buttonLayout}>
+                    <Button disabled={!resetPassword} type="primary">Reset password</Button>
                 </Form.Item>
-                }
             </Form>
+            </div>
         </PageBuilder>
     )
 }

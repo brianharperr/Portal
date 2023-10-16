@@ -9,9 +9,7 @@
 :where(.css-dev-only-do-not-override-18iikkb).ant-menu-light .ant-menu-item-selected{
   background-color: rgba(255, 255, 255, 0.0) !important;
 }
-:where(.css-dev-only-do-not-override-18iikkb).ant-btn-primary{
-  background-color:  #1677ff!important;
-}
+
 .ant-select-arrow{
   color: #1677ff !important;
 }

@@ -4,8 +4,8 @@ import Dashboard from "./pages/Dashboard"
 import Login from "./pages/Login";
 import { useEffect } from "react";
 import ValidationService from "./services/Validation";
-import { fetchPortal } from "./redux/features/portal.slice";
-import { useDispatch } from "react-redux";
+import { fetchPortal, getPortal } from "./redux/features/portal.slice";
+import { useDispatch, useSelector } from "react-redux";
 import ForgotPassword from "./pages/ForgotPassword";
 import Messages from "./pages/Messages";
 import Inventory from "./pages/Inventory";
@@ -20,14 +20,17 @@ import ConfirmEmailChange from "./pages/ConfirmEmailChange";
 export default function App()
 {
   const dispatch = useDispatch();
-  useEffect(() => {
-    var subdomain = ValidationService.validateSubdomain(window.location.host);
-    if(subdomain){
-      dispatch(fetchPortal());
-    }else{
-      window.location.href = import.meta.env.VITE_REACT_APP_MASTER_PAGE_URL;
-    }
+  const portal = useSelector(getPortal);
 
+  useEffect(() => {
+    if(!portal){
+      var subdomain = ValidationService.validateSubdomain(window.location.host);
+      if(subdomain){
+        dispatch(fetchPortal());
+      }else{
+        window.location.href = import.meta.env.VITE_REACT_APP_MASTER_PAGE_URL;
+      }
+    }
   }, []);
 
   const router = createBrowserRouter([

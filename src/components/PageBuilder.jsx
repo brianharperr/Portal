@@ -14,7 +14,7 @@ import {
   InfoCircleOutlined,
   QuestionOutlined
 } from '@ant-design/icons';
-import { Breadcrumb, Layout, Menu, theme, Avatar, Button, Dropdown, Space, message, FloatButton, Slider, Badge, Image, Skeleton } from 'antd';
+import { Breadcrumb, Layout, Menu, theme, Avatar, Button, Dropdown, Space, message, FloatButton, Slider, Badge, Image, Skeleton, Typography } from 'antd';
 import { useNavigate } from 'react-router-dom';
 import { axiosWithCredentials, axiosWithoutCredentials } from '../configs/axios';
 import { useSelector, useDispatch } from 'react-redux';
@@ -102,10 +102,8 @@ export default function PageBuilder(props) {
               height: 64,
             }}
           />
-          {portal?.LogoSource ?
+          {portal?.LogoSource &&
           <img src={portal?.LogoSource} alt="" className='p-2 hover:cursor-pointer' onClick={() => navigate("/")}/>
-          :
-          <Skeleton.Button size='large' active className='!pt-3'/>
           }
           <Dropdown
             
@@ -124,12 +122,14 @@ export default function PageBuilder(props) {
           </div>
           </Header>
         <Content className='mx-4'>
-          <Breadcrumb
-            style={{
-              margin: '16px 0',
-            }}
-            items={props.breadcrumb?.map(x => ({ title: x }))}
-          />
+          {props.breadcrumb &&
+            <Breadcrumb
+              style={{
+                margin: '16px 0',
+              }}
+              items={props.breadcrumb?.map(x => ({ title: x }))}
+            />
+          }
           {props.children}
         </Content>
         <Footer

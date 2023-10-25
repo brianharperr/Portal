@@ -34,19 +34,23 @@ export default function MessageModal({ open, id, close })
     return (
         <Modal cancelText="Close" okText="Reply" title={data? data?.Subject : <Skeleton.Button active/>} open={open} onCancel={close}>
             From: <Tag bordered={false}>{data?.Sender}</Tag>
-            <div className=" mt-2 text-xs italic">
-            {data?.DateCreated ? new Date(data?.DateCreated).toLocaleString(): <Skeleton.Button active/>}
-            </div>
-            <Divider/>
+            <br/>
             To: 
             {data?.To.map(x => {
                 return <Tag bordered={false}>{x.Name}</Tag>
             })}
-            <div className="mt-2"></div>
+            <br/>
+            {data?.Cc.length > 0 &&
+            <>
             Cc: 
             {data?.Cc.map(x => {
                 return <Tag bordered={false}>{x.Name}</Tag>
             })}
+            </>
+            }
+            <div className=" mt-2 text-xs italic">
+            {data?.DateCreated ? new Date(data?.DateCreated).toLocaleString(): <Skeleton.Button active/>}
+            </div>
             <Divider/>
             {data?.CaseRef.map(x => {
                 return <Tag color="gold" className="hover:cursor-pointer hover:bg-yellow-300" onClick={() => navigate('/case/' + x.DisplayID)}>{"#" + x.DisplayID} - {x.Name}</Tag>

@@ -192,11 +192,16 @@ export default function Dashboard()
 
     return (
         <PageBuilder name='cases'>
-            <div className="flex justify-end">
-              <Button onClick={() => navigate('/new-case')}>New Case</Button>
+            <div
+              style={{
+                marginTop: 16,
+                marginBottom: 16,
+              }}
+            >
+              <Button onClick={() => navigate('/new-case')} type="primary">New Case</Button>
             </div>
-            <Divider/>
             <Table
+            size="small"
             onRow={(r) => ({
                 onClick: () => navigate("/case/" + r.DisplayID)
             })}

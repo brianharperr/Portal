@@ -3,18 +3,19 @@ import { useEffect, useState } from "react"
 import { axiosWithoutCredentials } from "../configs/axios";
 import { useNavigate, useSearchParams } from "react-router-dom";
 
-export default function ConfirmEmailChange()
+export default function RevertEmailChange()
 {
     const [searchParams, setSearchParams] = useSearchParams();
     const navigate = useNavigate();
     const [email, setEmail] = useState('');
     const [status, setStatus] = useState(null);
     const [loading, setLoading] = useState(true);
+
     useEffect(() => {
         var payload = {
             Token: searchParams.get('token')
         }
-        axiosWithoutCredentials.patch('/user/portal/email', payload)
+        axiosWithoutCredentials.patch('/user/portal/revert-email', payload)
         .then((res) => {
             setEmail(res.data.Email);
             setStatus(1);
@@ -36,8 +37,8 @@ export default function ConfirmEmailChange()
             {status === 1 ?
                     <Result
                     status="success"
-                    title="Email Verified!"
-                    subTitle={"Your email has been changed to " + email}
+                    title="Email has been reverted!"
+                    subTitle={"Your email has been kept as " + email + ". Consider changing your password if the change request was not made by you."}
                     extra={[
                         <Button type="primary" onClick={() => navigate('/')}>
                           Go to Portal

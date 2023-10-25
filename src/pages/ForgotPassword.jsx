@@ -4,12 +4,11 @@ import { LockOutlined, MailOutlined } from '@ant-design/icons';
 import { useSelector } from "react-redux";
 import ReCAPTCHA from "react-google-recaptcha";
 import { getPortal } from "../redux/features/portal.slice";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { axiosWithoutCredentials, axiosWithSimpleCredentials } from "../configs/axios";
 import { Link } from "react-router-dom";
 export default function ForgotPassword()
 {
-    const [form] = Form.useForm();
     const portal = useSelector(getPortal);
     const [loading, setIsLoading] = useState(false);
     const [response, setResponse] = useState(false);
@@ -50,7 +49,7 @@ export default function ForgotPassword()
                         <List.Item>
                             <List.Item.Meta
                             avatar={<Avatar style={{ background: '#eee'}} size={54} src={portal?.LogoSource}/>}
-                            title={<Title className="!mb-0" level={3}>Reset Password</Title>}
+                            title={<Title className="!mb-0 !mt-0" level={3}>Reset Password</Title>}
                             description={portal?.Name}
                             />
                         </List.Item>

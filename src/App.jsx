@@ -16,6 +16,8 @@ import NewCase from "./pages/NewCase";
 import Profile from "./pages/Profile";
 import Support from "./pages/Support";
 import ConfirmEmailChange from "./pages/ConfirmEmailChange";
+import ResetPassword from "./pages/ResetPassword";
+import RevertEmailChange from "./pages/RevertEmailChange";
 
 export default function App()
 {
@@ -85,6 +87,14 @@ export default function App()
     {
       path: "/forgot",
       element: <ForgotPassword/>
+    },
+    {
+      path: '/revert-email-change',
+      element: <RevertEmailChange/>
+    },
+    {
+      path: "/reset",
+      element: <ResetPassword/>
     }
   ])
   return (

@@ -60,6 +60,33 @@ const ValidationService = {
     
         return(subDomain);
 
+    },
+
+    validatePasswordStrength: function(password, result = () => {})
+    {
+            let strength = {value: 0, color: 'red', extra: 'Passwords must be at least 8 characters, including capital letters and numbers'};
+    
+            if(password.length > 0){
+                strength = { value: 25, color: 'red', extra: 'Strength: Weak'}
+            }
+
+            if (/\d/.test(password) && /[A-Z]/.test(password)) {
+    
+                if (password.length >= 8) {
+                    strength = { value: 50, color: 'gold', extra: 'Strength: Good'}
+                }
+    
+                if (password.length > 10) {
+                    strength = { value: 75, color: 'green', extra: 'Strength: Great'}
+                }
+    
+                if (password.length > 12) {
+                    strength = { value: 100, color: 'blue', extra: 'Strength: Secure'}
+                }
+    
+            }
+
+            result(strength);
     }
 }
 

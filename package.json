@@ -10,6 +10,11 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@emotion/react": "^11.11.3",
+    "@emotion/styled": "^11.11.0",
+    "@mui/icons-material": "^5.15.5",
+    "@mui/joy": "^5.0.0-beta.23",
+    "@mui/material": "^5.15.6",
     "@reduxjs/toolkit": "^1.9.5",
     "antd": "^5.9.0",
     "axios": "^1.5.0",

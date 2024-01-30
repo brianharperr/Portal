@@ -52,7 +52,7 @@ axiosWithCredentials.interceptors.response.use(
             })
             .catch((error2) => {
                 //ToDo Navigate with paramter to display session timeout message
-                window.location.href = "/"
+                // window.location.href = "/"
                 return Promise.reject(error2);
             })
     }

@@ -18,6 +18,8 @@ import Support from "./pages/Support";
 import ConfirmEmailChange from "./pages/ConfirmEmailChange";
 import ResetPassword from "./pages/ResetPassword";
 import RevertEmailChange from "./pages/RevertEmailChange";
+import Orders from "./pages/Orders";
+import Messages2 from "./pages/Messages2";
 
 export default function App()
 {
@@ -38,7 +40,7 @@ export default function App()
   const router = createBrowserRouter([
     {
       path: "/",
-      element: <ProtectedRoute><Dashboard/></ProtectedRoute>    
+      element: <ProtectedRoute><Orders/></ProtectedRoute>    
     },
     {
       path: "/profile",
@@ -78,7 +80,7 @@ export default function App()
     },
     {
       path: "/messages",
-      element: <Messages/>
+      element: <Messages2/>
     },
     {
       path: "/support",

@@ -18,10 +18,25 @@ import Mails from '../components/Mails';
 import EmailContent from '../components/EmailContent';
 import WriteEmail from '../components/WriteEmail';
 import HeaderAlt from '../components/HeaderAlt';
+import { useSelector } from 'react-redux';
+import { getInboxCount } from '../redux/features/message.slice';
+import { axiosWithCredentials } from '../configs/axios';
 
 export default function Messages2() {
   const [drawerOpen, setDrawerOpen] = React.useState(false);
+  const [selectedMessage, setSelectedMessage] = React.useState(null);
   const [open, setOpen] = React.useState(false);
+  const count = useSelector(getInboxCount);
+
+  function updateSelectedMessage(message){
+      var payload = {
+        ID: message.ID
+    }
+    setSelectedMessage(message);
+    if(message.Read === 0){
+      axiosWithCredentials.put('/message/read', payload);
+    }
+  }
 
   return (
     <CssVarsProvider disableTransitionOnChange>
@@ -31,58 +46,7 @@ export default function Messages2() {
           <Navigation />
         </Layout.SideDrawer>
       )}
-      <Stack
-        id="tab-bar"
-        direction="row"
-        justifyContent="space-around"
-        spacing={1}
-        sx={{
-          display: { xs: 'flex', sm: 'none' },
-          zIndex: '999',
-          bottom: 0,
-          position: 'fixed',
-          width: '100dvw',
-          py: 2,
-          backgroundColor: 'background.body',
-          borderTop: '1px solid',
-          borderColor: 'divider',
-        }}
-      >
-        <Button
-          variant="plain"
-          color="neutral"
-          aria-pressed="true"
-          component="a"
-          href="/joy-ui/getting-started/templates/email/"
-          size="sm"
-          startDecorator={<EmailRoundedIcon />}
-          sx={{ flexDirection: 'column', '--Button-gap': 0 }}
-        >
-          Email
-        </Button>
-        <Button
-          variant="plain"
-          color="neutral"
-          component="a"
-          href="/joy-ui/getting-started/templates/team/"
-          size="sm"
-          startDecorator={<PeopleAltRoundedIcon />}
-          sx={{ flexDirection: 'column', '--Button-gap': 0 }}
-        >
-          Team
-        </Button>
-        <Button
-          variant="plain"
-          color="neutral"
-          component="a"
-          href="/joy-ui/getting-started/templates/files/"
-          size="sm"
-          startDecorator={<FolderRoundedIcon />}
-          sx={{ flexDirection: 'column', '--Button-gap': 0 }}
-        >
-          Files
-        </Button>
-      </Stack>
+
       <Layout.Root
         sx={{
           ...(drawerOpen && {
@@ -111,7 +75,7 @@ export default function Messages2() {
                 My inbox
               </Typography>
               <Typography level="title-sm" textColor="text.tertiary">
-                5 emails
+                {count} message{(count > 1 ? 's' : null)}
               </Typography>
             </Box>
             <Button
@@ -120,16 +84,16 @@ export default function Messages2() {
               onClick={() => setOpen(true)}
               sx={{ ml: 'auto' }}
             >
-              Compose email
+              Compose
             </Button>
             <FocusTrap open={open} disableAutoFocus disableEnforceFocus>
               <WriteEmail open={open} onClose={() => setOpen(false)} />
             </FocusTrap>
           </Box>
-          <Mails />
+          <Mails selectedMessage={selectedMessage} onMessageChange={(message) => updateSelectedMessage(message)}/>
         </Layout.SidePane>
         <Layout.Main>
-          <EmailContent />
+          <EmailContent message={selectedMessage} />
         </Layout.Main>
       </Layout.Root>
     </CssVarsProvider>

@@ -41,7 +41,7 @@ export const portalSlice = createSlice({
             })
             .addCase(fetchPortal.rejected, (state, action) => {
                 state.status = 'failed';
-                window.location.href = "/not-found";
+                // window.location.href = "/not-found";
                 state.error = action.error.message;
             })
             .addCase(fetchUsers.pending, (state, action) => {

@@ -68,19 +68,12 @@ export default function HeaderAlt() {
     <Box
       sx={{
         display: 'flex',
+        
         flexGrow: 1,
         justifyContent: 'space-between',
       }}
     >
-      <Stack
-        direction="row"
-        justifyContent="center"
-        alignItems="center"
-        spacing={1}
-        sx={{ display: { xs: 'none', sm: 'flex' } }}
-      >
 
-      </Stack>
       <Box sx={{ display: { xs: 'inline-flex', sm: 'none' } }}>
         <IconButton variant="plain" color="neutral" onClick={() => setOpen(true)}>
           <MenuRoundedIcon />
@@ -120,6 +113,15 @@ export default function HeaderAlt() {
           </IconButton>
         </Tooltip>
         <ColorSchemeToggle />
+      </Box>
+      <Box
+        sx={{
+          display: 'flex',
+          flexDirection: 'row',
+          gap: 1.5,
+          alignItems: 'center',
+        }}
+      >
         <Dropdown>
           <MenuButton
             variant="plain"
@@ -193,6 +195,7 @@ export default function HeaderAlt() {
           </Menu>
         </Dropdown>
       </Box>
+
     </Box>
   );
 }

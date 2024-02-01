@@ -17,24 +17,40 @@ import ForwardToInboxRoundedIcon from '@mui/icons-material/ForwardToInboxRounded
 import FolderIcon from '@mui/icons-material/Folder';
 import ReplyRoundedIcon from '@mui/icons-material/ReplyRounded';
 import CheckCircleRoundedIcon from '@mui/icons-material/CheckCircleRounded';
+import TagConfig from '../data/Tags'
 
-export default function EmailContent() {
+export default function EmailContent({ message }) {
   const [open, setOpen] = React.useState([false, false, false]);
 
-  const handleSnackbarOpen = (index: number) => {
+  const handleSnackbarOpen = (index) => {
     const updatedOpen = [...open];
     updatedOpen[index] = true;
     setOpen(updatedOpen);
   };
 
-  const handleSnackbarClose = (index: number) => {
+  const handleSnackbarClose = (index) => {
     const updatedOpen = [...open];
     updatedOpen[index] = false;
     setOpen(updatedOpen);
   };
 
+  function formatDate(string)
+  {
+    // Create a Date object from the string
+    const dateObject = new Date(string);
+    
+    // Define options for formatting the date
+    const options = { day: 'numeric', month: 'short', year: 'numeric' };
+    
+    // Format the date using toLocaleDateString
+    return dateObject.toLocaleDateString('en-US', options);
+    
+  }
+  
   return (
-    <Sheet
+    <>
+    {message ?
+      <Sheet
       variant="outlined"
       sx={{
         minHeight: 500,
@@ -54,15 +70,14 @@ export default function EmailContent() {
       >
         <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
           <Avatar
-            src="https://i.pravatar.cc/40?img=3"
-            srcSet="https://i.pravatar.cc/80?img=3"
+            src={message?.ProfilePicture}
           />
           <Box sx={{ ml: 2 }}>
             <Typography level="title-sm" textColor="text.primary" mb={0.5}>
-              Alex Jonnold
+              {message?.SenderName}
             </Typography>
             <Typography level="body-xs" textColor="text.tertiary">
-              21 Oct 2022
+              {formatDate(message?.DateCreated)}
             </Typography>
           </Box>
         </Box>
@@ -162,13 +177,13 @@ export default function EmailContent() {
         <Typography
           level="title-lg"
           textColor="text.primary"
-          endDecorator={
-            <Chip component="span" size="sm" variant="outlined" color="warning">
-              Personal
+          endDecorator={message.Tag &&
+            <Chip component="span" size="sm" variant="soft" color={TagConfig.find(x => x.label === message.Tag).theme}>
+              {message?.Tag}
             </Chip>
           }
         >
-          Details for our Yosemite Park hike
+          {message?.Subject}
         </Typography>
         <Box
           sx={{
@@ -188,8 +203,8 @@ export default function EmailContent() {
               From
             </Typography>
             <Tooltip size="sm" title="Copy email" variant="outlined">
-              <Chip size="sm" variant="soft" color="primary" onClick={() => {}}>
-                alex.jonnold@hike.com
+              <Chip size="sm" variant="soft" color="primary" onClick={() => navigator.clipboard.writeText(message.SenderEmail)}>
+                {message?.SenderEmail}
               </Chip>
             </Tooltip>
           </div>
@@ -202,8 +217,8 @@ export default function EmailContent() {
               to
             </Typography>
             <Tooltip size="sm" title="Copy email" variant="outlined">
-              <Chip size="sm" variant="soft" color="primary" onClick={() => {}}>
-                steve@mail.com
+              <Chip size="sm" variant="soft" color="primary" onClick={() => navigator.clipboard.writeText(message.RecipientEmail)}>
+                {message?.RecipientEmail}
               </Chip>
             </Tooltip>
           </div>
@@ -211,29 +226,12 @@ export default function EmailContent() {
       </Box>
       <Divider />
       <Typography level="body-sm" mt={2} mb={2}>
-        Hello, my friend!
-        <br />
-        <br />
-        So, it seems we are getting there! Our trip is finally here. As you know, I
-        love Yosemite National Park, a lot of great climbers and explorers have made
-        history there, so I&apos;m very excited to bring you with me in this journey.
-        <br />
-        <br />
-        There are plenty of amazing things to see there, from internationally
-        recognized granite cliffs, waterfalls, clear streams, giant sequoia groves,
-        lakes, mountains, meadows, glaciers, and a lot o biological diversity. It is
-        amazing that almost 95 percent of the park is designated wilderness. Yosemite
-        is one of the largest and least fragmented habitat blocks in the Serra
-        Nevada, and the park supports a fantastic diversity of plants and animals.
-        <br />
-        <br />
-        I really hope you love coming along with me, we will have an awesome time!
-        I&apos;m attaching a few pics I took on the last time I went there-get
-        excited!
-        <br />
-        <br />
-        See you soon, Alex Jonnold
+        {message?.Body}
       </Typography>
     </Sheet>
+      :
+      <></>
+    }
+    </>
   );
 }

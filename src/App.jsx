@@ -7,7 +7,6 @@ import ValidationService from "./services/Validation";
 import { fetchPortal, getPortal } from "./redux/features/portal.slice";
 import { useDispatch, useSelector } from "react-redux";
 import ForgotPassword from "./pages/ForgotPassword";
-import Messages from "./pages/Messages";
 import Inventory from "./pages/Inventory";
 import Case from "./pages/Case";
 import Analytics from "./pages/Analytics";
@@ -19,13 +18,13 @@ import ConfirmEmailChange from "./pages/ConfirmEmailChange";
 import ResetPassword from "./pages/ResetPassword";
 import RevertEmailChange from "./pages/RevertEmailChange";
 import Orders from "./pages/Orders";
-import Messages2 from "./pages/Messages2";
+import Inbox from "./pages/Inbox";
 
 export default function App()
 {
   const dispatch = useDispatch();
   const portal = useSelector(getPortal);
-
+  
   useEffect(() => {
     if(!portal){
       var subdomain = ValidationService.validateSubdomain(window.location.host);
@@ -79,8 +78,20 @@ export default function App()
       element: <Analytics/>
     },
     {
-      path: "/messages",
-      element: <Messages2/>
+      path: "/inbox",
+      element: <ProtectedRoute><Inbox/></ProtectedRoute>
+    },
+    {
+      path: "/sent",
+      element: <ProtectedRoute><Inbox/></ProtectedRoute>
+    },
+    {
+      path: "/flagged",
+      element: <ProtectedRoute><Inbox/></ProtectedRoute>
+    },
+    {
+      path: "/trash",
+      element: <ProtectedRoute><Inbox/></ProtectedRoute>
     },
     {
       path: "/support",

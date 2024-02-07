@@ -239,15 +239,17 @@ export default function Sidebar() {
             <ListItemButton
               role="menuitem"
               component="a"
-              onClick={() => navigate('/messages')}
+              onClick={() => navigate('/inbox')}
             >
               <QuestionAnswerRoundedIcon />
               <ListItemContent>
                 <Typography level="title-sm">Messages</Typography>
               </ListItemContent>
-              <Chip size="sm" color="primary" variant="solid">
-                {unreadMessageCount}
-              </Chip>
+              {unreadMessageCount > 0 &&
+                <Chip size="sm" color="primary" variant="solid">
+                  {unreadMessageCount}
+                </Chip>
+              }
             </ListItemButton>
           </ListItem>
 

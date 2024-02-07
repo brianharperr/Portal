@@ -30,6 +30,9 @@ import LogoutRoundedIcon from '@mui/icons-material/LogoutRounded';
 import MenuRoundedIcon from '@mui/icons-material/MenuRounded';
 
 import Navigation from './Navigation';
+import { axiosWithCredentials } from '../configs/axios';
+import { useSelector } from 'react-redux';
+import { getPortal } from '../redux/features/portal.slice';
 
 function ColorSchemeToggle() {
   const { mode, setMode } = useColorScheme();
@@ -63,7 +66,17 @@ function ColorSchemeToggle() {
 }
 
 export default function HeaderAlt() {
+
   const [open, setOpen] = React.useState(false);
+  const portal = useSelector(getPortal);
+  function logout()
+  {
+    axiosWithCredentials.get('/auth/portal/logout')
+    .then(() => {
+      window.location.href = "/"
+    })
+  }
+
   return (
     <Box
       sx={{
@@ -84,9 +97,9 @@ export default function HeaderAlt() {
           onClose={() => setOpen(false)}
         >
           <ModalClose />
-          <DialogTitle>Acme Co.</DialogTitle>
+          <DialogTitle>{portal?.Name}</DialogTitle>
           <Box sx={{ px: 1 }}>
-            <Navigation />
+            <Navigation onClose={() => setOpen(false)} />
           </Box>
         </Drawer>
       </Box>
@@ -158,7 +171,7 @@ export default function HeaderAlt() {
                 />
                 <Box sx={{ ml: 1.5 }}>
                   <Typography level="title-sm" textColor="text.primary">
-                    Rick Sanchez
+                    {localStorage.getItem('Name')}
                   </Typography>
                   <Typography level="body-xs" textColor="text.tertiary">
                     rick@email.com
@@ -176,19 +189,7 @@ export default function HeaderAlt() {
               Settings
             </MenuItem>
             <ListDivider />
-            <MenuItem component="a" href="/blog/first-look-at-joy/">
-              First look at Joy UI
-              <OpenInNewRoundedIcon />
-            </MenuItem>
-            <MenuItem
-              component="a"
-              href="https://github.com/mui/material-ui/tree/master/docs/data/joy/getting-started/templates/email"
-            >
-              Sourcecode
-              <OpenInNewRoundedIcon />
-            </MenuItem>
-            <ListDivider />
-            <MenuItem>
+            <MenuItem onClick={logout}>
               <LogoutRoundedIcon />
               Log out
             </MenuItem>

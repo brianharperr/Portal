@@ -1,11 +1,13 @@
 const TagConfig = [
     {
         label: 'Work',
-        theme: 'danger'
+        theme: 'primary',
+        level: '500'
     },
     {
         label: 'Personal',
-        theme: 'primary'
+        theme: 'danger',
+        level: '500'
     }
 ]
 export default TagConfig;

@@ -85,7 +85,6 @@ function SidePane(props: BoxProps) {
           borderRight: '1px solid',
           borderColor: 'divider',
           display: {
-            xs: 'none',
             md: 'initial',
           },
         },

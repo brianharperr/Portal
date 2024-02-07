@@ -24,6 +24,8 @@ import BlockIcon from '@mui/icons-material/Block';
 import AutorenewRoundedIcon from '@mui/icons-material/AutorenewRounded';
 import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
 import KeyboardArrowLeftIcon from '@mui/icons-material/KeyboardArrowLeft';
+import { useDispatch, useSelector } from 'react-redux';
+import { fetchOrders, getOrders } from '../redux/features/order.slice';
 
 const listItems = [
   {
@@ -108,6 +110,20 @@ function RowMenu() {
 }
 
 export default function OrderList() {
+
+  const dispatch = useDispatch();
+  const orders = useSelector(getOrders);
+
+  React.useEffect(() => {
+    // if(!orders){
+    //   var payload = {
+    //     filters: {
+          
+    //     }
+    //   }
+    //   dispatch(fetchOrders());
+    // }
+  }, [])
   return (
     <Box sx={{ display: { xs: 'block', sm: 'none' } }}>
       {listItems.map((listItem) => (

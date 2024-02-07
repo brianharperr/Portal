@@ -12,8 +12,12 @@ import OutboxRoundedIcon from '@mui/icons-material/OutboxRounded';
 import DraftsRoundedIcon from '@mui/icons-material/DraftsRounded';
 import AssistantPhotoRoundedIcon from '@mui/icons-material/AssistantPhotoRounded';
 import DeleteRoundedIcon from '@mui/icons-material/DeleteRounded';
+import { useLocation, useNavigate } from 'react-router-dom';
 
-export default function Navigation() {
+export default function Navigation({ onClose }) {
+  const location = useLocation();
+  const navigate = useNavigate();
+
   return (
     <List size="sm" sx={{ '--ListItem-radius': '8px', '--List-gap': '4px' }}>
       <ListItem nested>
@@ -22,7 +26,7 @@ export default function Navigation() {
         </ListSubheader>
         <List aria-labelledby="nav-list-browse">
           <ListItem>
-            <ListItemButton selected>
+            <ListItemButton onClick={() => {navigate('/inbox'); onClose()}} selected={location.pathname === '/inbox'}>
               <ListItemDecorator>
                 <InboxRoundedIcon fontSize="small" />
               </ListItemDecorator>
@@ -30,7 +34,7 @@ export default function Navigation() {
             </ListItemButton>
           </ListItem>
           <ListItem>
-            <ListItemButton>
+            <ListItemButton onClick={() => {navigate('/sent'); onClose()}} selected={location.pathname === '/sent'}>
               <ListItemDecorator>
                 <OutboxRoundedIcon fontSize="small" />
               </ListItemDecorator>
@@ -38,15 +42,7 @@ export default function Navigation() {
             </ListItemButton>
           </ListItem>
           <ListItem>
-            <ListItemButton>
-              <ListItemDecorator>
-                <DraftsRoundedIcon fontSize="small" />
-              </ListItemDecorator>
-              <ListItemContent>Draft</ListItemContent>
-            </ListItemButton>
-          </ListItem>
-          <ListItem>
-            <ListItemButton>
+            <ListItemButton onClick={() => {navigate('/flagged'); onClose()}} selected={location.pathname === '/flagged'}>
               <ListItemDecorator>
                 <AssistantPhotoRoundedIcon fontSize="small" />
               </ListItemDecorator>
@@ -54,7 +50,7 @@ export default function Navigation() {
             </ListItemButton>
           </ListItem>
           <ListItem>
-            <ListItemButton>
+            <ListItemButton onClick={() => {navigate('/trash'); onClose()}} selected={location.pathname === '/trash'}>
               <ListItemDecorator>
                 <DeleteRoundedIcon fontSize="small" />
               </ListItemDecorator>
@@ -75,7 +71,6 @@ export default function Navigation() {
           }}
         >
           <ListItem>
-            <ListItemButton>
               <ListItemDecorator>
                 <Box
                   sx={{
@@ -86,11 +81,9 @@ export default function Navigation() {
                   }}
                 />
               </ListItemDecorator>
-              <ListItemContent>Personal</ListItemContent>
-            </ListItemButton>
+              <ListItemContent>Work</ListItemContent>
           </ListItem>
           <ListItem>
-            <ListItemButton>
               <ListItemDecorator>
                 <Box
                   sx={{
@@ -101,8 +94,7 @@ export default function Navigation() {
                   }}
                 />
               </ListItemDecorator>
-              <ListItemContent>Work</ListItemContent>
-            </ListItemButton>
+              <ListItemContent>Personal</ListItemContent>
           </ListItem>
         </List>
       </ListItem>

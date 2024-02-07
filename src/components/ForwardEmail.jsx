@@ -15,18 +15,19 @@ import FormatListBulletedRoundedIcon from '@mui/icons-material/FormatListBullete
 import { axiosWithCredentials } from '../configs/axios';
 import { Close } from '@mui/icons-material';
 
-const WriteEmail = forwardRef(
-  function WriteEmail({ open, onClose }, ref) {
+const ForwardEmail = forwardRef(
+  function WriteEmail({ open, onClose, data }, ref) {
     const [users, setUsers] = useState([]);
     const [orders, setOrders] = useState([]);
     const [ccOptions, setCCOptions] = useState([]);
 
     const [to, setTo] = useState([]);
     const [cc, setCC] = useState([]);
-    const [subject, setSubject] = useState("");
     const [body, setBody] = useState("");
     const [tag, setTag] = useState(null);
     const [caseRef, setCaseRef] = useState([]);
+
+    const subject = "FW: " + data?.Subject;
 
     function handleMessageFormSubmission()
     {
@@ -37,7 +38,8 @@ const WriteEmail = forwardRef(
           Cc: cc?.map(x => x.id),
           Subject: subject,
           Body: body,
-          Tag: tag
+          Tag: tag,
+          ReplyID: data.ID
 
       }
       axiosWithCredentials.post('/message', payload)
@@ -50,7 +52,6 @@ const WriteEmail = forwardRef(
       if(!open){
         setTo([]);
         setCC([]);
-        setSubject("");
         setBody("");
         setTag(null);
         setCaseRef([]);
@@ -58,6 +59,7 @@ const WriteEmail = forwardRef(
     }, [open])
 
     useEffect(() => {
+      if(data){
       axiosWithCredentials.get('/search/users')
         .then(res => {
           if (res.data.length > 0) {
@@ -78,6 +80,7 @@ const WriteEmail = forwardRef(
         .catch(err => {
 
         });
+      }
     }, []);
 
     useEffect(() => {
@@ -113,7 +116,7 @@ const WriteEmail = forwardRef(
         }}
       >
         <Box sx={{ mb: 2 }}>
-          <Typography level="title-sm">New message</Typography>
+          <Typography level="title-sm">Forward message</Typography>
           <ModalClose id="close-icon" onClick={onClose} />
         </Box>
         <Box
@@ -123,11 +126,7 @@ const WriteEmail = forwardRef(
             <FormLabel>To</FormLabel>
             <Autocomplete multiple aria-label="Message" value={to} options={users} onChange={(e,data) => setTo(data)} />
           </FormControl>
-          <FormControl>
-            <FormLabel>CC</FormLabel>
-            <Autocomplete multiple aria-label="Message" value={cc} options={ccOptions} onChange={(e,data) => setCC(data)} />
-          </FormControl>
-          <Input placeholder="Subject" value={subject} aria-label="Message" onChange={(e) => setSubject(e.target.value)} />
+          <Input placeholder="Subject" value={subject} aria-label="Message" />
           <FormControl sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
             <Textarea
               placeholder="Type your message here…"
@@ -137,12 +136,10 @@ const WriteEmail = forwardRef(
               onChange={(e) => setBody(e.target.value)}
               endDecorator={
                 <Stack
-           
                   justifyContent="space-between"
                   alignItems="center"
                   flexGrow={1}
                   sx={{
-      
                     flexDirection: { xs: "column", md: "row"},
                     py: 1,
                     pr: 1,
@@ -226,4 +223,4 @@ const WriteEmail = forwardRef(
   }
 );
 
-export default WriteEmail;
+export default ForwardEmail;

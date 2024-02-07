@@ -7,16 +7,18 @@ import ListDivider from '@mui/joy/ListDivider';
 import ListItem from '@mui/joy/ListItem';
 import ListItemButton, { listItemButtonClasses } from '@mui/joy/ListItemButton';
 import ListItemDecorator from '@mui/joy/ListItemDecorator';
-import { GlobalStyles, IconButton, LinearProgress, Skeleton } from '@mui/joy';
-import { useDispatch, useSelector } from 'react-redux';
-import { fetchInbox, getInbox } from '../redux/features/message.slice';
+import { LinearProgress, Skeleton } from '@mui/joy';
+import { useSelector } from 'react-redux';
+import { getMessageStatus } from '../redux/features/message.slice';
+import TagConfig from '../data/Tags';
+import { useLocation } from 'react-router-dom';
 
-export default function EmailList({ selectedMessage, onMessageChange }) {
+export default function MessageList({ messages, selectedMessage, onMessageChange }) {
 
-  const dispatch = useDispatch();
-  const [loading, setLoading] = React.useState(true);
+  const location = useLocation();
+  const path = location.pathname.slice(1);
   const [readMessages, setReadMessages] = React.useState([]);
-  const messages = useSelector(getInbox);
+  const messageStatus = useSelector(getMessageStatus);
 
   function formatDate(string)
   {
@@ -31,34 +33,58 @@ export default function EmailList({ selectedMessage, onMessageChange }) {
     
   }
 
-  function unreadMarker(item)
+  React.useEffect(() => {
+
+  }, [messages])
+  function messageMarker(item)
   {
+    if(path === 'sent'){
+      return ''
+    }
+
     if(item.Read === 1){
-      return false;
+      if(item.Flagged){
+        return '4px solid var(--joy-palette-warning-500, #0B6BCB)'
+      }else{
+        return ''
+      }
     }else{
       if(readMessages.includes(item.ID)){
-        return false;
+        if(item.Flagged){
+          return '4px solid var(--joy-palette-warning-500, #0B6BCB)'
+        }else{
+          return ''
+        }
       }else{
-        return true;
+        return '4px solid var(--joy-palette-primary-500, #0B6BCB)';
       }
     }
   }
 
+  function tagMarker(item)
+  {
+    var config = TagConfig.find(x => x.label === item.Tag)
+    return (
+      <>
+      {config &&
+        <Box
+          sx={{
+            width: '8px',
+            height: '8px',
+            borderRadius: '99px',
+            bgcolor: `${config.theme}.${config.level}`,
+          }}
+        />
+      }
+      </>
+    )
+  }
   React.useEffect(() => {
 
     if(selectedMessage && !readMessages.includes(selectedMessage.ID)){
       setReadMessages([...readMessages, selectedMessage.ID])
     }
   }, [selectedMessage]);
-
-  React.useEffect(() => {
-    var payload = {
-      offset: 0,
-      limit: null,
-    }
-    dispatch(fetchInbox(payload)).unwrap()
-    .finally(() => setLoading(false));
-  }, []);
 
   return (
     <List
@@ -68,23 +94,23 @@ export default function EmailList({ selectedMessage, onMessageChange }) {
           borderLeftColor: 'var(--joy-palette-primary-outlinedBorder)',
         },
       }}
-      className="overflow-y-scroll h-[calc(100vh-140px)]"
+      className="overflow-y-auto h-[calc(100vh-140px)]"
     >
-      {loading && 
-      <div className='h-[20px]'>
-      <LinearProgress/>
+      <div className='min-h-[6px]'>
+      {messageStatus === 'loading' && <LinearProgress/>}
       </div>
-      }
-      {messages.map((item, index) => (
+      {messages?.map((item, index) => (
         <React.Fragment key={index}>
           <ListItem>
             <ListItemButton
+              selected={item.Flagged === 1}
+              color={item.Flagged === 1 ? "warning" : 'neutral'}
               {...(item.ID === selectedMessage?.ID && {
                 selected: true,
                 color: 'neutral',
               })}
               onClick={() => onMessageChange(item)}
-              sx={{ p: 2, borderLeft: unreadMarker(item) ? '4px solid var(--joy-palette-primary-500, #0B6BCB)': ''}}
+              sx={{ p: 2, borderLeft: messageMarker(item)}}
             >
               <ListItemDecorator sx={{ alignSelf: 'flex-start' }}>
                 {/* <Skeleton variant="circular" width={48} height={48} /> */}
@@ -101,14 +127,8 @@ export default function EmailList({ selectedMessage, onMessageChange }) {
                   <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5, width: 100 }}>
                     <Typography level="body-xs">{item.SenderName}</Typography>
                     {/* <Skeleton variant="text" level="body-xs" /> */}
-                    <Box
-                      sx={{
-                        width: '8px',
-                        height: '8px',
-                        borderRadius: '99px',
-                        bgcolor: 'danger.500',
-                      }}
-                    />
+                    {tagMarker(item)}
+                    
                   </Box>
                   <Typography level="body-xs" textColor="text.tertiary">
                     {formatDate(item.DateCreated)}

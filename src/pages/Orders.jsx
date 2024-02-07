@@ -94,7 +94,7 @@ export default function Orders() {
               size="sm"
               onClick={() => navigate('/new-case')}
             >
-              New Client
+              New Order
             </Button>
           </Box>
           <OrderTable />

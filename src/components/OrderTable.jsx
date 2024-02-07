@@ -467,6 +467,7 @@ export default function OrderTable() {
           variant="outlined"
           color="neutral"
           disabled={page === 0}
+          onClick={() => setPage(page - 1)}
           startDecorator={<KeyboardArrowLeftIcon />}
         >
           Previous
@@ -485,13 +486,13 @@ export default function OrderTable() {
           </IconButton>
         ))}
         <Box sx={{ flex: 1 }} />
-          {console.log(Math.ceil(totalResults/pageView))}
         <Button
           size="sm"
           variant="outlined"
           color="neutral"
           disabled={page + 1 === Math.ceil(totalResults/pageView)}
           endDecorator={<KeyboardArrowRightIcon />}
+          onClick={() => setPage(page + 1)}
         >
           Next
         </Button>

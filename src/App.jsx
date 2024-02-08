@@ -19,6 +19,9 @@ import ResetPassword from "./pages/ResetPassword";
 import RevertEmailChange from "./pages/RevertEmailChange";
 import Orders from "./pages/Orders";
 import Inbox from "./pages/Inbox";
+import Analytics2 from "./pages/Analytics2";
+import Dashboard2 from "./pages/Dashboard2";
+import NewOrder from "./pages/NewOrder";
 
 export default function App()
 {
@@ -39,7 +42,15 @@ export default function App()
   const router = createBrowserRouter([
     {
       path: "/",
+      element: <ProtectedRoute><Dashboard2/></ProtectedRoute>    
+    },
+    {
+      path: "/orders",
       element: <ProtectedRoute><Orders/></ProtectedRoute>    
+    },
+    {
+      path: "/new-order",
+      element: <ProtectedRoute><NewOrder/></ProtectedRoute>
     },
     {
       path: "/profile",
@@ -75,7 +86,7 @@ export default function App()
     },
     {
       path: "/analytics",
-      element: <Analytics/>
+      element: <Analytics2/>
     },
     {
       path: "/inbox",

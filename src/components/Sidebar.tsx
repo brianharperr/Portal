@@ -35,6 +35,7 @@ import ColorSchemeToggle from './ColorSchemeToggle';
 import { closeSidebar } from '../services/sidebar';
 import { axiosWithCredentials } from '../configs/axios';
 import { useNavigate } from 'react-router-dom';
+import usePath from '../hooks/usePath';
 
 function Toggler({
   defaultExpanded = false,
@@ -72,6 +73,7 @@ export default function Sidebar() {
 
   const [unreadMessageCount, setUnreadMessageCount] = React.useState(0);
   const navigate = useNavigate();
+  const path = usePath();
 
   function logout()
   {
@@ -169,7 +171,7 @@ export default function Sidebar() {
           }}
         >
           <ListItem>
-            <ListItemButton>
+            <ListItemButton onClick={() => navigate('/')} selected={path === ''}>
               <HomeRoundedIcon />
               <ListItemContent>
                 <Typography level="title-sm">Home</Typography>
@@ -178,7 +180,7 @@ export default function Sidebar() {
           </ListItem>
 
           <ListItem>
-            <ListItemButton selected>
+            <ListItemButton onClick={() => navigate('/orders')} selected={path === 'orders'}>
               <ShoppingCartRoundedIcon />
               <ListItemContent>
                 <Typography level="title-sm">Orders</Typography>
@@ -202,23 +204,23 @@ export default function Sidebar() {
             >
               <List sx={{ gap: 0.5 }}>
                 <ListItem sx={{ mt: 0.5 }}>
-                  <ListItemButton>All tasks</ListItemButton>
+                  <ListItemButton selected={path === 'tasks'}>All tasks</ListItemButton>
                 </ListItem>
                 <ListItem>
-                  <ListItemButton>Backlog</ListItemButton>
+                  <ListItemButton selected={path === 'backlog'}>Backlog</ListItemButton>
                 </ListItem>
                 <ListItem>
-                  <ListItemButton>In progress</ListItemButton>
+                  <ListItemButton selected={path === 'inprogress'}>In progress</ListItemButton>
                 </ListItem>
                 <ListItem>
-                  <ListItemButton>Done</ListItemButton>
+                  <ListItemButton selected={path === 'done'}>Done</ListItemButton>
                 </ListItem>
               </List>
             </Toggler>
           </ListItem>
 
           <ListItem>
-            <ListItemButton>
+            <ListItemButton selected={path === 'schedule'}>
               <CalendarMonthIcon />
               <ListItemContent>
                 <Typography level="title-sm">Schedule</Typography>
@@ -227,7 +229,7 @@ export default function Sidebar() {
           </ListItem>
 
           <ListItem onClick={() => navigate('/analytics')}>
-            <ListItemButton>
+            <ListItemButton selected={path === 'analytics'}>
               <DashboardRoundedIcon />
               <ListItemContent>
                 <Typography level="title-sm">Analytics</Typography>
@@ -270,6 +272,7 @@ export default function Sidebar() {
               <List sx={{ gap: 0.5 }}>
                 <ListItem sx={{ mt: 0.5 }}>
                   <ListItemButton
+                    selected={path === 'profile'}
                     role="menuitem"
                     component="a"
                     href="/joy-ui/getting-started/templates/profile-dashboard/"

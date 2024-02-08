@@ -16,8 +16,9 @@ import OrderTable from '../components/OrderTable';
 import OrderList from '../components/OrderList';
 import Header from '../components/Header';
 import { useNavigate } from 'react-router-dom';
+import AnalyticsComponent from '../components/analytics/AnalyticsComponent';
 
-export default function Orders() {
+export default function Analytics2() {
 
     const navigate = useNavigate();
   return (
@@ -70,7 +71,7 @@ export default function Orders() {
                 Dashboard
               </Link>
               <Typography color="primary" fontWeight={500} fontSize={12}>
-                Orders
+                Analytics
               </Typography>
             </Breadcrumbs>
           </Box>
@@ -86,19 +87,10 @@ export default function Orders() {
             }}
           >
             <Typography level="h2" component="h1">
-              Orders
+              Analytics
             </Typography>
-            <Button
-              color="primary"
-              startDecorator={<DownloadRoundedIcon />}
-              size="sm"
-              onClick={() => navigate('/new-order')}
-            >
-              New Order
-            </Button>
           </Box>
-          <OrderTable />
-          <OrderList />
+            <AnalyticsComponent/>
         </Box>
       </Box>
     </CssVarsProvider>

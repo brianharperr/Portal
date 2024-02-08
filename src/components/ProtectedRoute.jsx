@@ -40,7 +40,6 @@ export default function ProtectedRoute({ children, alternate, portalFetch = true
     
     useEffect(() => {
         if(user){
-
             var api = import.meta.env.VITE_REACT_APP_API_URL;
             const eventSource = new EventSource(`${api}/events/${user.sub}`, { withCredentials: true});
             // Event listener for incoming messages

@@ -36,7 +36,10 @@
   color: #1677ff !important;
 }
 
-
+::-webkit-scrollbar{
+  background-color: #ddd;
+  width: var(--sb-size)
+}
 
 body {
   --sb-track-color: #ffffff;

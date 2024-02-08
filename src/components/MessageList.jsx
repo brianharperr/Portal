@@ -33,9 +33,6 @@ export default function MessageList({ messages, selectedMessage, onMessageChange
     
   }
 
-  React.useEffect(() => {
-
-  }, [messages])
   function messageMarker(item)
   {
     if(path === 'sent'){
@@ -79,6 +76,11 @@ export default function MessageList({ messages, selectedMessage, onMessageChange
       </>
     )
   }
+
+  React.useEffect(() => {
+
+  }, [messages])
+  
   React.useEffect(() => {
 
     if(selectedMessage && !readMessages.includes(selectedMessage.ID)){

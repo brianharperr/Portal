@@ -2,7 +2,7 @@
 @tailwind components;
 @tailwind utilities;
 
-@layer utilities {
+/* @layer utilities {
   .scrollbar::-webkit-scrollbar {
     width: 20px;
     height: 20px;
@@ -22,7 +22,7 @@
   .scrollbar::-webkit-scrollbar-thumb:hover {
     background: #c0a0b9;
   }
-}
+} */
 
 .ant-table-row:hover{
   cursor: pointer;
@@ -36,12 +36,12 @@
   color: #1677ff !important;
 }
 
-::-webkit-scrollbar{
+/* ::-webkit-scrollbar{
   background-color: #ddd;
   width: var(--sb-size)
-}
+} */
 
-body {
+/* body {
   --sb-track-color: #ffffff;
   --sb-thumb-color: #d8d8d8;
   --sb-size: 10px;
@@ -68,4 +68,8 @@ body::-webkit-scrollbar-thumb {
     scrollbar-color: var(--sb-thumb-color)
                      var(--sb-track-color);
   }
+} */
+
+.react-grid-item.react-grid-placeholder {
+  display: none !important;
 }

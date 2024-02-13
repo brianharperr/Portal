@@ -12,31 +12,11 @@ import ChevronRightRoundedIcon from '@mui/icons-material/ChevronRightRounded';
 import Sidebar from '../components/Sidebar';
 import Header from '../components/Header';
 import { useNavigate } from 'react-router-dom';
-import { Add } from '@mui/icons-material';
-import { Dropdown, Grid, Menu, MenuButton, MenuItem } from '@mui/joy';
-import { axiosWithCredentials } from '../configs/axios';
-import BacklogWidget from '../components/widgets/BacklogWidget';
+import { useDispatch, useSelector } from 'react-redux';
+import { createWidget, fetchWidgets, getWidgets } from '../redux/features/widget.slice';
+import Widgets from '../components/widgets/Widgets';
 
 export default function Dashboard2() {
-
-    const navigate = useNavigate();
-    const [widgets, setWidgets] = useState([]);
-    const [addWidgetLoading, setAddWidgetLoading] = useState(false);
-    function addWidget(type)
-    {
-        setAddWidgetLoading(true);
-        axiosWithCredentials.post('/widget', { Type: type })
-        .then(res => {
-            setWidgets(prev => [...prev, res.data])
-        })
-        .finally(() => setAddWidgetLoading(false))
-    }
-
-    useEffect(() => {
-        axiosWithCredentials.get('/widget')
-        .then(res => setWidgets(res.data))
-        .catch((err) => {})
-    }, [])
 
   return (
     <CssVarsProvider disableTransitionOnChange>
@@ -104,33 +84,7 @@ export default function Dashboard2() {
               Home
             </Typography>
           </Box>
-          <Grid container
-          spacing={{ xs: 2, md: 3 }}
-          columns={{ xs: 4, sm: 8, md: 12 }}
-          sx={{ flexGrow: 1 }}>
-          {widgets.map(x => {
-            switch(x.Type){
-                case 'Backlog':
-                    return (
-                      <Grid xs={12} sm={12} md={6}>
-                        <BacklogWidget/>
-                      </Grid>
-                    )
-                default:
-                    return null;
-            }
-          })}
-          </Grid>
-            <Dropdown variant='outlined'>
-                <MenuButton loading={addWidgetLoading} sx={{ width: 200}} color='primary'>
-                <Add/>
-                Add Widget
-                </MenuButton>
-                <Menu size='sm' placement='bottom-start'>
-                    <MenuItem onClick={() => addWidget("Spotlight")}>Spotlight</MenuItem>
-                    <MenuItem onClick={() => addWidget("Backlog")}>Backlog</MenuItem>
-                </Menu>
-            </Dropdown>
+          <Widgets/>
         </Box>
       </Box>
     </CssVarsProvider>

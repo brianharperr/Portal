@@ -6,13 +6,16 @@ import userReducer from './features/user.slice';
 import analyticReducer from './features/analytic.slice';
 import messageReducer from './features/message.slice';
 import casetwoReducer from './features/casetwo.slice';
+import widgetReducer from './features/widget.slice';
+
 const reducer = combineReducers({
     portal: portalReducer,
     case: caseReducer,
     user: userReducer,
     analytic: analyticReducer,
     message: messageReducer,
-    caseTwo: casetwoReducer
+    caseTwo: casetwoReducer,
+    widget: widgetReducer
 });
 
 

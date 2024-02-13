@@ -25,6 +25,7 @@
     "react-apexcharts": "^1.4.1",
     "react-dom": "^18.2.0",
     "react-google-recaptcha": "^3.1.0",
+    "react-grid-layout": "^1.4.4",
     "react-highlight-words": "^0.20.0",
     "react-imask": "^7.3.0",
     "react-mentions": "^4.4.10",

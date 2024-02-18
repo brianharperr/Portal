@@ -10,8 +10,8 @@ const initialState = {
     theme: null
 }
 
-export const fetchPortal = createAsyncThunk('portal/fetchPortal', async () => {
-    const response = await axiosWithCredentials.get('/portal/' + window.location.hostname.split('.')[0]);
+export const fetchPortal = createAsyncThunk('portal/fetchPortal', async (subdomain) => {
+    const response = await axiosWithCredentials.get('/portal/' + subdomain);
     if(!response.data.portal){
         window.location.href = "https://familylynk.com"
     }

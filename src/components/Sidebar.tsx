@@ -36,6 +36,8 @@ import { closeSidebar } from '../services/sidebar';
 import { axiosWithCredentials } from '../configs/axios';
 import { useNavigate } from 'react-router-dom';
 import usePath from '../hooks/usePath';
+import { useSelector } from 'react-redux';
+import { getUser } from '../redux/features/user.slice';
 
 function Toggler({
   defaultExpanded = false,
@@ -72,6 +74,7 @@ function Toggler({
 export default function Sidebar() {
 
   const [unreadMessageCount, setUnreadMessageCount] = React.useState(0);
+  const user = useSelector(getUser);
   const navigate = useNavigate();
   const path = usePath();
 
@@ -79,6 +82,7 @@ export default function Sidebar() {
   {
     axiosWithCredentials.get('/auth/portal/logout')
     .then(() => {
+      sessionStorage.clear();
       window.location.href = "/"
     })
   }
@@ -275,7 +279,7 @@ export default function Sidebar() {
                     selected={path === 'profile'}
                     role="menuitem"
                     component="a"
-                    href="/joy-ui/getting-started/templates/profile-dashboard/"
+                    href="/profile"
                   >
                     My profile
                   </ListItemButton>
@@ -341,7 +345,7 @@ export default function Sidebar() {
         <Avatar
           variant="outlined"
           size="sm"
-          src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=286"
+          src={user?.Pic}
         />
         <Box sx={{ minWidth: 0, flex: 1 }}>
           <Typography level="title-sm">{localStorage.getItem('Name') ?? "Unknown User"}</Typography>

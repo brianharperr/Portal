@@ -2,7 +2,7 @@ import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
 import { axiosWithCredentials } from '../../configs/axios';
 
 const initialState = {
-    widgets: [],
+    widgets: null,
     status: 'idle',
     error: null,
 }

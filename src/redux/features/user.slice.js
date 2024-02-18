@@ -27,6 +27,17 @@ export const updateUser = createAsyncThunk('user/updateUser', async (payload) =>
     return response.data;
 })
 
+export const updateProfilePicture = createAsyncThunk('user/updateProfilePicture', async (payload) => {
+    const formData = new FormData();
+    formData.append('file', payload);
+    const response = await axiosWithCredentials.patch('/user/portal/profile-picture', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+    });
+    return response.data;
+})
+
 export const updateNotificationSettings = createAsyncThunk('user/updateNotifications', async (payload) => {
     const response = await axiosWithCredentials.patch('/user/portal/notifications', payload);
 
@@ -63,6 +74,14 @@ export const userSlice = createSlice({
             .addCase(fetchPermissions.fulfilled, (state, action) => {
                 state.status = 'succeeded';
                 state.permissions = action.payload;
+            })
+            .addCase(updateProfilePicture.fulfilled, (state, action) => {
+                state.status = 'succeeded';
+                console.log(action.payload);
+                state.data =  {
+                    ...state.data,
+                    Pic: action.payload,
+                };
             })
             .addCase(updateNotificationSettings.fulfilled, (state, action) => {
                 state.status = 'succeeded';

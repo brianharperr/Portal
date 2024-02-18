@@ -73,3 +73,11 @@ body::-webkit-scrollbar-thumb {
 .react-grid-item.react-grid-placeholder {
   display: none !important;
 }
+
+.cropper-crop-box, .cropper-view-box, .cropper-face, .cropper-container{
+  border-radius: 9999px !important;
+}
+
+.cropper-container{
+  height: 0px !important
+}

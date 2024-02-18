@@ -210,21 +210,22 @@ export default function OrderTable() {
   }
 
   React.useEffect(() => {
+    if(nameFilter !== null){
+      const delayDebounceFn = setTimeout(() => {
+        fetchData();
+      }, 300)
 
-    const delayDebounceFn = setTimeout(() => {
-      fetchData();
-    }, 300)
-
-    return () => clearTimeout(delayDebounceFn)
+      return () => clearTimeout(delayDebounceFn)
+    }
   }, [nameFilter])
 
   React.useEffect(() => {
+    console.log("hit");
     fetchData();
   }, [homeFilter, serviceFilter, directorFilter, directorFilter, statusFilter, page, pageView])
 
   React.useEffect(() => {
     if(portal){
-      fetchData();
       axiosWithCredentials.get('/procedure/order-table-filters', { params: { id: portal.ID } })
       .then(res => {
         setFilters(res.data);
@@ -274,9 +275,6 @@ export default function OrderTable() {
           </ModalDialog>
         </Modal>
       </Sheet>
-      {!loading && rows.length === 0 &&
-      "No orders here."
-      }
         <Box
         className="SearchAndFilters-tabletUp"
         sx={{
@@ -297,6 +295,9 @@ export default function OrderTable() {
         {renderFilters()}
       </Box>
       {loading && <Sheet><LinearProgress/></Sheet>}
+      {!loading && rows.length === 0 &&
+      "No orders here."
+      }
       {!loading && rows.length > 0 &&
       <>
       <Sheet

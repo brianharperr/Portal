@@ -46,7 +46,7 @@ export default function Widgets()
     }
 
     useEffect(() => {
-        if(widgets.length > 0){
+        if(widgets){
             var format = widgets.map(widget => ({
                 i: widget.ID.toString(),
                 x: widget.x,
@@ -62,7 +62,7 @@ export default function Widgets()
             dispatch(fetchWidgets());
         }
     }, [widgets])
-
+    
     return (
         <>
             {/* <Snackbar

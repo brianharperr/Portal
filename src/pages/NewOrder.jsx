@@ -37,6 +37,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { getPortal } from "../redux/features/portal.slice";
 import { axiosWithCredentials } from "../configs/axios";
 import { createCase } from "../redux/features/case.slice";
+import { nullIfEmpty } from "../utils/strings";
 
 const ErrorMessage = ({message}) => {
     return (
@@ -154,10 +155,10 @@ export default function NewOrder() {
     if(home && service && director){
         var payload = {
             Contact: {
-                FirstName: cFirstName,
-                LastName: cLastName,
-                Email: cEmail,
-                PhoneNumber: cPhoneNumber,
+                FirstName: nullIfEmpty(cFirstName),
+                LastName: nullIfEmpty(cLastName),
+                Email: nullIfEmpty(cEmail),
+                PhoneNumber: nullIfEmpty(cPhoneNumber),
                 Relation: (cRelation === "Other") ? cOtherRelation : cRelation
             },
             Patient: {

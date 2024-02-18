@@ -4,6 +4,7 @@ import { useMatch, useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { fetchMessages } from "../redux/features/message.slice";
 import WebNotificationHandler from "./WebNotificationHandler";
+import axios from "axios";
 
 export default function ProtectedRoute({ children, alternate, portalFetch = true }){
 
@@ -37,42 +38,6 @@ export default function ProtectedRoute({ children, alternate, portalFetch = true
         });
 
     }, []);
-    
-    useEffect(() => {
-        if(user){
-            var api = import.meta.env.VITE_REACT_APP_API_URL;
-            const eventSource = new EventSource(`${api}/events/${user.sub}`, { withCredentials: true});
-            // Event listener for incoming messages
-            eventSource.onmessage = (e) => {
-                const data = JSON.parse(e.data);
-                if(isMessagesRoute){
-                    var payload = {
-                        offset: 0,
-                        limit: null,
-                      }
-                    dispatch(fetchMessages(payload));
-                }
-                setNotification({
-                    ...notification, 
-                    open: true,
-                    message: data.Subject,
-                    title: data.Sender,
-                    id: data.ID
-                })
-            }
-
-            // Handle SSE connection errors
-            eventSource.onerror = (error) => {
-            console.error('EventSource failed:', error);
-            eventSource.close();
-            };
-
-            // Clean up the SSE connection when the component unmounts
-            return () => {
-                eventSource.close();
-            };
-        }
-    }, [user])
     return (
         <>
         {auth ?

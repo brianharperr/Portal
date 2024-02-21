@@ -56,7 +56,7 @@ export default function BacklogWidget({ id })
             <tbody>
                 {orders?.map(order => {
                     return (
-                        <tr className="hover:cursor-pointer" onClick={() => navigate('/order/' + order.DisplayID)}>
+                        <tr key={order.DisplayID} className="hover:cursor-pointer" onClick={() => navigate('/order/' + order.DisplayID)}>
                             <td>{order.DisplayID}</td>
                             <td>{order.Patient.FirstName + ' ' + order.Patient.LastName}</td>
                             <td>{order.Service.Name}</td>

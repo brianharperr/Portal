@@ -1,19 +1,16 @@
 import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
-import { useLocation } from "react-router-dom";
 import { fetchMessages } from "../redux/features/message.slice";
 import Notification from "./Notification";
 
 export default function WebNotificationHandler({ user })
 {
-    const location = useLocation();
     const dispatch = useDispatch();
     const [notificationStack, setNotificationStack] = useState([]);
 
     function pageSpecificBehavior()
     {
-
-        switch(location.pathname){
+        switch(window.location.pathname){
             case '/inbox':
                 //Refresh inbox
                 var payload = {
@@ -34,7 +31,7 @@ export default function WebNotificationHandler({ user })
     useEffect(() => {
 
         var api = import.meta.env.VITE_API_URL;
-        const eventSource = new EventSource(`${api}/events/${user.sub}`, { withCredentials: true});
+        const eventSource = new EventSource(`${api}/events/${user.sub}/notification`, { withCredentials: true});
         // Event listener for incoming messages
         eventSource.onmessage = (e) => {
             const data = JSON.parse(e.data);

@@ -33,7 +33,7 @@ export default function ImageCropper({ small, image, visible, onClose })
 
     const resizeImage = (file, maxWidth, maxHeight) => {
         return new Promise((resolve) => {
-          Resizer.imageFileResizer(file, maxWidth, maxHeight, 'JPEG', 60, 0, (resizedImage) => {
+          Resizer.imageFileResizer(file, maxWidth, maxHeight, 'JPEG', 80, 0, (resizedImage) => {
             resolve(resizedImage);
           }, 'blob');
         });

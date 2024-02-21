@@ -36,22 +36,16 @@ import { closeSidebar } from '../services/sidebar';
 import { axiosWithCredentials } from '../configs/axios';
 import { useNavigate } from 'react-router-dom';
 import usePath from '../hooks/usePath';
-import { useSelector } from 'react-redux';
-import { getUser } from '../redux/features/user.slice';
+import { useDispatch, useSelector } from 'react-redux';
+import { fetchUser, getUser } from '../redux/features/user.slice';
 
 function Toggler({
   defaultExpanded = false,
   renderToggle,
   children,
-}: {
-  defaultExpanded?: boolean;
-  children: React.ReactNode;
-  renderToggle: (params: {
-    open: boolean;
-    setOpen: React.Dispatch<React.SetStateAction<boolean>>;
-  }) => React.ReactNode;
 }) {
   const [open, setOpen] = React.useState(defaultExpanded);
+
   return (
     <React.Fragment>
       {renderToggle({ open, setOpen })}
@@ -77,7 +71,7 @@ export default function Sidebar() {
   const user = useSelector(getUser);
   const navigate = useNavigate();
   const path = usePath();
-
+  const dispatch = useDispatch();
   function logout()
   {
     axiosWithCredentials.get('/auth/portal/logout')
@@ -93,6 +87,12 @@ export default function Sidebar() {
       setUnreadMessageCount(res.data);
     })
   }, []);
+
+  React.useEffect(() => {
+    if(!user){
+      dispatch(fetchUser());
+    }
+  }, [user]);
 
   return (
     <Sheet
@@ -348,8 +348,8 @@ export default function Sidebar() {
           src={user?.Pic}
         />
         <Box sx={{ minWidth: 0, flex: 1 }}>
-          <Typography level="title-sm">{localStorage.getItem('Name') ?? "Unknown User"}</Typography>
-          <Typography level="body-xs">{localStorage.getItem('Role') ?? "Unknown Role"}</Typography>
+          <Typography level="title-sm">{user?.FirstName + " " + user?.LastName ?? "Unknown User"}</Typography>
+          <Typography level="body-xs">{user?.Role.Name ?? "Unknown Role"}</Typography>
         </Box>
         <IconButton size="sm" variant="plain" color="neutral" onClick={logout}>
           <LogoutRoundedIcon />

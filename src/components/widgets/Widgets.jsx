@@ -13,7 +13,7 @@ export default function Widgets()
 {
     const dispatch = useDispatch();
     const widgets = useSelector(getWidgets);
-    const [layout, setLayout] = useState([])
+    const [layout, setLayout] = useState({ lg: [] })
     const [addWidgetLoading, setAddWidgetLoading] = useState(false);
 
     const ResponsiveGridLayout = WidthProvider(Responsive);

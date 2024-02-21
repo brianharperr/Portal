@@ -9,7 +9,7 @@ const initialState = {
     role: null
 }
 
-export const fetchUser = createAsyncThunk('user/fetchUser', async (payload) => {
+export const fetchUser = createAsyncThunk('user/fetchUser', async () => {
     const response = await axiosWithCredentials.get('/user/portal/single');
 
     return response.data;
@@ -23,7 +23,6 @@ export const resetPassword = createAsyncThunk('user/resetPassword', async (paylo
 
 export const updateUser = createAsyncThunk('user/updateUser', async (payload) => {
     const response = await axiosWithCredentials.patch('/user', payload);
-
     return response.data;
 })
 
@@ -77,7 +76,6 @@ export const userSlice = createSlice({
             })
             .addCase(updateProfilePicture.fulfilled, (state, action) => {
                 state.status = 'succeeded';
-                console.log(action.payload);
                 state.data =  {
                     ...state.data,
                     Pic: action.payload,

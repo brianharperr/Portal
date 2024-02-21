@@ -439,7 +439,7 @@ export default function OrderTable() {
                 </td>
                 <td>
                   <Box sx={{ display: 'flex', gap: 2, alignItems: 'center' }}>
-                    <Link level="body-xs" component="button" onClick={() => navigate('/case/' + row.id)}>
+                    <Link level="body-xs" component="button" onClick={() => navigate('/order?id=' + row.DisplayID)}>
                       Edit
                     </Link>
                     <RowMenu payload={row} id={portal.ID} />

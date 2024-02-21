@@ -15,6 +15,7 @@ import Dashboard2 from "./pages/Dashboard2";
 import NewOrder from "./pages/NewOrder";
 import axios from "axios";
 import Profile2 from "./pages/Profile2";
+import Order from "./pages/Order";
 
 export default function App()
 {
@@ -49,6 +50,10 @@ export default function App()
       element: <ProtectedRoute><Orders/></ProtectedRoute>    
     },
     {
+      path: "/order",
+      element: <ProtectedRoute><Order/></ProtectedRoute>    
+    },
+    {
       path: "/new-order",
       element: <ProtectedRoute><NewOrder/></ProtectedRoute>
     },
@@ -70,7 +75,7 @@ export default function App()
     },
     {
       path: "/analytics",
-      element: <Analytics2/>
+      element: <ProtectedRoute><Analytics2/></ProtectedRoute>
     },
     {
       path: "/inbox",

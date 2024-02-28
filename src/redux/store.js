@@ -7,10 +7,12 @@ import analyticReducer from './features/analytic.slice';
 import messageReducer from './features/message.slice';
 import casetwoReducer from './features/casetwo.slice';
 import widgetReducer from './features/widget.slice';
+import orderReducer from './features/order.slice';
 
 const reducer = combineReducers({
     portal: portalReducer,
     case: caseReducer,
+    order: orderReducer,
     user: userReducer,
     analytic: analyticReducer,
     message: messageReducer,

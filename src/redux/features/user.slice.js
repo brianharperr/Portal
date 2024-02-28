@@ -2,6 +2,7 @@ import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
 import { axiosWithCredentials } from '../../configs/axios';
 
 const initialState = {
+    users: null,
     data: null,
     permissions: null,
     status: 'idle',
@@ -11,6 +12,12 @@ const initialState = {
 
 export const fetchUser = createAsyncThunk('user/fetchUser', async () => {
     const response = await axiosWithCredentials.get('/user/portal/single');
+
+    return response.data;
+})
+
+export const fetchUsers = createAsyncThunk('user/fetchUsers', async () => {
+    const response = await axiosWithCredentials.get('/user/portal');
 
     return response.data;
 })
@@ -70,6 +77,10 @@ export const userSlice = createSlice({
                 state.status = 'succeeded';
                 state.data = action.payload;
             })
+            .addCase(fetchUsers.fulfilled, (state, action) => {
+                state.status = 'succeeded';
+                state.users = action.payload;
+            })
             .addCase(fetchPermissions.fulfilled, (state, action) => {
                 state.status = 'succeeded';
                 state.permissions = action.payload;
@@ -93,6 +104,7 @@ export const userSlice = createSlice({
 })
 
 // Action creators are generated for each case reducer function
+export const getUsers = (state) => state.user.users;
 export const getUser = (state) => state.user.data;
 export const getUserStatus = (state) => state.user.status;
 export const getUserError = (state) => state.user.error;

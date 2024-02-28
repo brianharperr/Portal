@@ -181,7 +181,7 @@ export default function NewOrder() {
         axiosWithCredentials.post('/case', payload)
         .then(res => {
             if(res.data.DisplayID){
-                navigate('/order/' + res.data.DisplayID);
+                navigate('/order?id=' + res.data.DisplayID);
             }
         })
         .finally(() => setLoading(false))

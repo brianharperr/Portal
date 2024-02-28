@@ -7,7 +7,7 @@ const initialState = {
     error: null,
 }
 
-export const fetchOrders = createAsyncThunk('case/fetchOrders', async (payload) => {
+export const fetchOrders = createAsyncThunk('/order/fetchOrders', async (payload) => {
  
     var payload = {
         id: payload.PortalID,
@@ -22,25 +22,24 @@ export const fetchOrders = createAsyncThunk('case/fetchOrders', async (payload) 
     return await axiosWithCredentials.get('/procedure/order-table', { params: payload })
 })
 
-export const fetchCase = createAsyncThunk('case/fetchCase', async (payload) => {
+export const fetchCase = createAsyncThunk('/order/fetchCase', async (payload) => {
     const response = await axiosWithCredentials.get('/case', { params: payload });
 
     return response.data;
 })
 
-export const createCase = createAsyncThunk('case/createCase', async (payload) => {
+export const createCase = createAsyncThunk('/order/createCase', async (payload) => {
     const response = await axiosWithCredentials.post('/case', payload);
 
     return response.data;
 })
 
-export const deleteCase = createAsyncThunk('case/deleteCase', async (caseID) => {
+export const deleteCase = createAsyncThunk('/order/deleteCase', async (caseID) => {
     const response = await axiosWithCredentials.delete('/case?id=' + caseID);
-
     return response.data;
 })
 
-export const downloadTags = createAsyncThunk('/case/downloadTags', async (payload) => {
+export const downloadTags = createAsyncThunk('/order/downloadTags', async (payload) => {
     const response = await axiosWithCredentials.get('case/tag?id=' + payload.ID, {
         responseType: 'blob'
     })
@@ -59,7 +58,7 @@ export const downloadTags = createAsyncThunk('/case/downloadTags', async (payloa
 })
 
 
-export const downloadReport = createAsyncThunk('/case/downloadReport', async (payload) => {
+export const downloadReport = createAsyncThunk('/order/downloadReport', async (payload) => {
     const response = await axiosWithCredentials.get('case/report?portal=' + payload.PortalID + '&id=' + payload.DisplayID, {
         responseType: 'blob'
     })
@@ -77,53 +76,53 @@ export const downloadReport = createAsyncThunk('/case/downloadReport', async (pa
     return response.data;
 })
 
-export const editContact = createAsyncThunk('/case/editContact', async (payload) => {
+export const editContact = createAsyncThunk('/order/editContact', async (payload) => {
     const response = await axiosWithCredentials.post('/case/contact', payload);
 
     return response.data;
 })
 
-export const editPatient = createAsyncThunk('/case/editPatient', async (payload) => {
+export const editPatient = createAsyncThunk('/order/editPatient', async (payload) => {
     const response = await axiosWithCredentials.post('/case/patient', payload);
 
     return response.data;
 })
 
-export const editProcessing = createAsyncThunk('/case/editProcessing', async (payload) => {
+export const editProcessing = createAsyncThunk('/order/editProcessing', async (payload) => {
     const response = await axiosWithCredentials.post('/case/processing', payload);
 
     return response.data;
 })
 
-export const editTask = createAsyncThunk('/case/editTask', async (payload) => {
+export const editTask = createAsyncThunk('/order/editTask', async (payload) => {
     const response = await axiosWithCredentials.post('/case/task/update', payload);
 
     return response.data;
 });
 
-export const toggleTaskComplete = createAsyncThunk('/case/editTask', async (ID) => {
+export const toggleTaskComplete = createAsyncThunk('/order/editTask', async (ID) => {
     const response = await axiosWithCredentials.post('/case/task/complete?id=' + ID);
 
     return response.data;
 });
 
-export const toggleCaseStatus = createAsyncThunk('/case/toggleCaseStatus', async (payload) => {
+export const toggleCaseStatus = createAsyncThunk('/order/toggleCaseStatus', async (payload) => {
 
     const response = await axiosWithCredentials.put('/case/status', payload);
     return response.data;
 });
 
-export const updateCase = createAsyncThunk('/case/updateCase', async (payload) => {
+export const updateCase = createAsyncThunk('/order/updateCase', async (payload) => {
     const response = await axiosWithCredentials.patch('/case' + payload.Method, payload);
     return response.data;
 });
 
-export const uncompleteCase = createAsyncThunk('/case/uncompleteCase', async (payload) => {
+export const uncompleteCase = createAsyncThunk('/order/uncompleteCase', async (payload) => {
     const response = await axiosWithCredentials.patch('/case/task/status', payload);
     return response.data;
 });
 
-export const updateCaseAndReload = createAsyncThunk('/case/updateAndReloadCase', async (payload) => {
+export const updateCaseAndReload = createAsyncThunk('/order/updateAndReloadCase', async (payload) => {
     const response = await axiosWithCredentials.patch('/case' + payload.Method, payload);
     return response.data;
 });
@@ -196,8 +195,6 @@ export const orderSlice = createSlice({
             })
             .addCase(deleteCase.fulfilled, (state, action) => {
                 state.status = 'succeeded';
-                state.data = action.payload;
-                window.location.href = "/";
             })
             .addCase(deleteCase.rejected, (state, action) => {
                 state.status = 'failed';

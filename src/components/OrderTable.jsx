@@ -242,6 +242,10 @@ export default function OrderTable() {
 
   React.useEffect(() => {
     fetchData();
+  }, [portal])
+
+  React.useEffect(() => {
+    fetchData();
   }, [homeFilter, serviceFilter, directorFilter, directorFilter, statusFilter, page, pageView])
 
   React.useEffect(() => {
@@ -431,7 +435,7 @@ export default function OrderTable() {
                       {
                         Complete: 'success',
                         Refunded: 'neutral',
-                        Paused: 'danger',
+                        Cancelled: 'danger',
                       }[row.Status]
                     }
                   >
@@ -462,7 +466,6 @@ export default function OrderTable() {
                       Edit
                     </Link>
                     <RowMenu payload={row} id={portal.ID} onDelete={() => setDeleteConfirmation(row.ID)} />
-                    {console.log(deleteConfirmation)}
                     <Transition in={deleteConfirmation} timeout={400}>
                       {(state) => (
                         <Modal

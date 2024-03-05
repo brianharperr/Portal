@@ -253,7 +253,7 @@ export default function Login() {
   }
 
   return (
-    <CssVarsProvider defaultMode="dark" disableTransitionOnChange>
+    <CssVarsProvider defaultMode="light" disableTransitionOnChange>
       <CssBaseline />
       <GlobalStyles
         styles={{

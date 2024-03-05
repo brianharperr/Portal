@@ -36,6 +36,7 @@ import { axiosWithCredentials } from '../configs/axios';
 import timezone from '../data/Timezones';
 import InputMask from "react-input-mask";
 import { CheckCircleOutline } from '@mui/icons-material';
+import ResetPasswordModal from '../components/modals/ResetPasswordModal.jsx';
 const VisuallyHiddenInput = styled('input')`
   clip: rect(0 0 0 0);
   clip-path: inset(50%);
@@ -53,6 +54,7 @@ export default function Profile2() {
     const dispatch = useDispatch();
     const [roles, setRoles] = useState(null);
     const user = useSelector(getUser);
+    const [resetPassword, setResetPassword] = useState(false);
     const [saveStatus, setSaveStatus] = useState('idle');
     const [imageCrop, setImageCrop] = useState({
         open: false,
@@ -135,6 +137,7 @@ export default function Profile2() {
   return (
     <CssVarsProvider disableTransitionOnChange>
       <CssBaseline />
+      <ResetPasswordModal open={resetPassword} onClose={() => setResetPassword(false)}/>
       <Box sx={{ display: 'flex', minHeight: '100dvh' }}>
         <Snackbar
         anchorOrigin={{ vertical: 'top', horizontal: 'right'}}
@@ -417,6 +420,7 @@ export default function Profile2() {
                             )}
                         />
                     </FormControl>
+                    <Link level='body-sm' onClick={() => setResetPassword(true)}>Reset password</Link>
                     </Stack>
                     </Stack>
                 </Stack>

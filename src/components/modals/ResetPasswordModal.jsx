@@ -15,9 +15,9 @@ import { FormHelperText, List, ListItem, ListItemDecorator, ModalClose } from '@
 import { CheckCircleOutline, CircleOutlined } from '@mui/icons-material';
 import { axiosWithCredentials } from '../../configs/axios';
 
-export default function ResetPasswordModal({ open, onClose }) {
+export default function ResetPasswordModal({ open, onClose, onSuccess }) {
 
-    const { register, watch, handleSubmit, setError, formState: { errors } } = useForm({
+    const { reset, register, watch, handleSubmit, setError, formState: { errors } } = useForm({
         Current: '',
         New: '',
         Confirm: ''
@@ -26,7 +26,7 @@ export default function ResetPasswordModal({ open, onClose }) {
     const password = watch('New');
     const confirmPassword = watch('Confirm');
     const [valid, setValid] = React.useState(false);
-
+    const [loading, setLoading] = React.useState(false);
     const hasCapitalLetter = (str) => /[A-Z]/.test(str);
     const hasNumber = (str) => /\d/.test(str);
     const hasSpecialCharacter = (str) => /[!@#$%^&*(),.?":{}|<>]/.test(str);
@@ -47,7 +47,9 @@ export default function ResetPasswordModal({ open, onClose }) {
     }, [password, confirmPassword])
 
     const onSubmit = (data) => {
+      setLoading(true);
         axiosWithCredentials.patch('/user/portal/password', data)
+        .then(onSuccess)
         .catch(err => {
             if(err.response.data.code === "INVALID_CREDENTIALS"){
                 setError('Current', {
@@ -56,7 +58,16 @@ export default function ResetPasswordModal({ open, onClose }) {
                 }, { shouldFocus: true })
             }
         })
+        .finally(() => setLoading(false))
     }
+
+    React.useEffect(() => {
+      reset({
+        Current: '',
+        New: '',
+        Confirm: ''
+      })
+    }, [open])
   return (
     <React.Fragment>
       <Modal open={open} onClose={() => onClose()}>
@@ -120,6 +131,7 @@ export default function ResetPasswordModal({ open, onClose }) {
                 </List>
               </Stack>
               <Button 
+              loading={loading}
               disabled={!valid}
               type="submit">Reset</Button>
             </Stack>

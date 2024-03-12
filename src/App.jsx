@@ -16,6 +16,7 @@ import NewOrder from "./pages/NewOrder";
 import axios from "axios";
 import Profile2 from "./pages/Profile2";
 import Order from "./pages/Order";
+import Schedule from "./pages/Schedule";
 
 export default function App()
 {
@@ -76,6 +77,10 @@ export default function App()
     {
       path: "/analytics",
       element: <ProtectedRoute><Analytics2/></ProtectedRoute>
+    },
+    {
+      path: "/schedule",
+      element: <ProtectedRoute><Schedule/></ProtectedRoute>
     },
     {
       path: "/inbox",

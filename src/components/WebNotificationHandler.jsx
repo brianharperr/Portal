@@ -56,6 +56,7 @@ export default function WebNotificationHandler({ user })
         <>
         {notificationStack.length > 0 &&
             <Notification 
+            color='success'
             onClose={() => closeNotification(notificationStack[0])} 
             data={notificationStack[0]} 
             />

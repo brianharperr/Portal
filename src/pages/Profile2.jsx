@@ -37,6 +37,7 @@ import timezone from '../data/Timezones';
 import InputMask from "react-input-mask";
 import { CheckCircleOutline } from '@mui/icons-material';
 import ResetPasswordModal from '../components/modals/ResetPasswordModal.jsx';
+import Notification from '../components/Notification.jsx';
 const VisuallyHiddenInput = styled('input')`
   clip: rect(0 0 0 0);
   clip-path: inset(50%);
@@ -56,6 +57,7 @@ export default function Profile2() {
     const user = useSelector(getUser);
     const [resetPassword, setResetPassword] = useState(false);
     const [saveStatus, setSaveStatus] = useState('idle');
+    const [passwordResetStatus, setPasswordResetStatus] = useState(false);
     const [imageCrop, setImageCrop] = useState({
         open: false,
         image: ""
@@ -137,7 +139,15 @@ export default function Profile2() {
   return (
     <CssVarsProvider disableTransitionOnChange>
       <CssBaseline />
-      <ResetPasswordModal open={resetPassword} onClose={() => setResetPassword(false)}/>
+      {passwordResetStatus && <Notification onClose={() => setPasswordResetStatus(false)} color='success' data={{ data: { title: 'Success!', body: 'Your password has been reset' } }} />}
+      <ResetPasswordModal 
+      open={resetPassword} 
+      onClose={() => setResetPassword(false)}
+      onSuccess={() => {
+        setPasswordResetStatus(true);
+        setResetPassword(false);
+      }}
+      />
       <Box sx={{ display: 'flex', minHeight: '100dvh' }}>
         <Snackbar
         anchorOrigin={{ vertical: 'top', horizontal: 'right'}}

@@ -223,7 +223,7 @@ export default function Sidebar() {
             </Toggler>
           </ListItem>
 
-          <ListItem>
+          <ListItem onClick={() => navigate('/schedule')}>
             <ListItemButton selected={path === 'schedule'}>
               <CalendarMonthIcon />
               <ListItemContent>

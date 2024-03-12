@@ -4,24 +4,20 @@ import CloseIcon from '@mui/icons-material/Close';
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-export default function Notification({ onClose, data })
+export default function Notification({ onClose, data, color = 'neutral' })
 {
-    const [color, setColor] = useState('neutral');
     const [avatar, setAvatar] = useState('');
     const [open, setOpen] = useState(false);
     const navigate = useNavigate();
 
     function style()
     {
-
         switch(data.format){
             case 'message':
-                setColor('success');
                 setAvatar(data.avatar);
                 setOpen(true);
                 break;
             default:
-                setColor('neutral');
                 setAvatar('');
                 setOpen(false);
                 break;

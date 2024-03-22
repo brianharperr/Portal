@@ -17,6 +17,7 @@ import axios from "axios";
 import Profile2 from "./pages/Profile2";
 import Order from "./pages/Order";
 import Schedule from "./pages/Schedule";
+import Users from "./pages/Users";
 
 export default function App()
 {
@@ -33,7 +34,8 @@ export default function App()
       }else{
         subdomain = "test";
       }
-      if(subdomain){
+
+      if(subdomain && !portal){
         dispatch(fetchPortal(subdomain));
       }else{
         // window.location.href = import.meta.env.VITE_REACT_APP_MASTER_PAGE_URL;
@@ -85,6 +87,10 @@ export default function App()
     {
       path: "/inbox",
       element: <ProtectedRoute><Inbox/></ProtectedRoute>
+    },
+    {
+      path: "/users",
+      element: <ProtectedRoute><Users/></ProtectedRoute>
     },
     {
       path: "/sent",

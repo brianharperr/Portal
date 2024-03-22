@@ -44,6 +44,11 @@ export const updateProfilePicture = createAsyncThunk('user/updateProfilePicture'
     return response.data;
 })
 
+export const updateActiveStatus = createAsyncThunk('user/updateActiveStatus', async (payload) => {
+    const response = await axiosWithCredentials.patch('/user/activeStatus', payload);
+    return response.data;
+})
+
 export const updateNotificationSettings = createAsyncThunk('user/updateNotifications', async (payload) => {
     const response = await axiosWithCredentials.patch('/user/portal/notifications', payload);
 
@@ -72,6 +77,16 @@ export const userSlice = createSlice({
             .addCase(resetPassword.rejected, (state, action) => {
                 state.status = 'failed';
                 state.error = action.error.message;
+            })
+            .addCase(updateActiveStatus.fulfilled, (state, action) => {
+                state.status = 'succeeded';
+                const deletedMessageIndex = state.users.findIndex(user => user.ID === Number(action.payload.ID));
+                if (deletedMessageIndex !== -1) {
+                    state.users[deletedMessageIndex] = {
+                      ...state.users[deletedMessageIndex],
+                      Activated: action.payload.Activated,
+                    };
+                }
             })
             .addCase(fetchUser.fulfilled, (state, action) => {
                 state.status = 'succeeded';

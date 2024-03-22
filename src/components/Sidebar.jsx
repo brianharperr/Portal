@@ -285,7 +285,11 @@ export default function Sidebar() {
                   </ListItemButton>
                 </ListItem>
                 <ListItem>
-                  <ListItemButton>Create a new user</ListItemButton>
+                  <ListItemButton
+                  href="/users"
+                  component="a"
+                  selected={path === 'users'}
+                  >Users</ListItemButton>
                 </ListItem>
                 <ListItem>
                   <ListItemButton>Roles & permission</ListItemButton>

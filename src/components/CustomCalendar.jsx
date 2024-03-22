@@ -59,7 +59,7 @@ const CalendarBody = ({year, month}) => {
         return (
         <Grid xs={1}>
           <Sheet sx={{ 
-            height: 200, 
+            height: 101, 
             p: 1, 
             background: (theme) => x.outsideMonth ? `${theme.vars.palette.background.level1}` : `${theme.vars.palette.background.surface}`,
             color: (theme) => x.outsideMonth ? `${theme.vars.palette.text.tertiary}` : `${theme.vars.palette.text.primary}`

@@ -32,7 +32,7 @@ import AutorenewRoundedIcon from '@mui/icons-material/AutorenewRounded';
 import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
 import KeyboardArrowLeftIcon from '@mui/icons-material/KeyboardArrowLeft';
 import MoreHorizRoundedIcon from '@mui/icons-material/MoreHorizRounded';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { axiosWithCredentials } from '../configs/axios';
 import { useDispatch, useSelector } from 'react-redux';
 import { getPortal } from '../redux/features/portal.slice';
@@ -42,32 +42,32 @@ import { deleteCase } from '../redux/features/order.slice';
 import { Transition } from 'react-transition-group';
 import DialogTitle from '@mui/joy/DialogTitle';
 import DialogContent from '@mui/joy/DialogContent';
+import { useQueryState } from '../hooks/useQueryState';
 
-function RowMenu({ payload, id, onDelete }) {
-
+const RowMenu = React.memo(({ payload, id, onDelete }) => {
   const dispatch = useDispatch();
-  function fetchReport(payload){
-    var payload = {
-        DisplayID: payload.DisplayID,
-        PortalID: id,
-        Name: payload?.DeceasedName,
-    }
-    dispatch(downloadReport(payload));
-  }
 
-  function handleDelete(){
-    dispatch(deleteCase(payload.ID)).unwrap()
-    .then(res => onDelete());
-  }
+  const fetchReport = React.useCallback(() => {
+    const payloadData = {
+      DisplayID: payload.DisplayID,
+      PortalID: id,
+      Name: payload?.DeceasedName,
+    };
+    dispatch(downloadReport(payloadData));
+  }, [dispatch, id, payload]);
 
-  function fetchTags(payload){
-    var payload = {
+  const handleDelete = React.useCallback(() => {
+    dispatch(deleteCase(payload.ID)).unwrap().then((res) => onDelete());
+  }, [dispatch, onDelete, payload]);
+
+  const fetchTags = React.useCallback(() => {
+    const payloadData = {
       ID: payload.ID,
       Name: payload?.DeceasedName,
-    }
-    dispatch(downloadTags(payload));
-  }
-  
+    };
+    dispatch(downloadTags(payloadData));
+  }, [dispatch, payload]);
+
   return (
     <Dropdown>
       <MenuButton
@@ -77,51 +77,72 @@ function RowMenu({ payload, id, onDelete }) {
         <MoreHorizRoundedIcon />
       </MenuButton>
       <Menu size="sm" sx={{ minWidth: 140 }}>
-        <MenuItem onClick={() => fetchReport(payload)}>Download Report</MenuItem>
-        <MenuItem onClick={() => fetchTags(payload)}>Download Tags</MenuItem>
+        <MenuItem onClick={fetchReport}>Download Report</MenuItem>
+        <MenuItem onClick={fetchTags}>Download Tags</MenuItem>
         <Divider />
-        <MenuItem color="danger" onClick={() => handleDelete()}>Delete</MenuItem>
+        <MenuItem color="danger" onClick={handleDelete}>
+          Delete
+        </MenuItem>
       </Menu>
     </Dropdown>
   );
-}
+});
 
 export default function OrderTable() {
 
   const navigate = useNavigate();
 
   const [rows, setRows] = React.useState([]);
-  const [pageView, setPageView] = React.useState(20);
-  const [page, setPage] = React.useState(0);
+  const [pageView, setPageView] = useQueryState("pageView", 20);
+  const [page, setPage] = useQueryState("page", 0);
   const [totalResults, setTotalResults] = React.useState(null);
-  const [filters, setFilters] = React.useState({
+  const [query, setQuery] = useQueryState("query");
+  const [status, setStatus] = useQueryState("status");
+  const [service, setService] = useQueryState("service", true);
+  const [home, setHome] = useQueryState("home", true);
+  const [director, setDirector] = useQueryState("director", true);
+  const [filterOptions, setFilterOptions] = React.useState({
     Homes: [],
     Services: [],
     Directors: [],
     Statuses: []
   });
-  const [homeFilter, setHomeFilter] = React.useState(null);
-  const [serviceFilter, setServiceFilter] = React.useState(null);
-  const [directorFilter, setDirectorFilter] = React.useState(null);
-  const [statusFilter, setStatusFilter] = React.useState(null);
-  const [nameFilter, setNameFilter] = React.useState(null);
+
   const [loading, setLoading] = React.useState(true);
   const portal = useSelector(getPortal);
   const [order, setOrder] = React.useState('desc');
   const [selected, setSelected] = React.useState([]);
   const [open, setOpen] = React.useState(false);
+  
   const renderFilters = () => (
-    <React.Fragment>
+      <Box
+        className="SearchAndFilters-tabletUp"
+        sx={{
+          borderRadius: 'sm',
+          py: 2,
+          display: { xs: 'none', sm: 'flex' },
+          flexWrap: 'wrap',
+          gap: 1.5,
+          '& > *': {
+            minWidth: { xs: '120px', md: '160px' },
+          },
+        }}
+      >
+      <FormControl sx={{ flex: 1 }} size="sm">
+          <FormLabel>Search for order</FormLabel>
+          <Input value={query} size="sm" placeholder="Search" startDecorator={<SearchIcon />} onChange={(e) => setQuery(e.target.value)} />
+      </FormControl>
       <FormControl size="sm">
         <FormLabel>Status</FormLabel>
         <Select
           size="sm"
           placeholder="Filter by status"
+          value={status}
           slotProps={{ button: { sx: { whiteSpace: 'nowrap' } } }}
-          onChange={(e, data) => setStatusFilter(data)}
+          onChange={(e, data) => setStatus(data)}
         >
           <Option value={null}>All</Option>
-          {filters.Statuses?.map(x => {
+          {filterOptions.Statuses?.map(x => {
             return (
               <Option value={x.Status}>{x.Status}</Option>
             )
@@ -131,9 +152,9 @@ export default function OrderTable() {
       </FormControl>
       <FormControl size="sm">
         <FormLabel>Service</FormLabel>
-        <Select size="sm" placeholder="All" sx={{ maxWidth: 250 }} slotProps={{listbox: { placement: 'bottom-start'}}} onChange={(e, data) => setServiceFilter(data)}>
+        <Select size="sm" placeholder="All" sx={{ maxWidth: 250 }} slotProps={{listbox: { placement: 'bottom-start'}}} value={service} onChange={(e, data) => setService(data)}>
           <Option value={null}>All</Option>
-          {filters.Services?.map(x => {
+          {filterOptions.Services?.map(x => {
             return (
               <Option value={x.ID}>{x.Name}</Option>
             )
@@ -143,9 +164,9 @@ export default function OrderTable() {
       </FormControl>
       <FormControl size="sm">
         <FormLabel>Home</FormLabel>
-        <Select size="sm" placeholder="All" sx={{ maxWidth: 240 }} slotProps={{listbox: { placement: 'bottom-start'}}} onChange={(e, data) => setHomeFilter(data)}>
+        <Select size="sm" placeholder="All" sx={{ maxWidth: 240 }} slotProps={{listbox: { placement: 'bottom-start'}}} value={home} onChange={(e, data) => setHome(data)}>
         <Option value={null}>All</Option>
-          {filters.Homes?.map(x => {
+          {filterOptions.Homes?.map(x => {
             return (
               <Option value={x.ID}>{x.Name}</Option>
             )
@@ -155,9 +176,9 @@ export default function OrderTable() {
       </FormControl>
       <FormControl size="sm">
         <FormLabel>Director</FormLabel>
-        <Select size="sm" placeholder="All" sx={{ maxWidth: 160 }} slotProps={{listbox: { placement: 'bottom-start'}}} onChange={(e, data) => setDirectorFilter(data)}>
+        <Select size="sm" placeholder="All" sx={{ maxWidth: 160 }} slotProps={{listbox: { placement: 'bottom-start'}}} value={director} onChange={(e, data) => setDirector(data)}>
         <Option value={null}>All</Option>
-          {filters.Directors?.map(x => {
+          {filterOptions.Directors?.map(x => {
             return (
               <Option value={x.ID}>{x.Name}</Option>
             )
@@ -165,7 +186,7 @@ export default function OrderTable() {
           }
         </Select>
       </FormControl>
-    </React.Fragment>
+    </Box>
   );
 
   const formatPhoneNumber = (phoneNumber) => {
@@ -214,11 +235,11 @@ export default function OrderTable() {
         id: portal.ID,
         limit: pageView,
         offset: page * pageView,
-        name: nameFilter,
-        home: homeFilter,
-        service: serviceFilter,
-        director: directorFilter,
-        status: statusFilter
+        name: query,
+        home: home,
+        service: service,
+        director: director,
+        status: status
       }
       axiosWithCredentials.get('/procedure/order-table', { params: payload })
       .then(res => {
@@ -231,28 +252,25 @@ export default function OrderTable() {
   }
 
   React.useEffect(() => {
-    if(nameFilter !== null){
+    if(query !== null){
       const delayDebounceFn = setTimeout(() => {
-        fetchData();
+        //fetchData();
       }, 300)
 
       return () => clearTimeout(delayDebounceFn)
     }
-  }, [nameFilter])
-
+  }, [query])
+  //Grab data
   React.useEffect(() => {
     fetchData();
-  }, [portal])
+  }, [query, page, pageView, status, service, home, director, portal]) 
 
-  React.useEffect(() => {
-    fetchData();
-  }, [homeFilter, serviceFilter, directorFilter, directorFilter, statusFilter, page, pageView])
-
+  //Grab filter options
   React.useEffect(() => {
     if(portal){
       axiosWithCredentials.get('/procedure/order-table-filters', { params: { id: portal.ID } })
       .then(res => {
-        setFilters(res.data);
+        setFilterOptions(res.data);
       })
       .catch(err => console.log(err))
     }
@@ -298,25 +316,7 @@ export default function OrderTable() {
           </ModalDialog>
         </Modal>
       </Sheet>
-        <Box
-        className="SearchAndFilters-tabletUp"
-        sx={{
-          borderRadius: 'sm',
-          py: 2,
-          display: { xs: 'none', sm: 'flex' },
-          flexWrap: 'wrap',
-          gap: 1.5,
-          '& > *': {
-            minWidth: { xs: '120px', md: '160px' },
-          },
-        }}
-      >
-        <FormControl sx={{ flex: 1 }} size="sm">
-          <FormLabel>Search for order</FormLabel>
-          <Input value={nameFilter} size="sm" placeholder="Search" startDecorator={<SearchIcon />} onChange={(e) => setNameFilter(e.target.value)} />
-        </FormControl>
         {renderFilters()}
-      </Box>
       {loading && <Sheet><LinearProgress/></Sheet>}
       {!loading && rows.length === 0 &&
       "No orders here."

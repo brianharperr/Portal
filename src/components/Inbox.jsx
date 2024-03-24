@@ -2,11 +2,11 @@ import { useDispatch, useSelector } from "react-redux";
 import { useEffect, useState } from "react";
 import { Avatar, Badge, List, Pagination, Skeleton } from 'antd';
 import { Link, useNavigate } from "react-router-dom";
-import { fetchInbox, getInbox, getInboxCount } from '../redux/features/message.slice';
+import { fetchMessages, getMessages, getMessageCount } from '../redux/features/message.slice';
 export default function Inbox({ select })
 {
-    const messages = useSelector(getInbox);
-    const count = useSelector(getInboxCount);
+    const messages = useSelector(getMessages);
+    const count = useSelector(getMessageCount);
     const dispatch = useDispatch();
     const [page, setPage] = useState(1);
     const navigate = useNavigate();
@@ -20,7 +20,7 @@ export default function Inbox({ select })
             offset: (page-1) * messagesPerPage,
             limit: messagesPerPage,
         }
-        dispatch(fetchInbox(payload)).unwrap()
+        dispatch(fetchMessages(payload)).unwrap()
         .finally(() => setLoading(false));
     }, [page, messagesPerPage]);
 

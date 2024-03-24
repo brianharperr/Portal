@@ -2,12 +2,12 @@ import { useDispatch, useSelector } from "react-redux";
 import { useEffect, useState } from "react";
 import { Avatar, Badge, List, Pagination, Skeleton } from 'antd';
 import { Link, useNavigate } from "react-router-dom";
-import { fetchSent, getSent, getSentCount } from '../redux/features/message.slice';
+import { fetchSent, getMessages, getMessageCount } from '../redux/features/message.slice';
 
 export default function Sent({ select })
 {
-    const messages = useSelector(getSent);
-    const count = useSelector(getSentCount);
+    const messages = useSelector(getMessages);
+    const count = useSelector(getMessageCount);
     const dispatch = useDispatch();
     const [page, setPage] = useState(1);
     const navigate = useNavigate();

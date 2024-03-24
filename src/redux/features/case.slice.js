@@ -181,7 +181,6 @@ export const caseSlice = createSlice({
             .addCase(createCase.fulfilled, (state, action) => {
                 state.status = 'succeeded';
                 state.data = action.payload;
-                window.location.href = "/";
             })
             .addCase(createCase.rejected, (state, action) => {
                 state.status = 'failed';

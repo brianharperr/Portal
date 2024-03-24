@@ -10,8 +10,8 @@ const initialState = {
     theme: null
 }
 
-export const fetchPortal = createAsyncThunk('portal/fetchPortal', async () => {
-    const response = await axiosWithCredentials.get('/portal/' + window.location.hostname.split('.')[0]);
+export const fetchPortal = createAsyncThunk('portal/fetchPortal', async (subdomain) => {
+    const response = await axiosWithCredentials.get('/portal/' + subdomain);
     if(!response.data.portal){
         window.location.href = "https://familylynk.com"
     }
@@ -41,7 +41,7 @@ export const portalSlice = createSlice({
             })
             .addCase(fetchPortal.rejected, (state, action) => {
                 state.status = 'failed';
-                window.location.href = "/not-found";
+                // window.location.href = "/not-found";
                 state.error = action.error.message;
             })
             .addCase(fetchUsers.pending, (state, action) => {

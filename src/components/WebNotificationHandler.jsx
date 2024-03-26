@@ -30,7 +30,7 @@ export default function WebNotificationHandler({ user })
     //Listen for SSE
     useEffect(() => {
 
-        var api = import.meta.env.VITE_API_URL  || process.env.API_URL;
+        var api = import.meta.env.VITE_API_URL ;
         const eventSource = new EventSource(`${api}/events/${user.sub}/notification`, { withCredentials: true});
         // Event listener for incoming messages
         eventSource.onmessage = (e) => {

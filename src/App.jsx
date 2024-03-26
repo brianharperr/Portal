@@ -117,6 +117,7 @@ export default function App()
       element: <ResetPassword/>
     }
   ])
+
   return (
     <RouterProvider router={router}/>
   )

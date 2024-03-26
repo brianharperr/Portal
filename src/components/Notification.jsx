@@ -24,7 +24,7 @@ export default function Notification({ onClose, data, color = 'neutral' })
         }
 
     }
-
+    {console.log(data)}
     function handleOpen()
     {
         switch(data.format){

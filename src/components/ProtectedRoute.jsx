@@ -2,9 +2,10 @@ import { useEffect, useState } from "react"
 import { axiosWithCredentials } from "../configs/axios";
 import { useMatch, useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
-import { fetchMessages } from "../redux/features/message.slice";
 import WebNotificationHandler from "./WebNotificationHandler";
-import axios from "axios";
+import { Realtime } from 'ably';
+import { AblyProvider, ChannelProvider } from 'ably/react';
+
 
 export default function ProtectedRoute({ children, alternate, portalFetch = true }){
 
@@ -21,6 +22,9 @@ export default function ProtectedRoute({ children, alternate, portalFetch = true
         anchorOrigin: { vertical: 'top', horizontal: 'right'},
         id: null
     })
+
+    const client = new Realtime({ key: import.meta.env.VITE_ABLY_KEY });
+
 
     useEffect(() => {
 
@@ -42,7 +46,11 @@ export default function ProtectedRoute({ children, alternate, portalFetch = true
         <>
         {auth ?
         <>
-        <WebNotificationHandler user={user}/>
+        <AblyProvider client={client}>
+            <ChannelProvider channelName="notifications">
+                {user && <WebNotificationHandler user={user}/>}
+            </ChannelProvider>
+        </AblyProvider>
         {children}
         </>
         :

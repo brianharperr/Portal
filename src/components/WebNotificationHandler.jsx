@@ -2,6 +2,9 @@ import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { fetchMessages } from "../redux/features/message.slice";
 import Notification from "./Notification";
+import { AblyProvider, useChannel, usePresence } from 'ably/react';
+import { useSelector } from 'react-redux'
+import { getUser } from "../redux/features/user.slice";
 
 export default function WebNotificationHandler({ user })
 {
@@ -27,30 +30,11 @@ export default function WebNotificationHandler({ user })
         setNotificationStack(notificationStack.slice(1))
     }
 
-    //Listen for SSE
-    useEffect(() => {
-
-        var api = import.meta.env.VITE_API_URL ;
-        const eventSource = new EventSource(`${api}/events/${user.sub}/notification`, { withCredentials: true});
-        // Event listener for incoming messages
-        eventSource.onmessage = (e) => {
-            const data = JSON.parse(e.data);
-            setNotificationStack(prev => [...prev, data]);
-            pageSpecificBehavior();
-        }
-
-        // Handle SSE connection errors
-        eventSource.onerror = (error) => {
-            console.error('EventSource failed:', error);
-            eventSource.close();
-        };
-
-        // Clean up the SSE connection when the component unmounts
-        return () => {
-            eventSource.close();
-        };
-
-    }, [])
+    const { channel } = useChannel('notifications', user.sub.toString() , (message) => {
+        const data = JSON.parse(message.data);
+        setNotificationStack(prev => [...prev, data]);
+        pageSpecificBehavior();
+    })
 
     return (
         <>

@@ -1,15 +1,15 @@
 import axios from 'axios';
 
 export const axiosWithoutCredentials = axios.create({
-    baseURL: import.meta.env.VITE_API_URL,
+    baseURL: import.meta.env.VITE_API_URL || process.env.API_URL,
     headers: {
         "Content-Type": "application/json"
     }
 });
 
-console.log(import.meta.env.API_URL)
+
 export const axiosWithCredentials = axios.create({
-    baseURL: import.meta.env.VITE_API_URL,
+    baseURL: import.meta.env.VITE_API_URL || process.env.API_URL,
     headers: {
         "Content-Type": "application/json"
     }
@@ -40,7 +40,7 @@ axiosWithCredentials.interceptors.response.use(
         // axiosWithCredentials.interceptors.response.eject(interceptor);
 
         var cleanAxios = axios.create({
-            baseURL: import.meta.env.VITE_API_URL,
+            baseURL: import.meta.env.VITE_API_URL || process.env.API_URL,
             headers: {
                 "Content-Type": "application/json"
             }
@@ -60,7 +60,7 @@ axiosWithCredentials.interceptors.response.use(
 );
 
 export const axiosWithSimpleCredentials = axios.create({
-    baseURL: import.meta.env.VITE_API_URL,
+    baseURL: import.meta.env.VITE_API_URL || process.env.API_URL,
     headers: {
         "Content-Type": "application/json"
     }

@@ -1,6 +1,6 @@
 import { Result, Button } from "antd"
 import { useEffect, useState } from "react"
-import { axiosWithoutCredentials } from "../configs/axios";
+import { axiosWithoutCredentials } from "../../configs/axios";
 import { useNavigate, useSearchParams } from "react-router-dom";
 
 export default function RevertEmailChange()

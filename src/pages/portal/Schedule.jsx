@@ -1,7 +1,7 @@
 import { CssVarsProvider } from '@mui/joy/styles';
 import CssBaseline from '@mui/joy/CssBaseline';
-import Sidebar from '../components/Sidebar.jsx';
-import Header from '../components/Header';
+import Sidebar from '../../components/Sidebar.jsx';
+import Header from '../../components/Header';
 import Box from '@mui/joy/Box';
 import Stack from '@mui/joy/Stack';
 import Typography from '@mui/joy/Typography';
@@ -19,7 +19,7 @@ import parse from 'date-fns/parse'
 import startOfWeek from 'date-fns/startOfWeek'
 import getDay from 'date-fns/getDay'
 import enUS from 'date-fns/locale/en-US'
-import CustomCalendar from '../components/CustomCalendar.jsx';
+import CustomCalendar from '../../components/CustomCalendar.jsx';
 
 function renderEventContent(eventInfo) {
     return(

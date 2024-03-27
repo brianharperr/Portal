@@ -16,11 +16,10 @@ import { axiosWithCredentials } from '../configs/axios';
 import { Close } from '@mui/icons-material';
 
 const WriteEmail = forwardRef(
-  function WriteEmail({ open, onClose }, ref) {
+  function WriteEmail({ open, toDefault, onClose }, ref) {
     const [users, setUsers] = useState([]);
     const [orders, setOrders] = useState([]);
     const [ccOptions, setCCOptions] = useState([]);
-
     const [to, setTo] = useState([]);
     const [cc, setCC] = useState([]);
     const [subject, setSubject] = useState("");
@@ -56,6 +55,16 @@ const WriteEmail = forwardRef(
         setCaseRef([]);
       }
     }, [open])
+
+    useEffect(() => {
+      if(toDefault && users){
+        setTo(users.filter(x => {
+          if(x.id === toDefault){
+            return x;
+          }
+        }));
+      }
+    }, [toDefault, users])
 
     useEffect(() => {
       axiosWithCredentials.get('/search/users')

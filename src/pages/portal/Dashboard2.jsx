@@ -1,25 +1,23 @@
-import * as React from 'react';
+import { useEffect, useState } from 'react';
 import { CssVarsProvider } from '@mui/joy/styles';
 import CssBaseline from '@mui/joy/CssBaseline';
 import Box from '@mui/joy/Box';
-import Button from '@mui/joy/Button';
 import Breadcrumbs from '@mui/joy/Breadcrumbs';
 import Link from '@mui/joy/Link';
 import Typography from '@mui/joy/Typography';
 
 import HomeRoundedIcon from '@mui/icons-material/HomeRounded';
 import ChevronRightRoundedIcon from '@mui/icons-material/ChevronRightRounded';
-import DownloadRoundedIcon from '@mui/icons-material/DownloadRounded';
 
-import Sidebar from '../components/Sidebar';
-import OrderTable from '../components/OrderTable';
-import OrderList from '../components/OrderList';
-import Header from '../components/Header';
+import Sidebar from '../../components/Sidebar';
+import Header from '../../components/Header';
 import { useNavigate } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
+import { createWidget, fetchWidgets, getWidgets } from '../../redux/features/widget.slice';
+import Widgets from '../../components/widgets/Widgets';
 
-export default function Orders() {
+export default function Dashboard2() {
 
-    const navigate = useNavigate();
   return (
     <CssVarsProvider disableTransitionOnChange>
       <CssBaseline />
@@ -69,9 +67,6 @@ export default function Orders() {
               >
                 Dashboard
               </Link>
-              <Typography color="primary" fontWeight={500} fontSize={12}>
-                Orders
-              </Typography>
             </Breadcrumbs>
           </Box>
           <Box
@@ -86,19 +81,10 @@ export default function Orders() {
             }}
           >
             <Typography level="h2" component="h1">
-              Orders
+              Home
             </Typography>
-            <Button
-              color="primary"
-              startDecorator={<DownloadRoundedIcon />}
-              size="sm"
-              onClick={() => navigate('/new-order')}
-            >
-              New Order
-            </Button>
           </Box>
-          <OrderTable />
-          <OrderList />
+          <Widgets/>
         </Box>
       </Box>
     </CssVarsProvider>

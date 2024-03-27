@@ -12,18 +12,18 @@ import EmailRoundedIcon from '@mui/icons-material/EmailRounded';
 import PeopleAltRoundedIcon from '@mui/icons-material/PeopleAltRounded';
 import FolderRoundedIcon from '@mui/icons-material/FolderRounded';
 
-import Layout from '../components/Layout';
-import Navigation from '../components/Navigation';
-import Mails from '../components/MessageList';
-import EmailContent from '../components/EmailContent';
-import WriteEmail from '../components/WriteEmail';
-import HeaderAlt from '../components/HeaderAlt';
+import Layout from '../../components/Layout';
+import Navigation from '../../components/Navigation';
+import Mails from '../../components/MessageList';
+import EmailContent from '../../components/EmailContent';
+import WriteEmail from '../../components/WriteEmail';
+import HeaderAlt from '../../components/HeaderAlt';
 import { useDispatch, useSelector } from 'react-redux';
-import { fetchMessages, fetchSent, getFlagged, getInbox, getSentMessages, getTrash } from '../redux/features/message.slice';
-import { axiosWithCredentials } from '../configs/axios';
+import { fetchMessages, fetchSent, getFlagged, getInbox, getSentMessages, getTrash } from '../../redux/features/message.slice';
+import { axiosWithCredentials } from '../../configs/axios';
 import { useLocation, useSearchParams } from 'react-router-dom';
-import ReplyEmail from '../components/ReplyEmail';
-import ForwardEmail from '../components/ForwardEmail';
+import ReplyEmail from '../../components/ReplyEmail';
+import ForwardEmail from '../../components/ForwardEmail';
 
 export default function Inbox() {
 

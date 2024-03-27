@@ -3,9 +3,9 @@ const { Title, Paragraph } = Typography;
 import { LockOutlined, MailOutlined } from '@ant-design/icons';
 import { useSelector } from "react-redux";
 import ReCAPTCHA from "react-google-recaptcha";
-import { getPortal } from "../redux/features/portal.slice";
+import { getPortal } from "../../redux/features/portal.slice";
 import { useEffect, useRef, useState } from "react";
-import { axiosWithoutCredentials, axiosWithSimpleCredentials } from "../configs/axios";
+import { axiosWithoutCredentials, axiosWithSimpleCredentials } from "../../configs/axios";
 import { Link, useNavigate } from "react-router-dom";
 export default function ResetPassword()
 {

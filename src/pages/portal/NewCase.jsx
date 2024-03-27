@@ -10,11 +10,11 @@ import {
 import { useState } from "react";
 import PageBuilder from "../components/PageBuilder";
 import { useEffect } from "react";
-import { axiosWithCredentials } from "../configs/axios";
+import { axiosWithCredentials } from "../../configs/axios";
 import { useDispatch, useSelector } from "react-redux";
-import { getPortal } from "../redux/features/portal.slice";
+import { getPortal } from "../../redux/features/portal.slice";
 import { useNavigate } from "react-router-dom";
-import { createCase } from "../redux/features/case.slice";
+import { createCase } from "../../redux/features/case.slice";
 
 const relations = [
     { key: '', value: '', label: ''},

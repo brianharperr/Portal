@@ -57,7 +57,6 @@ const ValidationService = {
 
         // CHECK TO SEE IF THERE IS A DOT '.' LEFT IN THE STRING
         var subDomain = (url.match(new RegExp(/\./g))) ? true : false;
-    
         return(subDomain);
 
     },

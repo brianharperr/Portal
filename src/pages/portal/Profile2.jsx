@@ -1,7 +1,7 @@
 import { CssVarsProvider } from '@mui/joy/styles';
 import CssBaseline from '@mui/joy/CssBaseline';
-import Sidebar from '../components/Sidebar.jsx';
-import Header from '../components/Header';
+import Sidebar from '../../components/Sidebar.jsx';
+import Header from '../../components/Header.tsx';
 import { useEffect, useRef, useState, forwardRef } from 'react';
 import AspectRatio from '@mui/joy/AspectRatio';
 import Box from '@mui/joy/Box';
@@ -27,17 +27,17 @@ import EmailRoundedIcon from '@mui/icons-material/EmailRounded';
 import AccessTimeFilledRoundedIcon from '@mui/icons-material/AccessTimeFilledRounded';
 import EditRoundedIcon from '@mui/icons-material/EditRounded';
 import { useDispatch, useSelector } from 'react-redux';
-import { fetchUser, getUser, updateUser } from '../redux/features/user.slice';
+import { fetchUser, getUser, updateUser } from '../../redux/features/user.slice.js';
 import { Autocomplete, AutocompleteOption, CircularProgress, FormHelperText, Snackbar, styled } from '@mui/joy';
-import ImageCropper from '../components/profile/ImageCropper';
+import ImageCropper from '../../components/profile/ImageCropper.jsx';
 import { Controller, useForm } from 'react-hook-form';
-import { axiosWithCredentials } from '../configs/axios';
+import { axiosWithCredentials } from '../../configs/axios.js';
 
-import timezone from '../data/Timezones';
+import timezone from '../../data/Timezones.jsx';
 import InputMask from "react-input-mask";
 import { CheckCircleOutline } from '@mui/icons-material';
-import ResetPasswordModal from '../components/modals/ResetPasswordModal.jsx';
-import Notification from '../components/Notification.jsx';
+import ResetPasswordModal from '../../components/modals/ResetPasswordModal.jsx';
+import Notification from '../../components/Notification.jsx';
 const VisuallyHiddenInput = styled('input')`
   clip: rect(0 0 0 0);
   clip-path: inset(50%);

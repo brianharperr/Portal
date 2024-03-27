@@ -9,8 +9,8 @@ import Typography from "@mui/joy/Typography";
 import HomeRoundedIcon from "@mui/icons-material/HomeRounded";
 import ChevronRightRoundedIcon from "@mui/icons-material/ChevronRightRounded";
 
-import Sidebar from "../components/Sidebar";
-import Header from "../components/Header";
+import Sidebar from "../../components/Sidebar";
+import Header from "../../components/Header";
 import { useNavigate } from "react-router-dom";
 
 import {
@@ -34,10 +34,10 @@ import { Check, EmailRounded, InfoOutlined } from "@mui/icons-material";
 import { forwardRef, useEffect, useState } from "react";
 import { IMaskInput } from "react-imask";
 import { useDispatch, useSelector } from "react-redux";
-import { getPortal } from "../redux/features/portal.slice";
-import { axiosWithCredentials } from "../configs/axios";
-import { createCase } from "../redux/features/case.slice";
-import { nullIfEmpty } from "../utils/strings";
+import { getPortal } from "../../redux/features/portal.slice";
+import { axiosWithCredentials } from "../../configs/axios";
+import { createCase } from "../../redux/features/case.slice";
+import { nullIfEmpty } from "../../utils/strings";
 
 const ErrorMessage = ({message}) => {
     return (

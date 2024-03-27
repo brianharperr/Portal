@@ -11,14 +11,13 @@ import HomeRoundedIcon from '@mui/icons-material/HomeRounded';
 import ChevronRightRoundedIcon from '@mui/icons-material/ChevronRightRounded';
 import DownloadRoundedIcon from '@mui/icons-material/DownloadRounded';
 
-import Sidebar from '../components/Sidebar';
-import OrderTable from '../components/OrderTable';
-import OrderList from '../components/OrderList';
-import Header from '../components/Header';
+import Sidebar from '../../components/Sidebar';
+import OrderTable from '../../components/OrderTable';
+import OrderList from '../../components/OrderList';
+import Header from '../../components/Header';
 import { useNavigate } from 'react-router-dom';
-import AnalyticsComponent from '../components/analytics/AnalyticsComponent';
 
-export default function Analytics2() {
+export default function Orders() {
 
     const navigate = useNavigate();
   return (
@@ -71,7 +70,7 @@ export default function Analytics2() {
                 Dashboard
               </Link>
               <Typography color="primary" fontWeight={500} fontSize={12}>
-                Analytics
+                Orders
               </Typography>
             </Breadcrumbs>
           </Box>
@@ -87,10 +86,19 @@ export default function Analytics2() {
             }}
           >
             <Typography level="h2" component="h1">
-              Analytics
+              Orders
             </Typography>
+            <Button
+              color="primary"
+              startDecorator={<DownloadRoundedIcon />}
+              size="sm"
+              onClick={() => navigate('/new-order')}
+            >
+              New Order
+            </Button>
           </Box>
-            <AnalyticsComponent/>
+          <OrderTable />
+          <OrderList />
         </Box>
       </Box>
     </CssVarsProvider>

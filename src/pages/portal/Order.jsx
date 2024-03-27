@@ -8,22 +8,22 @@ import Typography from '@mui/joy/Typography';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import ChevronRightRoundedIcon from '@mui/icons-material/ChevronRightRounded';
 
-import Sidebar from '../components/Sidebar';
-import Header from '../components/Header';
+import Sidebar from '../../components/Sidebar';
+import Header from '../../components/Header';
 
 import { useSearchParams } from "react-router-dom"
-import { axiosWithCredentials } from '../configs/axios';
+import { axiosWithCredentials } from '../../configs/axios';
 import { Avatar, Button, Card, Checkbox, Chip, DialogActions, DialogContent, DialogTitle, Divider, Dropdown, FormControl, FormLabel, Grid, IconButton, Input, List, ListItem, ListItemButton, ListItemContent, ListItemDecorator, Menu, MenuButton, MenuItem, Modal, ModalDialog, Option, RadioGroup, Select, Skeleton, Stack, Step, StepButton, StepIndicator, Stepper, Tab, TabList, TabPanel, Tabs, Textarea, Tooltip } from '@mui/joy';
 import { Check, CircleOutlined, KeyboardArrowDown, KeyboardArrowUp, WarningRounded, EditRounded, FileCopyOutlined, DoDisturbAltOutlined, DeleteOutline } from '@mui/icons-material';
-import TaskPanel from '../components/order/TaskPanel';
-import { fetchUsers } from '../redux/features/user.slice';
+import TaskPanel from '../../components/order/TaskPanel';
+import { fetchUsers } from '../../redux/features/user.slice';
 import { useDispatch } from 'react-redux';
-import TaskPanel2 from '../components/order/TaskPanel2';
-import GenericListItem from '../components/order/GenericListItem';
-import PatientModal from '../components/modals/PatientModal';
-import ContactModal from '../components/modals/ContactModal';
-import ProcessingModal from '../components/modals/ProcessingModal';
-import DeleteConfirmationModal from '../components/modals/DeleteConfirmationModal';
+import TaskPanel2 from '../../components/order/TaskPanel2';
+import GenericListItem from '../../components/order/GenericListItem';
+import PatientModal from '../../components/modals/PatientModal';
+import ContactModal from '../../components/modals/ContactModal';
+import ProcessingModal from '../../components/modals/ProcessingModal';
+import DeleteConfirmationModal from '../../components/modals/DeleteConfirmationModal';
 
 const chipColor = {
     Active: 'success',

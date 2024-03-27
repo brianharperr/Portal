@@ -1,10 +1,10 @@
 import { Button, Checkbox, Col, Divider, Form, Input, Progress, Row, Switch, Typography, notification} from "antd";
 import PageBuilder from "../components/PageBuilder";
 import { useEffect, useState } from "react";
-import { fetchUser, getUser, updateNotificationSettings, updateUser } from "../redux/features/user.slice";
+import { fetchUser, getUser, updateNotificationSettings, updateUser } from "../../redux/features/user.slice";
 import { useDispatch, useSelector } from "react-redux";
-import ValidationService from "../services/Validation";
-import { axiosWithCredentials } from "../configs/axios";
+import ValidationService from "../../services/Validation";
+import { axiosWithCredentials } from "../../configs/axios";
 
 export default function Profile()
 {

@@ -2,9 +2,6 @@ import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { fetchMessages } from "../redux/features/message.slice";
 import Notification from "./Notification";
-import { AblyProvider, useChannel, usePresence } from 'ably/react';
-import { useSelector } from 'react-redux'
-import { getUser } from "../redux/features/user.slice";
 
 export default function WebNotificationHandler({ user })
 {
@@ -29,12 +26,6 @@ export default function WebNotificationHandler({ user })
     {
         setNotificationStack(notificationStack.slice(1))
     }
-
-    const { channel } = useChannel('notifications', user.sub.toString() , (message) => {
-        const data = JSON.parse(message.data);
-        setNotificationStack(prev => [...prev, data]);
-        pageSpecificBehavior();
-    })
 
     return (
         <>

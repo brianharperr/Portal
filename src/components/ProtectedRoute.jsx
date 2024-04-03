@@ -3,8 +3,6 @@ import { axiosWithCredentials, axiosWithAdminCredentials } from "../configs/axio
 import { useMatch, useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import WebNotificationHandler from "./WebNotificationHandler";
-import { Realtime } from 'ably';
-import { AblyProvider, ChannelProvider } from 'ably/react';
 import { fetchPortals } from "../redux/features/admin.portal.slice";
 
 
@@ -23,9 +21,6 @@ export default function ProtectedRoute({ children, admin = false, portalFetch = 
         anchorOrigin: { vertical: 'top', horizontal: 'right'},
         id: null
     })
-
-    const client = new Realtime({ key: import.meta.env.VITE_ABLY_KEY });
-
 
     useEffect(() => {
         var authString = admin ? '/auth' : '/auth/portal';
@@ -65,11 +60,7 @@ export default function ProtectedRoute({ children, admin = false, portalFetch = 
         <>
         {auth ?
         <>
-        <AblyProvider client={client}>
-            <ChannelProvider channelName="notifications">
-                {user && <WebNotificationHandler user={user}/>}
-            </ChannelProvider>
-        </AblyProvider>
+        {/* <WebNotificationHandler user={user}/> */}
         {children}
         </>
         :

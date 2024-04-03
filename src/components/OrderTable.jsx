@@ -32,7 +32,7 @@ import AutorenewRoundedIcon from '@mui/icons-material/AutorenewRounded';
 import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
 import KeyboardArrowLeftIcon from '@mui/icons-material/KeyboardArrowLeft';
 import MoreHorizRoundedIcon from '@mui/icons-material/MoreHorizRounded';
-import { useNavigate, useSearchParams } from 'react-router-dom';
+import { useNavigate, useSearchParams, useLocation } from 'react-router-dom';
 import { axiosWithCredentials } from '../configs/axios';
 import { useDispatch, useSelector } from 'react-redux';
 import { getPortal } from '../redux/features/portal.slice';
@@ -42,7 +42,6 @@ import { deleteCase } from '../redux/features/order.slice';
 import { Transition } from 'react-transition-group';
 import DialogTitle from '@mui/joy/DialogTitle';
 import DialogContent from '@mui/joy/DialogContent';
-import { useQueryState } from '../hooks/useQueryState';
 
 const RowMenu = React.memo(({ payload, id, onDelete }) => {
   const dispatch = useDispatch();
@@ -91,16 +90,17 @@ const RowMenu = React.memo(({ payload, id, onDelete }) => {
 export default function OrderTable() {
 
   const navigate = useNavigate();
+  const { state } = useLocation();
 
   const [rows, setRows] = React.useState([]);
-  const [pageView, setPageView] = useQueryState("pageView", 20);
-  const [page, setPage] = useQueryState("page", 0);
+  const [pageView, setPageView] = React.useState(20);
+  const [page, setPage] = React.useState(0);
   const [totalResults, setTotalResults] = React.useState(null);
-  const [query, setQuery] = useQueryState("query");
-  const [status, setStatus] = useQueryState("status");
-  const [service, setService] = useQueryState("service", true);
-  const [home, setHome] = useQueryState("home", true);
-  const [director, setDirector] = useQueryState("director", true);
+  const [query, setQuery] = React.useState("");
+  const [status, setStatus] = React.useState(null);
+  const [service, setService] = React.useState(null);
+  const [home, setHome] = React.useState(null);
+  const [director, setDirector] = React.useState(null || state?.director);
   const [filterOptions, setFilterOptions] = React.useState({
     Homes: [],
     Services: [],
@@ -134,24 +134,27 @@ export default function OrderTable() {
       </FormControl>
       <FormControl size="sm">
         <FormLabel>Status</FormLabel>
+        {filterOptions.Statuses.length > 0 && (
         <Select
-          size="sm"
-          placeholder="Filter by status"
-          value={status}
-          slotProps={{ button: { sx: { whiteSpace: 'nowrap' } } }}
-          onChange={(e, data) => setStatus(data)}
-        >
-          <Option value={null}>All</Option>
-          {filterOptions.Statuses?.map(x => {
-            return (
-              <Option value={x.Status}>{x.Status}</Option>
-            )
-          })
-          }
-        </Select>
+        size="sm"
+        placeholder="Filter by status"
+        value={status}
+        slotProps={{ button: { sx: { whiteSpace: 'nowrap' } } }}
+        onChange={(e, data) => setStatus(data)}
+      >
+        <Option value={null}>All</Option>
+        {filterOptions.Statuses?.map(x => {
+          return (
+            <Option value={x.Status}>{x.Status}</Option>
+          )
+        })
+        }
+      </Select>
+        )}
       </FormControl>
       <FormControl size="sm">
         <FormLabel>Service</FormLabel>
+        {filterOptions.Services.length > 0 && (
         <Select size="sm" placeholder="All" sx={{ maxWidth: 250 }} slotProps={{listbox: { placement: 'bottom-start'}}} value={service} onChange={(e, data) => setService(data)}>
           <Option value={null}>All</Option>
           {filterOptions.Services?.map(x => {
@@ -161,9 +164,11 @@ export default function OrderTable() {
           })
           }
         </Select>
+        )}
       </FormControl>
       <FormControl size="sm">
         <FormLabel>Home</FormLabel>
+        {filterOptions.Homes.length > 0 && (
         <Select size="sm" placeholder="All" sx={{ maxWidth: 240 }} slotProps={{listbox: { placement: 'bottom-start'}}} value={home} onChange={(e, data) => setHome(data)}>
         <Option value={null}>All</Option>
           {filterOptions.Homes?.map(x => {
@@ -173,18 +178,21 @@ export default function OrderTable() {
           })
           }
         </Select>
+        )}
       </FormControl>
       <FormControl size="sm">
         <FormLabel>Director</FormLabel>
-        <Select size="sm" placeholder="All" sx={{ maxWidth: 160 }} slotProps={{listbox: { placement: 'bottom-start'}}} value={director} onChange={(e, data) => setDirector(data)}>
-        <Option value={null}>All</Option>
-          {filterOptions.Directors?.map(x => {
-            return (
-              <Option value={x.ID}>{x.Name}</Option>
-            )
-          })
-          }
-        </Select>
+        {filterOptions.Directors.length > 0 && (
+          <Select size="sm" placeholder="All" sx={{ maxWidth: 240 }} slotProps={{listbox: { placement: 'bottom-start'}}} value={director} onChange={(e, data) => setDirector(data)}>
+            <Option value={null}>All</Option>
+            {filterOptions.Directors?.map(x => {
+              return (
+                <Option value={x.ID}>{x.Name}</Option>
+              )
+            })
+            }
+          </Select>
+        )}
       </FormControl>
     </Box>
   );
@@ -254,7 +262,7 @@ export default function OrderTable() {
   React.useEffect(() => {
     if(query !== null){
       const delayDebounceFn = setTimeout(() => {
-        //fetchData();
+        fetchData();
       }, 300)
 
       return () => clearTimeout(delayDebounceFn)
@@ -263,7 +271,7 @@ export default function OrderTable() {
   //Grab data
   React.useEffect(() => {
     fetchData();
-  }, [query, page, pageView, status, service, home, director, portal]) 
+  }, [page, pageView, status, service, home, director, portal]) 
 
   //Grab filter options
   React.useEffect(() => {

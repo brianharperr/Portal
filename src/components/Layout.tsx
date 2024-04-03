@@ -6,19 +6,19 @@ function Root(props: BoxProps) {
   return (
     <Box
       {...props}
-      sx={[
-        {
-          display: 'grid',
-          gridTemplateColumns: {
-            xs: '1fr',
-            sm: 'minmax(64px, 200px) minmax(450px, 1fr)',
-            md: 'minmax(160px, 300px) minmax(300px, 500px) minmax(500px, 1fr)',
-          },
-          gridTemplateRows: '64px 1fr',
-          minHeight: '100vh',
-        },
-        ...(Array.isArray(props.sx) ? props.sx : [props.sx]),
-      ]}
+      // sx={[
+      //   {
+      //     display: 'grid',
+      //     gridTemplateColumns: {
+      //       xs: '1fr',
+      //       sm: 'minmax(64px, 200px) minmax(450px, 1fr)',
+      //       md: 'minmax(160px, 300px) minmax(300px, 500px) minmax(500px, 1fr)',
+      //     },
+      //     gridTemplateRows: '64px 1fr',
+      //     minHeight: '100vh',
+      //   },
+      //   ...(Array.isArray(props.sx) ? props.sx : [props.sx]),
+      // ]}
     />
   );
 }
@@ -32,6 +32,7 @@ function Header(props: BoxProps) {
       sx={[
         {
           p: 2,
+          paddingBottom: 0,
           gap: 2,
           bgcolor: 'background.surface',
           display: 'flex',

@@ -3,7 +3,7 @@ import { Avatar, Button, ButtonGroup, Card, CardActions, CardContent, CardOverfl
 import { axiosWithCredentials } from "../configs/axios";
 import { useDispatch } from "react-redux";
 
-export default function UserCard({user, adminView, onSecondaryClick}){
+export default function UserCard({user, adminView, onPrimaryClick, onSecondaryClick}){
 
     const dispatch = useDispatch();
     function formatPhoneNumber(phoneNumber) {
@@ -66,7 +66,7 @@ export default function UserCard({user, adminView, onSecondaryClick}){
               variant="outlined"
               sx={{ bgcolor: "background.surface", width: '100%' }}
             >
-              <Button>Message</Button>
+              <Button onClick={() => onPrimaryClick(user.ID)}>Message</Button>
               <Button onClick={() => onSecondaryClick(user.ID)}>Orders</Button>
             </ButtonGroup>
             {/* {adminView && user.Role.ID !== 1 &&

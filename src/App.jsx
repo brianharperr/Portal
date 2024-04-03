@@ -1,124 +1,48 @@
-import { createBrowserRouter, RouterProvider } from "react-router-dom"
+import { createBrowserRouter, RouterProvider, BrowserRouter, Routes, Route } from "react-router-dom"
 import ProtectedRoute from "./components/ProtectedRoute";
-import Login from "./pages/Login";
-import { useEffect } from "react";
+import Login from "./pages/portal/Login";
+import { useEffect, useState } from "react";
 import ValidationService from "./services/Validation";
 import { fetchPortal, getPortal } from "./redux/features/portal.slice";
 import { useDispatch, useSelector } from "react-redux";
-import ForgotPassword from "./pages/ForgotPassword";
-import ResetPassword from "./pages/ResetPassword";
-import RevertEmailChange from "./pages/RevertEmailChange";
-import Orders from "./pages/Orders";
-import Inbox from "./pages/Inbox";
-import Analytics2 from "./pages/Analytics2";
-import Dashboard2 from "./pages/Dashboard2";
-import NewOrder from "./pages/NewOrder";
+import ForgotPassword from "./pages/portal/ForgotPassword";
+import ResetPassword from "./pages/portal/ResetPassword";
+import RevertEmailChange from "./pages/portal/RevertEmailChange";
+import Orders from "./pages/portal/Orders";
+import Inbox from "./pages/portal/Inbox";
+import Analytics2 from "./pages/portal/Analytics2";
+import Dashboard2 from "./pages/portal/Dashboard2";
+import NewOrder from "./pages/portal/NewOrder";
 import axios from "axios";
-import Profile2 from "./pages/Profile2";
-import Order from "./pages/Order";
-import Schedule from "./pages/Schedule";
-import Users from "./pages/Users";
+import Profile2 from "./pages/portal/Profile2";
+import Order from "./pages/portal/Order";
+import Schedule from "./pages/portal/Schedule";
+import Users from "./pages/portal/Users";
+import PortalRoutes from "./pages/PortalRoutes";
+import AdminRoutes from "./pages/AdminRoutes";
 
 export default function App()
 {
   const dispatch = useDispatch();
   const portal = useSelector(getPortal);
-  
-  useEffect(() => {
-    
-    if(!portal){
-      var subdomain = ValidationService.validateSubdomain(window.location.host);
-      var localPortal = localStorage.getItem('portal');
-      if(localPortal){
-        subdomain = localPortal;
-      }else{
-        subdomain = "test";
-      }
+  const [isPortal, setIsPortal] = useState(false);
 
-      if(subdomain && !portal){
-        dispatch(fetchPortal(subdomain));
-      }else{
-        // window.location.href = import.meta.env.VITE_REACT_APP_MASTER_PAGE_URL;
-      }
+  useEffect(() => {
+    const isValidSubdomain = ValidationService.validateSubdomain(window.location.host);
+    setIsPortal(isValidSubdomain);
+    const subdomain = window.location.host.split(".")[0];
+    if(isValidSubdomain && !portal){
+      dispatch(fetchPortal(subdomain));
     }
   }, []);
 
-  const router = createBrowserRouter([
-    {
-      path: "/",
-      element: <ProtectedRoute><Dashboard2/></ProtectedRoute>    
-    },
-    {
-      path: "/orders",
-      element: <ProtectedRoute><Orders/></ProtectedRoute>    
-    },
-    {
-      path: "/order",
-      element: <ProtectedRoute><Order/></ProtectedRoute>    
-    },
-    {
-      path: "/new-order",
-      element: <ProtectedRoute><NewOrder/></ProtectedRoute>
-    },
-    {
-      path: "/profile",
-      element: <ProtectedRoute><Profile2/></ProtectedRoute>
-    },
-    // {
-    //   path: '/confirm',
-    //   element: <ConfirmEmailChange/>
-    // },
-    // {
-    //   path: "/not-found",
-    //   element: <PortalNotFound/>
-    // },
-    {
-      path: "/login",
-      element: <Login/>
-    },
-    {
-      path: "/analytics",
-      element: <ProtectedRoute><Analytics2/></ProtectedRoute>
-    },
-    {
-      path: "/schedule",
-      element: <ProtectedRoute><Schedule/></ProtectedRoute>
-    },
-    {
-      path: "/inbox",
-      element: <ProtectedRoute><Inbox/></ProtectedRoute>
-    },
-    {
-      path: "/users",
-      element: <ProtectedRoute><Users/></ProtectedRoute>
-    },
-    {
-      path: "/sent",
-      element: <ProtectedRoute><Inbox/></ProtectedRoute>
-    },
-    {
-      path: "/flagged",
-      element: <ProtectedRoute><Inbox/></ProtectedRoute>
-    },
-    {
-      path: "/trash",
-      element: <ProtectedRoute><Inbox/></ProtectedRoute>
-    },
-    {
-      path: "/forgot",
-      element: <ForgotPassword/>
-    },
-    {
-      path: '/revert-email-change',
-      element: <RevertEmailChange/>
-    },
-    {
-      path: "/reset",
-      element: <ResetPassword/>
-    }
-  ])
-
   return (
-    <RouterProvider router={router}/>
+    <BrowserRouter>
+      {isPortal ? 
+        <PortalRoutes/>
+      :
+        <AdminRoutes/>
+      }
+    </BrowserRouter>
   )
 }

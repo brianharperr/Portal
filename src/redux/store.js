@@ -8,6 +8,10 @@ import messageReducer from './features/message.slice';
 import casetwoReducer from './features/casetwo.slice';
 import widgetReducer from './features/widget.slice';
 import orderReducer from './features/order.slice';
+import adminPortalReducer from './features/admin.portal.slice';
+import roleReducer from './features/role.slice';
+import serviceReducer from './features/service.slice';
+import homeReducer from './features/home.slice';
 
 const reducer = combineReducers({
     portal: portalReducer,
@@ -17,7 +21,11 @@ const reducer = combineReducers({
     analytic: analyticReducer,
     message: messageReducer,
     caseTwo: casetwoReducer,
-    widget: widgetReducer
+    widget: widgetReducer,
+    adminPortal: adminPortalReducer,
+    role: roleReducer,
+    service: serviceReducer,
+    home: homeReducer,  
 });
 
 

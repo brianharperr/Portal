@@ -8,9 +8,8 @@ import Stack from '@mui/material/Stack';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
 
-import FacebookIcon from '@mui/icons-material/GitHub';
-import LinkedInIcon from '@mui/icons-material/LinkedIn';
-import TwitterIcon from '@mui/icons-material/X';
+import FacebookIcon from '@mui/icons-material/Facebook';
+import InstagramIcon from '@mui/icons-material/Instagram';
 
 const logoStyle = {
   width: '140px',
@@ -55,7 +54,7 @@ export default function Footer() {
             minWidth: { xs: '100%', sm: '60%' },
           }}
         >
-          <Box sx={{ width: { xs: '100%', sm: '60%' } }}>
+          <Box id="newsletter" sx={{ width: { xs: '100%', sm: '60%' } }}>
             <Box sx={{ ml: '-15px' }}>
               <img
                 src={
@@ -191,27 +190,19 @@ export default function Footer() {
         >
           <IconButton
             color="inherit"
-            href="https://github.com/mui"
-            aria-label="GitHub"
+            href="https://www.facebook.com/profile.php?id=61551378866704&mibextid=LQQJ4d"
+            aria-label="Facebook"
             sx={{ alignSelf: 'center' }}
           >
             <FacebookIcon />
           </IconButton>
           <IconButton
             color="inherit"
-            href="https://twitter.com/MaterialUI"
-            aria-label="X"
+            href="https://www.instagram.com/familylynk/"
+            aria-label="Instagram"
             sx={{ alignSelf: 'center' }}
           >
-            <TwitterIcon />
-          </IconButton>
-          <IconButton
-            color="inherit"
-            href="https://www.linkedin.com/company/mui/"
-            aria-label="LinkedIn"
-            sx={{ alignSelf: 'center' }}
-          >
-            <LinkedInIcon />
+            <InstagramIcon />
           </IconButton>
         </Stack>
       </Box>

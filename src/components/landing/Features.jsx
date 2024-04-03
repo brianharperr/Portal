@@ -18,23 +18,23 @@ const items = [
     icon: <ViewQuiltRoundedIcon />,
     title: 'Dashboard',
     description:
-      'This item could provide a snapshot of the most important metrics or data points related to the product.',
+      'Ensure effeciency with our dashboards. Track day-to-day operations and store historical data for reference.',
     imageLight: 'url("/static/images/templates/templates-images/dash-light.png")',
     imageDark: 'url("/static/images/templates/templates-images/dash-dark.png")',
   },
   {
     icon: <EdgesensorHighRoundedIcon />,
-    title: 'Mobile integration',
+    title: 'Analytics & Reports',
     description:
-      'This item could provide information about the mobile app version of the product.',
+      'Gain complete insight into how your business is performing and make data-driven decisions. ',
     imageLight: 'url("/static/images/templates/templates-images/mobile-light.png")',
     imageDark: 'url("/static/images/templates/templates-images/mobile-dark.png")',
   },
   {
     icon: <DevicesRoundedIcon />,
-    title: 'Available on all platforms',
+    title: 'UI / UX',
     description:
-      'This item could let users know the product is available on all platforms, such as web, mobile, and desktop.',
+      'Enjoy the seamless user experience of FamilyLynk. Designed to be beautiful and intuitive.',
     imageLight: 'url("/static/images/templates/templates-images/devices-light.png")',
     imageDark: 'url("/static/images/templates/templates-images/devices-dark.png")',
   },
@@ -62,9 +62,7 @@ export default function Features() {
               color="text.secondary"
               sx={{ mb: { xs: 2, sm: 4 } }}
             >
-              Here you can provide a brief overview of the key features of the
-              product. For example, you could list the number of features, the types
-              of features, add-ons, or the benefits of the features.
+              FamilyLynk is designed to empower funeral homes of all sizes with comprehensive tools to track, analyze, and visualize their data. Whether you're a small startup or a large enterprise, our platform offers scalable solutions to meet your business needs.
             </Typography>
           </div>
           <Grid container item gap={1} sx={{ display: { xs: 'auto', sm: 'none' } }}>

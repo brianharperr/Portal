@@ -19,18 +19,8 @@ import 'react-multi-email/dist/style.css';
 
 export default function UserInviteModal({ open, onClose, onSuccess }) {
 
-    const { reset, register, watch, handleSubmit, setError, formState: { errors } } = useForm({
-        Current: '',
-        New: '',
-        Confirm: ''
-    });
-
     const [emails, setEmails] = React.useState([]);
-    const [valid, setValid] = React.useState(false);
     const [loading, setLoading] = React.useState(false);
-    const hasCapitalLetter = (str) => /[A-Z]/.test(str);
-    const hasNumber = (str) => /\d/.test(str);
-    const hasSpecialCharacter = (str) => /[!@#$%^&*(),.?":{}|<>]/.test(str);
 
     const onSubmit = (data) => {
       setLoading(true);
@@ -50,6 +40,7 @@ export default function UserInviteModal({ open, onClose, onSuccess }) {
     React.useEffect(() => {
         setEmails([]);
     }, [open])
+
   return (
     <React.Fragment>
       <Modal open={open} onClose={() => onClose()}>
@@ -74,7 +65,7 @@ export default function UserInviteModal({ open, onClose, onSuccess }) {
           <DialogTitle>Invite users</DialogTitle>
           <DialogContent>You can invite multiple users at once by providing their email addresses. Once invited, they will receive an email to register with the portal.</DialogContent>
           <form
-            onSubmit={handleSubmit(onSubmit)}
+            onSubmit={onSubmit}
           >
             <Stack spacing={2}>
               <FormControl error={errors?.Current}>

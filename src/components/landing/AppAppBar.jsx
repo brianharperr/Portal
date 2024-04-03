@@ -141,7 +141,7 @@ function AppAppBar({ mode, toggleColorMode }) {
               }}
             >
               <ToggleColorMode mode={mode} toggleColorMode={toggleColorMode} />
-              <Button
+              {/* <Button
                 color="primary"
                 variant="text"
                 size="small"
@@ -158,7 +158,7 @@ function AppAppBar({ mode, toggleColorMode }) {
                 href="/register"
               >
                 Sign up
-              </Button>
+              </Button> */}
             </Box>
             <Box sx={{ display: { sm: '', md: 'none' } }}>
               <Button

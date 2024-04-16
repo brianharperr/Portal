@@ -15,7 +15,7 @@ import { Button, Dropdown, Menu, MenuButton, MenuItem, Stack, Tab, TabList, Tabs
 export default function PortalView()
 {
     const { name } = useParams();
-
+    
     return (
         <PageBuilder2 portalView>
         </PageBuilder2>

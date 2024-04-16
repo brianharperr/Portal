@@ -24,7 +24,7 @@ export default function ProtectedRoute({ children, admin = false, portalFetch = 
 
     useEffect(() => {
         var authString = admin ? '/auth' : '/auth/portal';
-
+        console.log("admin: ", admin);
         if(admin){
             axiosWithAdminCredentials.get('/auth', {
                 headers: {

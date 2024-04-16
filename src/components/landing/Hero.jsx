@@ -57,13 +57,7 @@ export default function Hero() {
           <Typography variant="body1" textAlign="center" color="text.secondary">
           Online platform designed by funeral directors for funeral directors. Track work by case, never losing sight of what's been done, and what needs to be done. <br />
           </Typography>
-          <Typography variant="h4" textAlign="center" color="text.secondary">
-          Coming Soon! <br />
-          </Typography>
-          <Link href="#newsletter" variant="button" textAlign="center" color="text.secondary">
-          Join our newsletter!<br />
-          </Link>
-          {/* <Stack
+          <Stack
             direction={{ xs: 'column', sm: 'row' }}
             alignSelf="center"
             spacing={1}
@@ -92,7 +86,7 @@ export default function Hero() {
               Terms & Conditions
             </Link>
             .
-          </Typography> */}
+          </Typography>
         </Stack>
         <Box
           id="image"

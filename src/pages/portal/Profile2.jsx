@@ -27,7 +27,7 @@ import EmailRoundedIcon from '@mui/icons-material/EmailRounded';
 import AccessTimeFilledRoundedIcon from '@mui/icons-material/AccessTimeFilledRounded';
 import EditRoundedIcon from '@mui/icons-material/EditRounded';
 import { useDispatch, useSelector } from 'react-redux';
-import { fetchUser, getUser, updateUser } from '../../redux/features/user.slice.js';
+import { fetchUser, getUser, updateProfilePicture, updateUser } from '../../redux/features/user.slice.js';
 import { Autocomplete, AutocompleteOption, CircularProgress, FormHelperText, Snackbar, styled } from '@mui/joy';
 import ImageCropper from '../../components/profile/ImageCropper.jsx';
 import { Controller, useForm } from 'react-hook-form';
@@ -111,6 +111,13 @@ export default function Profile2() {
                 phonenumber: user.PhoneNumber
             })
         }
+    }
+
+    const onImageCrop = (img) => {
+        dispatch(updateProfilePicture(img)).unwrap()
+        .then(() => {
+            setImageCrop({ open: false, image: ""});
+        })
     }
     useEffect(() => {
         dispatch(fetchUser());
@@ -196,7 +203,7 @@ export default function Profile2() {
             overflow: 'auto',
           }}
         >
-            <ImageCropper size="small" visible={imageCrop.open} image={imageCrop.image} onClose={() => setImageCrop({ open: false, image: ""})}/>
+            <ImageCropper size="small" visible={imageCrop.open} image={imageCrop.image} onClose={() => setImageCrop({ open: false, image: ""})} onChange={onImageCrop}/>
             <Box sx={{ flex: 1, width: '100%' }}>
             <Box
                 sx={{

@@ -3,11 +3,11 @@ import Cropper from "react-cropper";
 import "cropperjs/dist/cropper.css";
 import { useDispatch } from "react-redux";
 import { updateProfilePicture } from "../../redux/features/user.slice";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Resizer from "react-image-file-resizer";
 import Compressor from 'compressorjs';
 
-export default function ImageCropper({ small, image, visible, onClose })
+export default function ImageCropper({ small, image, visible, onClose, onChange })
 {
     const cropperRef = useRef(null);
     const [loading, setLoading] = useState(false);
@@ -49,11 +49,7 @@ export default function ImageCropper({ small, image, visible, onClose })
                 maxWidth: 150,
                 maxHeight: 150,
                 success: (compressedImage) => {
-                    dispatch(updateProfilePicture(compressedImage)).unwrap()
-                    .then(() => {
-                        onClose();
-                    })
-                    .finally(() => setLoading(false))
+                    onChange(compressedImage);
                 },
                 error: (error) => {
                   console.error('Error compressing image:', error);
@@ -62,6 +58,10 @@ export default function ImageCropper({ small, image, visible, onClose })
               new Compressor(resizedImage, options);
         }
     }
+    
+    useEffect(() => {
+      setLoading(false);
+    }, [visible])
     return (
         <Modal
         size={small}

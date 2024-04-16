@@ -1,5 +1,5 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
-import { axiosWithCredentials } from '../../configs/axios'
+import { axiosWithAdminCredentials, axiosWithCredentials } from '../../configs/axios'
 import ColorTheme from '../../configs/color-themes';
 
 const initialState = {
@@ -11,19 +11,19 @@ const initialState = {
 }
 
 export const fetchPortals = createAsyncThunk('portal/fetchPortals', async () => {
-        const response = await axiosWithCredentials.get('/procedure/FetchPortalsFromUser');
+        const response = await axiosWithAdminCredentials.get('/procedure/FetchPortalsFromUser');
         return response.data;
 
 })
 
 export const updateColorTheme = createAsyncThunk('portal/updateColorTheme', async (payload) => {
-    const response = await axiosWithCredentials.post('/portal/color-theme', payload);
+    const response = await axiosWithAdminCredentials.post('/portal/color-theme', payload);
 
     return response.data;
 })
 
 export const updateLogo = createAsyncThunk('portal/updateLogo', async (payload) => {
-    const response = await axiosWithCredentials.post('/portal/logo', payload, {
+    const response = await axiosWithAdminCredentials.post('/portal/logo', payload, {
         headers: {
             'Content-Type': 'multipart/form-data'
         }
@@ -33,13 +33,13 @@ export const updateLogo = createAsyncThunk('portal/updateLogo', async (payload) 
 })
 
 export const deleteLogo = createAsyncThunk('portal/deleteLogo', async (ID) => {
-    const response = await axiosWithCredentials.delete('/portal/logo?id=' + ID);
+    const response = await axiosWithAdminCredentials.delete('/portal/logo?id=' + ID);
 
     return response.data;
 })
 
 export const updateSubdomain = createAsyncThunk('portal/updateSubdomain', async (payload) => {
-    const response = await axiosWithCredentials.post('/portal/subdomain', payload);
+    const response = await axiosWithAdminCredentials.post('/portal/subdomain', payload);
 
     return response.data;
 })
@@ -51,20 +51,18 @@ export const updateAutomaticRenewal = createAsyncThunk('portal/updateAutomaticRe
         Value: data.Value
     };
 
-    const response = await axiosWithCredentials.patch('/stripe/auto-renewal', payload);
+    const response = await axiosWithAdminCredentials.patch('/stripe/auto-renewal', payload);
 
     return response.data;
 })
 
-export const deletePortal = createAsyncThunk('portal/deletePortal', async (portal) => {
+export const deletePortal = createAsyncThunk('portal/deletePortal', async (id) => {
 
     var payload = {
-        PortalID: portal.ID,
-        MasterPortalID: portal.MasterID,
-        UserID: portal.UserID
+        id: id,
     };
 
-    const response = await axiosWithCredentials.post('/portal/delete', payload);
+    const response = await axiosWithAdminCredentials.delete('/portal', { params: payload });
 
     return response.data;
 })
@@ -77,6 +75,10 @@ export const adminPortalSlice = createSlice({
             state.theme = ColorTheme.find(x => x.ID === Number(action.payload.Theme));
             state.selected = action.payload.ID;
             localStorage.setItem('SelectedPortal', action.payload.ID);
+        },
+        update: (state, action) => {
+            var idx = state.data.findIndex(x => x.ID === action.payload.ID);
+            state.data[idx][action.payload.Field] = action.payload.Value;
         }
     },
     extraReducers: (builder) => {
@@ -176,7 +178,7 @@ export const adminPortalSlice = createSlice({
     }
 })
 // Action creators are generated for each case reducer function
-export const { select } = adminPortalSlice.actions;
+export const { select, update } = adminPortalSlice.actions;
 
 export const getPortals = (state) => state.adminPortal.data;
 export const getPortalsStatus = (state) => state.adminPortal.status;

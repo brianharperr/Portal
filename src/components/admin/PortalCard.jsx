@@ -25,7 +25,7 @@ const UserDisplay = ({users}) => {
         <AvatarGroup sx={{ gap: 1 }}>
             {users.slice(0, 3).map((x, idx) => {
                 return (
-                    <Avatar key={x.Pic} src={x.Pic}>{getInitials(x.Name)}</Avatar>
+                    <Avatar key={idx} src={x.Pic}>{getInitials(x.Name)}</Avatar>
                 )
             })}
             {users.length > 3 && 
@@ -49,6 +49,7 @@ export default function PortalCard({ data })
     const dispatch = useDispatch();
     const redirectToPortalView = () => {
       const slug = convertToSlug(data.Subdomain);
+      dispatch(select(data.ID))
       navigate(`/portal/${slug}/settings`);
     }
 
@@ -72,7 +73,7 @@ export default function PortalCard({ data })
     }, [])
 
     return ( 
-        <Card onClick={redirectToPortalView} className=" shadow-sm hover:shadow-md duration-200 transition-all hover:cursor-pointer">
+        <Card sx={{ overflowX: 'hidden'}} onClick={redirectToPortalView} className=" shadow-sm hover:shadow-md duration-200 transition-all hover:cursor-pointer">
         <CardContent orientation="horizontal" sx={{ alignItems: 'center', gap: 1 }}>
           <Box
             sx={{
@@ -99,10 +100,16 @@ export default function PortalCard({ data })
           </Box>
           <Box
           sx={{
-            marginLeft: 0.25
+            marginLeft: 0.25,
+            maxWidth: 'calc(100% - 40px)', // Adjust width as needed
+            overflow: 'hidden',
+            textOverflow: 'ellipsis',
           }}
           >
-          <Typography fontWeight="lg">{data.Name}</Typography>
+          <Typography 
+          noWrap
+          fontWeight="lg"
+          >{data.Name}</Typography>
           </Box>
           <Tooltip title="Open Portal">
           <IconButton onClick={(e) => redirectToPortal(e)} variant="plain" color="neutral" size="sm" sx={{ ml: 'auto' }}>

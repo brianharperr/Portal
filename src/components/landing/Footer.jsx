@@ -10,6 +10,9 @@ import Typography from '@mui/material/Typography';
 
 import FacebookIcon from '@mui/icons-material/Facebook';
 import InstagramIcon from '@mui/icons-material/Instagram';
+import { useNavigate } from 'react-router-dom';
+import { axiosWithoutCredentials } from '../../configs/axios';
+import Snackbar from '@mui/joy/Snackbar';
 
 const logoStyle = {
   width: '140px',
@@ -26,7 +29,10 @@ function Copyright() {
   );
 }
 
-export default function Footer() {
+export default function Footer({ subscribeToNewsletter }) {
+
+  const [newsletterEmail, setNewsletterEmail] = React.useState('');
+
   return (
     <Container
       sx={{
@@ -83,8 +89,10 @@ export default function Footer() {
                   autoComplete: 'off',
                   ariaLabel: 'Enter your email address',
                 }}
+                value={newsletterEmail}
+                onChange={e => setNewsletterEmail(e.target.value)}
               />
-              <Button variant="contained" color="primary" sx={{ flexShrink: 0 }}>
+              <Button onClick={() => subscribeToNewsletter(newsletterEmail)} variant="contained" color="primary" sx={{ flexShrink: 0 }}>
                 Subscribe
               </Button>
             </Stack>
@@ -126,15 +134,15 @@ export default function Footer() {
           <Typography variant="body2" fontWeight={600}>
             Company
           </Typography>
-          <Link color="text.secondary" href="#">
+          <Link color="text.secondary" href="/about">
             About us
           </Link>
-          <Link color="text.secondary" href="#">
+          <Link color="text.secondary" href="/careers">
             Careers
           </Link>
-          <Link color="text.secondary" href="#">
+          {/* <Link color="text.secondary" href="/press">
             Press
-          </Link>
+          </Link> */}
         </Box>
         <Box
           sx={{
@@ -152,7 +160,7 @@ export default function Footer() {
           <Link color="text.secondary" href="/legal/privacy">
             Privacy
           </Link>
-          <Link color="text.secondary" href="#">
+          <Link color="text.secondary" href="/contact">
             Contact
           </Link>
         </Box>
@@ -168,13 +176,13 @@ export default function Footer() {
         }}
       >
         <div>
-          <Link color="text.secondary" href="#">
+          <Link color="text.secondary" href="/legal/privacy">
             Privacy Policy
           </Link>
           <Typography display="inline" sx={{ mx: 0.5, opacity: 0.5 }}>
             &nbsp;•&nbsp;
           </Typography>
-          <Link color="text.secondary" href="#">
+          <Link color="text.secondary" href="/legal/terms">
             Terms of Service
           </Link>
           <Copyright />

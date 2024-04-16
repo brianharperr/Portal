@@ -19,7 +19,7 @@ const logoStyle = {
   cursor: 'pointer',
 };
 
-function AppAppBar({ mode, toggleColorMode }) {
+function AppAppBar({ mode, toggleColorMode, navigate = true }) {
   const [open, setOpen] = React.useState(false);
 
   const toggleDrawer = (newOpen) => () => {
@@ -83,6 +83,7 @@ function AppAppBar({ mode, toggleColorMode }) {
                 px: 0,
               }}
             >
+              <a href="/">
               <img
                 src={
                   'https://familylynk.s3.us-east-2.amazonaws.com/meta/logo_150x58.svg'
@@ -90,48 +91,51 @@ function AppAppBar({ mode, toggleColorMode }) {
                 style={logoStyle}
                 alt="logo of sitemark"
               />
+              </a>
+              {navigate && 
               <Box sx={{ display: { xs: 'none', md: 'flex' } }}>
-                <MenuItem
-                  onClick={() => scrollToSection('features')}
-                  sx={{ py: '6px', px: '12px' }}
-                >
-                  <Typography variant="body2" color="text.primary">
-                    Features
-                  </Typography>
-                </MenuItem>
-                <MenuItem
-                  onClick={() => scrollToSection('testimonials')}
-                  sx={{ py: '6px', px: '12px' }}
-                >
-                  <Typography variant="body2" color="text.primary">
-                    Testimonials
-                  </Typography>
-                </MenuItem>
-                <MenuItem
-                  onClick={() => scrollToSection('highlights')}
-                  sx={{ py: '6px', px: '12px' }}
-                >
-                  <Typography variant="body2" color="text.primary">
-                    Highlights
-                  </Typography>
-                </MenuItem>
-                <MenuItem
-                  onClick={() => scrollToSection('pricing')}
-                  sx={{ py: '6px', px: '12px' }}
-                >
-                  <Typography variant="body2" color="text.primary">
-                    Pricing
-                  </Typography>
-                </MenuItem>
-                <MenuItem
-                  onClick={() => scrollToSection('faq')}
-                  sx={{ py: '6px', px: '12px' }}
-                >
-                  <Typography variant="body2" color="text.primary">
-                    FAQ
-                  </Typography>
-                </MenuItem>
-              </Box>
+              <MenuItem
+                onClick={() => scrollToSection('features')}
+                sx={{ py: '6px', px: '12px' }}
+              >
+                <Typography variant="body2" color="text.primary">
+                  Features
+                </Typography>
+              </MenuItem>
+              <MenuItem
+                onClick={() => scrollToSection('testimonials')}
+                sx={{ py: '6px', px: '12px' }}
+              >
+                <Typography variant="body2" color="text.primary">
+                  Testimonials
+                </Typography>
+              </MenuItem>
+              <MenuItem
+                onClick={() => scrollToSection('highlights')}
+                sx={{ py: '6px', px: '12px' }}
+              >
+                <Typography variant="body2" color="text.primary">
+                  Highlights
+                </Typography>
+              </MenuItem>
+              <MenuItem
+                onClick={() => scrollToSection('pricing')}
+                sx={{ py: '6px', px: '12px' }}
+              >
+                <Typography variant="body2" color="text.primary">
+                  Pricing
+                </Typography>
+              </MenuItem>
+              <MenuItem
+                onClick={() => scrollToSection('faq')}
+                sx={{ py: '6px', px: '12px' }}
+              >
+                <Typography variant="body2" color="text.primary">
+                  FAQ
+                </Typography>
+              </MenuItem>
+            </Box>
+              }
             </Box>
             <Box
               sx={{
@@ -141,7 +145,7 @@ function AppAppBar({ mode, toggleColorMode }) {
               }}
             >
               <ToggleColorMode mode={mode} toggleColorMode={toggleColorMode} />
-              {/* <Button
+              <Button
                 color="primary"
                 variant="text"
                 size="small"
@@ -158,7 +162,7 @@ function AppAppBar({ mode, toggleColorMode }) {
                 href="/register"
               >
                 Sign up
-              </Button> */}
+              </Button>
             </Box>
             <Box sx={{ display: { sm: '', md: 'none' } }}>
               <Button

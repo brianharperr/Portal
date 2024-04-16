@@ -8,8 +8,7 @@ import PortalCard from "../../components/admin/PortalCard";
 export default function Overview() {
 
   const portals = useSelector(getPortals);
-
-
+  
   return (
     <PageBuilder2>
       <Box
@@ -25,7 +24,7 @@ export default function Overview() {
         <Typography level='title-sm'>Portals</Typography>
         <Grid container spacing={2} sx={{flexGrow: 1, mt: 0.25}}>
         {portals?.map(portal => (
-          <Grid xs={12} sm={6}>
+          <Grid xs={12} sm={6} key={portal.ID}>
             <PortalCard data={portal}/>
           </Grid>
         ))}

@@ -1,205 +1,524 @@
-import PageBuilder from "../../components/admin/PageBuilder";
-import { useState, useEffect } from 'react';
-import { Form, Input, Upload, Button, Spin, message, Divider, Switch, Modal, Checkbox, Popconfirm } from 'antd';
-import { UploadOutlined, LoadingOutlined } from '@ant-design/icons';
-import { getSelectedPortal, getTheme, updateColorTheme, updateSubdomain, updateLogo, updateAutomaticRenewal, deletePortal } from "../../redux/features/admin.portal.slice";
-import { useSelector, useDispatch } from "react-redux";
-import { axiosWithAdminCredentials, axiosWithoutCredentials } from "../../configs/axios";
-import { CirclePicker } from 'react-color';
-
-import ColorTheme from "../../configs/color-themes";
+import {
+	Avatar,
+	Box,
+	Button,
+	Card,
+	CardActions,
+	Divider,
+	Input,
+	Skeleton,
+	Snackbar,
+	Stack,
+	Typography,
+} from '@mui/joy';
+import PageBuilder2 from '../../components/admin/PageBuilder2';
+import { useDispatch, useSelector } from 'react-redux';
+import {
+	deletePortal,
+	getSelectedPortal,
+	select,
+	update,
+} from '../../redux/features/admin.portal.slice';
+import { useEffect, useRef, useState } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
+import { axiosWithAdminCredentials } from '../../configs/axios';
+import ImageCropper from '../../components/profile/ImageCropper';
+import DeleteConfirmationModal from '../../components/modals/DeleteConfirmationModal';
 
 export default function Settings() {
+	const avatarFileInput = useRef(null);
+	const dispatch = useDispatch();
+	const { domain } = useParams();
+	const portal = useSelector(getSelectedPortal);
+	const navigate = useNavigate();
+	const [settings, setSettings] = useState({
+		ID: portal?.ID,
+		Name: portal?.Name,
+		Subdomain: portal?.Subdomain,
+		Avatar: portal?.LogoSource,
+	});
+	const [errors, setErrors] = useState({
+		Name: '',
+		Subdomain: '',
+	});
+	const [imageCrop, setImageCrop] = useState({
+		open: false,
+		image: '',
+	});
+	const [deleteConfirmation, setDeleteConfirmation] = useState(false);
+	const [isNameLoading, setIsNameLoading] = useState(false);
+	const [isSubdomainLoading, setIsSubdomainLoading] = useState(false);
 
-  const portal = useSelector(getSelectedPortal);
-  const [settings, setSettings] = useState();
-  const [modal, contextHolder] = Modal.useModal();
-  const [subdomainCheckLoading, setSubdomainCheckLoading] = useState(false);
-  const [subdomainAvailability, setSubdomainAvailability] = useState();
-  const [image, setImage] = useState();
-  const theme = useSelector(getTheme);
-  const [autoRenewal, setAutoRenewal] = useState();
-  const dispatch = useDispatch();
-  const colors = ColorTheme.map(x => x.background.primary);
-  const domainStatus = () => subdomainCheckLoading ? 'validating' : subdomainAvailability === undefined ? null : subdomainAvailability ? 'success' : 'error';
-  const domainFeedback = () => subdomainCheckLoading ? 'Checking Availability...' : subdomainAvailability === undefined ? null : subdomainAvailability ? 'Available' : 'Not Available'
+	const [message, setMessage] = useState({
+		open: false,
+		displayDuration: 3000,
+		message: 'message undefined',
+		color: 'primary',
+	});
 
-  function handleThemeChange(color){
-      var payload = {
-          PortalID: portal.ID,
-          ColorTheme: ColorTheme.find(x => x.background.primary === color.hex).ID
-      }
-      dispatch(updateColorTheme(payload));
-  }
+	const onImageSelect = (e) => {
+		e.preventDefault();
+		const selectedFile = e.target.files[0];
+		if (selectedFile) {
+			setImageCrop({ open: true, image: selectedFile });
+		}
+	};
 
-  const onImageChange = (event) => {
-    if(event.fileList.length === 1 && event.file.size > 2000000)
-    {
-      message.error('File size exceeds 2 MB.')
-    }else{
-      setImage(event.fileList);
-      let formData = new FormData();
-      if(event.fileList.length === 0)
-      {
-        formData.append("file",null);
-      }else{
-        formData.append("file", event.fileList[0].originFileObj);
-      }
-      formData.append("PortalID", portal.ID);
-      dispatch(updateLogo(formData));
-    }
+	const transformDomainStr = (str) => {
+		let newStr = str.toLowerCase();
 
-  }
+		// Replace spaces with "-"
+		newStr = newStr.replace(/\s+/g, '-');
 
-  function handleDelete()
-  {
-      dispatch(deletePortal(portal))
-  }
+		// Remove special characters
+		newStr = newStr.replace(/[^\w\s-]/gi, '');
+		setSettings({ ...settings, Subdomain: newStr });
+	};
 
-  function handleDeleteConfirm()
-  {
-    modal.confirm({
-        title: 'Do you wish to delete this portal?',
-        content: 'Once deleted, all data pertaining to this portal will be deleted. Make sure to export any data you need before proceeding. You will not have access to the portal after deletion. You will be prorated the remaining time on your subscription.',
-        okText: 'I wish to delete this portal.',
-        cancelText: 'Do not delete.',
-        onOk: () => handleDelete()
-      });
-  }
-  function handleAutomaticRenewalChange(e)
-  {
-      var payload = {
-          SubscriptionID: settings.SubscriptionID,
-          Value: e
-      }
+	const updateName = () => {
+		setIsNameLoading(true);
+		var payload = {
+			ID: settings.ID,
+			Name: settings.Name,
+		};
+		axiosWithAdminCredentials
+			.patch('/portal/name', payload)
+			.then((res) => {
+				setMessage({
+					open: true,
+					message: "Your portal's name has been updated.",
+					color: 'success',
+					displayDuration: 3000,
+				});
+				var reduxPayload = {
+					ID: payload.ID,
+					Field: 'Name',
+					Value: payload.Name,
+				};
+				dispatch(update(reduxPayload));
+			})
+			.catch((err) => {
+				setMessage({
+					open: true,
+					message: 'Internal server error.',
+					color: 'danger',
+					displayDuration: 3000,
+				});
+			})
+			.finally(() => setIsNameLoading(false));
+	};
 
-      dispatch(updateAutomaticRenewal(payload)).unwrap()
-      .then(() => {
-        setAutoRenewal(e);  
-      })
-  }
+	const handleDelete = () => {
+		dispatch(deletePortal(settings.ID))
+			.unwrap()
+			.then(() => {
+				window.location.href = '/';
+			})
+			.catch(() => {
+				setDeleteConfirmation(false);
+				setMessage({
+					open: true,
+					message:
+						'Could not delete portal due to an internal server error.\n Please try again in a few moments. If this issue persists please contact customer support',
+					color: 'danger',
+					displayDuration: null,
+				});
+			});
+	};
 
-  function handleDomainChange()
-  {
-    dispatch(updateSubdomain(payload)).unwrap()
-    .then(() => {
+	const updateSubdomain = () => {
+		setIsSubdomainLoading(true);
+		var payload = {
+			ID: settings.ID,
+			Subdomain: settings.Subdomain,
+		};
+		axiosWithAdminCredentials
+			.patch('/portal/subdomain', payload)
+			.then((res) => {
+				if (errors.Subdomain) {
+					setErrors({ ...errors, Subdomain: '' });
+				}
+				setMessage({
+					open: true,
+					message: "Your portal's domain has been updated.",
+					color: 'success',
+					displayDuration: 3000,
+				});
+				var reduxPayload = {
+					ID: payload.ID,
+					Field: 'Subdomain',
+					Value: payload.Subdomain,
+				};
+				dispatch(update(reduxPayload));
 
-    })
-    .catch(err => {
+				window.location.href = '/portal/' + res.data + '/settings';
+			})
+			.catch((err) => {
+				if (err.response.data.code === 'SUBDOMAIN_IN_USE') {
+					setErrors({
+						...errors,
+						Subdomain: 'Domain already in use.',
+					});
+				} else {
+					setMessage({
+						open: true,
+						message: 'Internal server error.',
+						color: 'danger',
+						displayDuration: 3000,
+					});
+				}
+			})
+			.finally(() => setIsSubdomainLoading(false));
+	};
 
-    })
-    .finally(() => {});
-  }
+	const onImgCrop = (img) => {
+		const formData = new FormData();
+		formData.append('file', img);
+		formData.append('PortalID', settings.ID);
+		axiosWithAdminCredentials
+			.patch('/portal/avatar', formData, {
+				headers: {
+					'Content-Type': 'multipart/form-data',
+				},
+			})
+			.then((res) => {
+				setImageCrop({ open: false, image: '' });
+				setMessage({
+					open: true,
+					message: "Your portal's avatar has been updated.",
+					color: 'success',
+					displayDuration: 3000,
+				});
+				setSettings({ ...settings, Avatar: res.data });
+				var reduxPayload = {
+					ID: settings.ID,
+					Field: 'Avatar',
+					Value: res.data,
+				};
+				dispatch(update(reduxPayload));
+			})
+			.catch((err) => {
+				setMessage({
+					open: true,
+					message: 'Internal server error.',
+					color: 'danger',
+					displayDuration: 3000,
+				});
+			});
+	};
 
+	useEffect(() => {
+		if (!portal) {
+			var payload = {
+				id: domain,
+			};
+			axiosWithAdminCredentials
+				.get('/portal/settings', { params: payload })
+				.then((res) => {
+					dispatch(select({ ID: res.data.ID }));
+					setSettings({
+						ID: res.data.ID,
+						Name: res.data.Name,
+						Subdomain: res.data.Subdomain,
+						Avatar: res.data.Avatar,
+					});
+				})
+				.catch((err) => {
+					navigate('/');
+				});
+		}
+	}, []);
 
-  useEffect(() => {
-    if(settings?.Subdomain !== portal?.Subdomain){
-        setSubdomainCheckLoading(true);
-        const delayDebounceFn = setTimeout(() => {
-            axiosWithoutCredentials.get('/portal/namecheck/' + settings.Subdomain)
-            .then(res => {
-                setSubdomainAvailability(res.data);
-            })
-            .finally(() => {
-                setSubdomainCheckLoading(false);
-            })
-          }, 1000);
-      
-          return () => clearTimeout(delayDebounceFn)
-    }else{
-        setSubdomainCheckLoading(false);
-        setSubdomainAvailability(undefined);
-    }
-  }, [settings?.Subdomain]);
-
-  useEffect(() => {
-    if(portal){
-        var payload = {
-            ID: portal.ID
-        }
-        axiosWithAdminCredentials.get('/portal/settings', { params: payload})
-        .then(res => {
-            setSettings(portal);
-        })
-
-        var payload2 = {
-            id: portal.SubscriptionID
-          }
-        axiosWithAdminCredentials.get('/stripe/subscription', { params: payload2})
-        .then(res => {
-          if(res.data){
-            setAutoRenewal(res.data.cancel_at_period_end ? false : true)
-          }
-        })
-    }
-  }, [portal])
-  return (
-    <PageBuilder breadcrumb={["Settings"]} name="settings">
-        <Spin spinning={!settings} indicator={<LoadingOutlined/>}>
-          <Form>
-            <Form.Item
-            label="Name"
-            required
-            >
-              <Input value={settings?.Name} onChange={e => setSettings({...settings, Name: e.target.value})} maxLength={128} />
-              {settings?.Name && settings?.Name !== portal?.Name && <Button className="mt-2" type="primary">Save</Button>}
-            </Form.Item>
-            <Form.Item
-            required
-            validateStatus={domainStatus()} hasFeedback help={domainFeedback()}
-            label="Domain"
-            >
-              <Input
-              addonBefore="https://"
-              addonAfter=".familylynk.com"
-              value={settings?.Subdomain} onChange={e => setSettings({...settings, Subdomain: e.target.value})}
-              maxLength={45}
-              />
-              {subdomainAvailability &&<Button className="mt-2" onClick={handleDomainChange}>Save</Button>}
-            </Form.Item>
-            <Divider/>
-            {settings &&
-              <Form.Item
-              label="Logo"
-              >
-              <Upload
-                  beforeUpload={(file) => {
-
-                    return false;
-                  }}
-                  accept=".png, .jpg"
-                  listType="picture"
-                  fileList={image}
-                  maxCount={1}
-                  onChange={(e) => onImageChange(e)}
-                  defaultFileList={settings?.LogoSource ? [
-                    {
-                      uid: '0',
-                      name: 'logo.png',
-                      status: 'done',
-                      url: settings.LogoSource,
-                    }
-                  ]: []}
-                  >
-                      <Button icon={<UploadOutlined />}>Upload</Button>
-                  </Upload>
-              </Form.Item>
-            }
-            <Form.Item
-            label="Theme"
-            >
-              <CirclePicker color={theme?.background.primary} colors={colors} onChangeComplete={handleThemeChange}/>
-            </Form.Item>
-            <Divider/>
-            <Form.Item label="Automatic Renewal">
-              <Switch checkedChildren="ON" unCheckedChildren="OFF" checked={autoRenewal} onChange={(e) => handleAutomaticRenewalChange(e)}/>
-            </Form.Item>
-            <Form.Item>
-                    {contextHolder}
-                    <Button danger onClick={handleDeleteConfirm}>Delete Portal</Button>
-            </Form.Item>
-          </Form>
-        </Spin>
-    </PageBuilder>
-  );
-};
+	return (
+		<PageBuilder2 portalView>
+			<DeleteConfirmationModal
+				open={deleteConfirmation}
+				onClose={() => setDeleteConfirmation(false)}
+				onConfirm={handleDelete}
+				label='Are you sure you want to delete this portal? This action is not reversible.'
+				deleteLabel='Delete'
+			/>
+			<Snackbar
+				anchorOrigin={{
+					vertical: 'bottom',
+					horizontal: 'right',
+				}}
+				autoHideDuration={message.displayDuration}
+				color={message.color}
+				variant='solid'
+				open={message.open}
+				onClose={() => setMessage({ ...message, open: false })}
+			>
+				{message.message}
+			</Snackbar>
+			<ImageCropper
+				size='small'
+				visible={imageCrop.open}
+				image={imageCrop.image}
+				onClose={() => setImageCrop({ open: false, image: '' })}
+				onChange={onImgCrop}
+			/>
+			<Stack
+				direction='column'
+				spacing={4}
+				className='mx-auto'
+				sx={{
+					maxWidth: 800,
+				}}
+			>
+				<Typography level='h1'>Settings</Typography>
+				<Divider />
+				<Card>
+					<Typography level='title-lg'>
+						<Skeleton
+							loading={
+								settings.Name == null ||
+								settings.Name == undefined
+							}
+						>
+							Portal Name
+						</Skeleton>
+					</Typography>
+					<Typography level='body-sm'>
+						<Skeleton
+							loading={
+								settings.Name == null ||
+								settings.Name == undefined
+							}
+						>
+							This is your portal's visible name within
+							FamilyLynk. For example, the name of your company or
+							home.
+						</Skeleton>
+					</Typography>
+					{settings.Name != null && settings.Name != undefined && (
+						<Input
+							size='sm'
+							sx={(theme) => ({
+								'--Input-focusedInset': 'var(--any, )',
+								'--Input-focusedThickness': '0.05rem',
+								'--Input-focusedHighlight':
+									theme.palette.mode === 'light'
+										? 'rgba(0,0,0,1) !important'
+										: 'rgba(255,255,255,1) !important',
+								'&::before': {
+									transition: 'box-shadow .15s ease-in-out',
+								},
+								'&:focus-within': {
+									borderColor: '#000',
+								},
+							})}
+							value={settings.Name}
+							onChange={(e) =>
+								setSettings({
+									...settings,
+									Name: e.target.value,
+								})
+							}
+							placeholder='Portal Name'
+							slotProps={{
+								input: {
+									maxLength: 64,
+								},
+							}}
+						/>
+					)}
+					<Divider />
+					<CardActions
+						sx={{
+							display: 'flex',
+							justifyContent: 'space-between',
+						}}
+					>
+						<Typography level='body-sm'>
+							<Skeleton
+								loading={
+									settings.Subdomain === null ||
+									settings.Subdomain === undefined
+								}
+							>
+								Please use 64 characters at the most.
+							</Skeleton>
+						</Typography>
+						{settings.Name != null &&
+							settings.Name != undefined && (
+								<Button
+									loading={isNameLoading}
+									color={
+										isNameLoading ? 'primary' : 'neutral'
+									}
+									variant='outlined'
+									disabled={settings.Name.length <= 0}
+									onClick={() => updateName()}
+								>
+									Save
+								</Button>
+							)}
+					</CardActions>
+				</Card>
+				<Card>
+					<Typography level='title-lg'>
+						<Skeleton
+							loading={
+								settings.Subdomain == null ||
+								settings.Subdomain == undefined
+							}
+						>
+							Portal URL
+						</Skeleton>
+					</Typography>
+					<Typography level='body-sm'>
+						<Skeleton
+							loading={
+								settings.Subdomain === null ||
+								settings.Subdomain === undefined
+							}
+						>
+							This is your portal's URL namespace on FamilyLynk.
+							Within it, your team can access the portal.
+						</Skeleton>
+					</Typography>
+					{settings.Subdomain != null &&
+						settings.Subdomain != undefined && (
+							<Input
+								sx={(theme) => ({
+									'--Input-focusedInset': 'var(--any, )',
+									'--Input-focusedThickness': '0.05rem',
+									'--Input-focusedHighlight':
+										theme.palette.mode === 'light'
+											? 'rgba(0,0,0,1) !important'
+											: 'rgba(255,255,255,1) !important',
+									'&::before': {
+										transition:
+											'box-shadow .15s ease-in-out',
+									},
+									'&:focus-within': {
+										borderColor: '#000',
+									},
+								})}
+								startDecorator={'https://'}
+								endDecorator={'.familylynk.com'}
+								size='sm'
+								value={settings.Subdomain}
+								slotProps={{
+									input: {
+										maxLength: 45,
+									},
+								}}
+								onChange={(e) =>
+									transformDomainStr(e.target.value)
+								}
+								placeholder='portal-name'
+							/>
+						)}
+					{errors.Subdomain && (
+						<Typography
+							color='danger'
+							level='body-sm'
+						>
+							{errors.Subdomain}
+						</Typography>
+					)}
+					<Divider />
+					<CardActions
+						sx={{
+							display: 'flex',
+							justifyContent: 'space-between',
+						}}
+					>
+						<Typography level='body-sm'>
+							<Skeleton
+								loading={
+									settings.Subdomain === undefined ||
+									settings.Subdomain === null
+								}
+							>
+								Please use 45 characters at the most.
+							</Skeleton>
+						</Typography>
+						{settings.Subdomain !== undefined &&
+							settings.Subdomain !== null && (
+								<Button
+									loading={isSubdomainLoading}
+									color={
+										isSubdomainLoading
+											? 'primary'
+											: 'neutral'
+									}
+									variant='outlined'
+									onClick={() => updateSubdomain()}
+									disabled={settings.Subdomain.length <= 0}
+								>
+									Save
+								</Button>
+							)}
+					</CardActions>
+				</Card>
+				<Card>
+					<Stack
+						direction={'row'}
+						spacing={2}
+						sx={{ justifyContent: 'space-between' }}
+					>
+						<Box>
+							<Typography
+								level='title-lg'
+								sx={{ marginBottom: 1 }}
+							>
+								Portal Avatar
+							</Typography>
+							<Typography level='body-sm'>
+								This is your team's avatar.
+								<br /> Click on the avatar to upload a custom
+								one from your files.
+							</Typography>
+						</Box>
+						<Avatar
+							className='hover:cursor-pointer'
+							size='lg'
+							sx={{ width: 80, height: 80 }}
+							src={settings.Avatar}
+							onClick={() => {
+								avatarFileInput.current.click();
+							}}
+						/>
+						<input
+							type='file'
+							accept='image/png, image/jpeg'
+							className='hidden'
+							ref={avatarFileInput}
+							onChange={onImageSelect}
+						/>
+					</Stack>
+					<Divider />
+					<CardActions
+						sx={{
+							display: 'flex',
+							justifyContent: 'space-between',
+						}}
+					>
+						<Typography level='body-sm'>
+							Avatars are only viewed internally.
+						</Typography>
+					</CardActions>
+				</Card>
+				<Card>
+					<Typography level='title-lg'>Delete Portal</Typography>
+					<Typography level='body-sm'>
+						Permanently remove your Portal and all of its contents
+						from the FamilyLynk platform. This action is not
+						reversible — please continue with caution.
+					</Typography>
+					<Button
+						size='sm'
+						sx={{ width: 120 }}
+						color='danger'
+						onClick={() => setDeleteConfirmation(true)}
+					>
+						Delete Portal
+					</Button>
+				</Card>
+			</Stack>
+		</PageBuilder2>
+	);
+}

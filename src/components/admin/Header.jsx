@@ -126,11 +126,10 @@ export default function Header({ portalView }) {
         >
           <Logo/>
         </IconButton>
-        {console.log(portalView)}
         {portalView ? 
         <Stack flex flexDirection='row' sx={{gap: 1, marginLeft: 1}}>
         <Typography level="body-sm">/</Typography>
-        <Typography level="title-md">Test Funeral Home</Typography>
+        <Typography level="title-md">{selectedPortal?.Name}</Typography>
         </Stack>
         :
         <>

@@ -14,21 +14,25 @@ import ActivateAccount from "./admin/ActivateAccount";
 import Support from "./admin/Support";
 import Billing from "./admin/Billing";
 import PasswordReset from "./admin/PasswordReset";
-import TermsOfService from "./admin/TermsOfService";
-import PrivacyPolicy from "./admin/PrivacyPolicy";
 import NewPortal from "./admin/NewPortal";
 import Overview from "./admin/Overview";
 import PortalView from "./admin/PortalView";
-import Settings2 from "./admin/Settings2";
+import AboutUs from "./admin/AbousUs";
+import LegalPrivacyPolicy from "./admin/LegalPrivacyPolicy";
+import LegalTermsOfService from "./admin/LegalTermsOfService";
+import Careers from "./admin/Careers";
+import Contact from "./admin/Contact";
 export default function AdminRoutes()
 {
     return (
         <Routes>
             <Route exact path="/" element={<ProtectedRoute admin alternate={<Landing/>}><Overview/></ProtectedRoute> } />
+
             <Route exact path="/portal/:name/settings" element={<ProtectedRoute admin><Settings2/></ProtectedRoute>} />
             <Route exact path="/portal/:name/configuration" element={<ProtectedRoute admin><PortalView/></ProtectedRoute>} />
             <Route exact path="/portal/:name/users" element={<ProtectedRoute admin><PortalView/></ProtectedRoute>} />
             <Route exact path="/portal/:name/billing" element={<ProtectedRoute admin><PortalView/></ProtectedRoute>} />
+
             <Route exact path="/profile" element={<ProtectedRoute><Profile/></ProtectedRoute>} />
             <Route exact path="/create-portal" element={<ProtectedRoute portalFetch={false}><NewPortal/></ProtectedRoute>} />
             <Route exact path="/users" element={<ProtectedRoute><Users/></ProtectedRoute>} />
@@ -39,10 +43,15 @@ export default function AdminRoutes()
             <Route exact path="/auth/activate/:token" element={<ProtectedRoute><ActivateAccount/></ProtectedRoute>} />
             <Route exact path="/support" element={<ProtectedRoute><Support/></ProtectedRoute>} />
             <Route exact path="/billing" element={<ProtectedRoute><Billing/></ProtectedRoute>} />
-            <Route exact path="/password/reset" element={<PasswordReset/>} />
-            <Route exact path="/legal/terms" element={<TermsOfService/>} />
-            <Route exact path="/legal/privacy" element={<PrivacyPolicy/>} />
+        
+            <Route exact path="/about" element={<AboutUs/>} />
+            <Route exact path="/contact" element={<Contact/>} />
+            <Route exact path="/careers" element={<Careers/>} />
+            <Route exact path="/legal/terms" element={<LegalTermsOfService/>} />
+            <Route exact path="/legal/privacy" element={<LegalPrivacyPolicy/>} />
             <Route exact path="/login" element={<Login/>} />
+            <Route exact path="/password/reset" element={<PasswordReset/>} />
+
             <Route exact path="/*" element={<Missing/>} />
         </Routes>
     )

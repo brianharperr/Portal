@@ -12,42 +12,36 @@ import { useTheme } from '@mui/system';
 
 const userTestimonials = [
   {
-    avatar: <Avatar alt="Emily Thompson" src="/static/images/avatar/1.jpg" />,
     name: 'Emily Thompson',
     occupation: 'Manager',
     testimonial:
     "Eternal Peace Funerals has seen remarkable efficiency since adopting FamilyLynk. It's simplified our administrative tasks, allowing us to focus more on supporting grieving families during their time of need.",
   },
   {
-    avatar: <Avatar alt="Jessica Carter" src="/static/images/avatar/2.jpg" />,
     name: 'Jessica Carter',
     occupation: 'Home Director',
     testimonial:
       "I can't imagine managing our homes without it. It has streamlined our workflow, improved communication among staff members, and ultimately enhanced the overall experience for our clients during a difficult time.",
   },
   {
-    avatar: <Avatar alt="David Brown" src="/static/images/avatar/3.jpg" />,
     name: 'David Brown',
     occupation: 'Funeral Counselor',
     testimonial:
       'Peaceful Farewells Mortuary has found this SaaS to be incredibly user-friendly and efficient. It has simplified our administrative processes, allowing us to provide more personalized attention to our clients and their families.',
   },
   {
-    avatar: <Avatar alt="Danielle DeRosa" src="/static/images/avatar/4.jpg" />,
     name: 'Danielle DeRosa',
     occupation: 'Administrator',
     testimonial:
       "I appreciate the attention to detail in the design of this product. It's nice to have a modern option for funeral homes.",
   },
   {
-    avatar: <Avatar alt="Travis Howard" src="/static/images/avatar/5.jpg" />,
     name: 'Travis Howard',
     occupation: 'Director',
     testimonial:
       "I've tried other similar products, but this one stands out for its ease-of-use. It's clear that the makers put a lot of thought into creating a solution that truly addresses user needs.",
   },
   {
-    avatar: <Avatar alt="Daniel Wolf" src="/static/images/avatar/6.jpg" />,
     name: 'Daniel Wolf',
     occupation: 'CDO',
     testimonial:
@@ -129,7 +123,7 @@ export default function Testimonials() {
               }}
             >
               <CardHeader
-                avatar={testimonial.avatar}
+                avatar={null}
                 title={testimonial.name}
                 subheader={testimonial.occupation}
               />

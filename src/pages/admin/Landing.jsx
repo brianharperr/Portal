@@ -15,31 +15,10 @@ import Testimonials from '../../components/landing/Testimonials';
 import FAQ from '../../components/landing/FAQ';
 import Footer from '../../components/landing/Footer';
 import getLPTheme from './getLPTheme';
+import { Snackbar } from '@mui/joy';
+import { axiosWithoutCredentials } from '../../configs/axios';
 
 const defaultTheme = createTheme({});
-
-function ToggleCustomTheme({ showCustomTheme, toggleCustomTheme }) {
-  return (
-    <Box
-      sx={{
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-        width: '100dvw',
-        position: 'fixed',
-        bottom: 24,
-      }}
-    >
-    </Box>
-  );
-}
-
-ToggleCustomTheme.propTypes = {
-  showCustomTheme: PropTypes.shape({
-    valueOf: PropTypes.func.isRequired,
-  }).isRequired,
-  toggleCustomTheme: PropTypes.func.isRequired,
-};
 
 export default function LandingPage() {
   const [mode, setMode] = React.useState('light');
@@ -51,11 +30,46 @@ export default function LandingPage() {
     setMode((prev) => (prev === 'dark' ? 'light' : 'dark'));
   };
 
-  const toggleCustomTheme = () => {
-    setShowCustomTheme((prev) => !prev);
-  };
+  const [open, setOpen] = React.useState(false);
+  const [notification, setNotification] = React.useState({
+    message: '',
+    options: {
+      color:'neutral',
+      autoHideDuration: 6000,
+    },
+  });
+
+  const handleNewsletterSubscription = (emailStr) => {
+
+    var payload = {
+      Email: emailStr
+    }
+    axiosWithoutCredentials.post('/email/newsletter', payload)
+    .then(res => {
+      setNotification({
+        message: 'Successfully subscribed to our newsletter!',
+        options: {
+          color:'success',
+          autoHideDuration: 6000,
+        },
+      });
+    })
+    .catch(err => {
+      setNotification({
+        message: 'Something went wrong. Please try again.',
+        options: {
+          color: 'danger',
+          autoHideDuration: null,
+        },
+      });
+    })
+    .finally(() => {
+       setOpen(true);
+     });
+  }
 
   return (
+    <>
     <ThemeProvider theme={showCustomTheme ? LPtheme : defaultTheme}>
       <CssBaseline />
       <AppAppBar mode={mode} toggleColorMode={toggleColorMode} />
@@ -72,12 +86,17 @@ export default function LandingPage() {
         <Divider />
         <FAQ />
         <Divider />
-        <Footer />
+        <Footer subscribeToNewsletter={handleNewsletterSubscription} />
       </Box>
-      <ToggleCustomTheme
-        showCustomTheme={showCustomTheme}
-        toggleCustomTheme={toggleCustomTheme}
-      />
     </ThemeProvider>
+      <Snackbar
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+        open={open}
+        {...notification.options}
+        onClose={() => setOpen(false)}
+      >
+        {notification.message}
+      </Snackbar>
+    </>
   );
 }

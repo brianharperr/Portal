@@ -266,8 +266,6 @@ export default function Settings() {
 					maxWidth: 800,
 				}}
 			>
-				<Typography level='h1'>Settings</Typography>
-				<Divider />
 				<Card>
 					<Typography level='title-lg'>
 						<Skeleton

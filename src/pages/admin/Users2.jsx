@@ -101,6 +101,38 @@ export default function Users() {
 		});
 	};
 
+	const handleInvitationResend = (invitation) => {
+		if(!invitation){
+			return;
+		}
+		var payload = {
+			PortalID: selectedPortal.ID,
+			Invites: [{ email: invitation.Email, role: invitation.RoleID }]
+		};
+		axiosWithAdminCredentials
+		.post('/email/portal-invite', payload)
+		.then((res) => {
+			axiosWithAdminCredentials
+					.get('/user/invitations', {
+						params: {
+							id: selectedPortal.ID,
+						},
+					})
+					.then((res) => {
+						setInvitations(res.data);
+					});
+				setMessage({
+					open: true,
+					message: 'Invitation has been sent again.',
+					title: 'Success',
+					color: 'success',
+					displayDuration: 2000,
+					anchorOrigin: { vertical: 'bottom', horizontal: 'right' },
+					id: null,
+				});
+		})
+	}
+
 	const handleInvitationCreate = () => {
 		var payload = {
 			PortalID: selectedPortal.ID,
@@ -111,7 +143,9 @@ export default function Users() {
 			.then((res) => {
 				axiosWithAdminCredentials
 					.get('/user/invitations', {
-						params: payload,
+						params: {
+							id: selectedPortal.ID,
+						},
 					})
 					.then((res) => {
 						setInvitations(res.data);
@@ -535,7 +569,7 @@ export default function Users() {
 															<Menu size='sm'>
 																<MenuItem
 																	onClick={() =>
-																		null
+																		handleInvitationResend(user)
 																	}
 																>
 																	Resend
